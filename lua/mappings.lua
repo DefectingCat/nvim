@@ -1,117 +1,186 @@
-require "nvchad.mappings"
+require("nvchad.mappings")
+
+local map = vim.keymap.set
+
+-- rust
+map("n", "<leader>rcu", function()
+  require("crates").upgrade_all_crates()
+end, { desc = "Update crates" })
+
+-- dap
+map("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>")
+map("n", "<leader>dr", "<cmd> DapContinue <CR>", { desc = "Run or continue the debugger" })
+map("n", "<leader>dus", function()
+  local widgets = require("dap.ui.widgets")
+  local sidebar = widgets.sidebar(widgets.scopes)
+  sidebar.open()
+end, { desc = "Open debugging sidebar" })
+map("n", "<leader>drr", "<cmd> RustLsp debuggables <CR>", { desc = "Run rust debug on current file" })
+map("n", "<leader>dgr", function()
+  require("dap-go").debug_test()
+end, { desc = "Open debugging sidebar" })
+map("n", "<leader>dgl", function()
+  require("dap-go").debug_last()
+end, { desc = "Debug last go test" })
+
+-- golang
+map("n", "<leader>gsj", "<cmd> GoTagAdd json <CR>", { desc = "Add json struct tags" })
+map("n", "<leader>gsy", "<cmd> GoTagAdd yaml <CR>", { desc = "Add yaml struct tags" })
+
+-- lsp
+map("n", "gh", function()
+  --[[ vim.lsp.buf.hover() ]]
+  require("pretty_hover").hover()
+end, { desc = "󱙼 Hover lsp" })
+map("n", "gr", "<CMD>Telescope lsp_references<CR>", { desc = " Lsp references" })
+map("n", "gr", "<CMD>Telescope lsp_definitions <CR>", { desc = " Lsp definitions" })
+
+-- rua
+map("n", "<tab>", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
+map("n", "<S-tab>", "<CMD> tabprevious <CR>", { desc = "Goto prev tab" })
+map("n", "<S-l>", function()
+  require("nvchad.tabufline").tabuflineNext()
+end, { desc = "Goto next buffer" })
+map("n", "<S-h>", function()
+  require("nvchad.tabufline").tabuflinePrev()
+end, { desc = "Goto prev buffer" })
+map("n", "<leader>pa", "<CMD> %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
+map("n", "<C-a>", "gg<S-v>G")
+map("n", "$", "g_")
+map("n", "f", function()
+  local hop = require("hop")
+  local directions = require("hop.hint").HintDirection
+  hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false })
+end, { desc = "Hop motion search in current line after cursor" })
+map("n", "F", function()
+  local hop = require("hop")
+  local directions = require("hop.hint").HintDirection
+  hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false })
+end, { desc = "Hop motion search in current line before cursor" })
+map("n", "<leader>w", function()
+  local hop = require("hop")
+  local directions = require("hop.hint").HintDirection
+  hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
+end, { desc = "Hop motion search words after cursor" })
+map("n", "<leader>b", function()
+  local hop = require("hop")
+  local directions = require("hop.hint").HintDirection
+  hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
+end, { desc = "Hop motion search words before cursor" })
+
 local M = {}
 
-M.disabled = {
-  n = {
-    ["<leader>wa"] = "",
-    ["<leader>wr"] = "",
-    ["<leader>wl"] = "",
-    ["<leader>wK"] = "",
-    ["<leader>wk"] = "",
-    ["<leader>cm"] = "",
-  },
-}
+-- M.disabled = {
+--   n = {
+--     ["<leader>wa"] = "",
+--     ["<leader>wr"] = "",
+--     ["<leader>wl"] = "",
+--     ["<leader>wK"] = "",
+--     ["<leader>wk"] = "",
+--     ["<leader>cm"] = "",
+--   },
+-- }
 
-M.crates = {
-  plugin = true,
-  n = {
-    ["<leader>rcu"] = {
-      function()
-        require("crates").upgrade_all_crates()
-      end,
-      "update crates",
-    },
-  },
-}
+-- M.crates = {
+--   plugin = true,
+--   n = {
+--     ["<leader>rcu"] = {
+--       function()
+--         require("crates").upgrade_all_crates()
+--       end,
+--       "Update crates",
+--     },
+--   },
+-- }
+--
+-- M.dap = {
+--   plugin = true,
+--   n = {
+--     ["<leader>db"] = { "<cmd> DapToggleBreakpoint <CR>" },
+--     ["<leader>dr"] = {
+--       "<cmd> DapContinue <CR>",
+--       "Run or continue the debugger",
+--     },
+--     ["<leader>dus"] = {
+--       function()
+--         local widgets = require("dap.ui.widgets")
+--         local sidebar = widgets.sidebar(widgets.scopes)
+--         sidebar.open()
+--       end,
+--       "Open debugging sidebar",
+--     },
+--     ["<leader>drr"] = {
+--       "<cmd> RustLsp debuggables <CR>",
+--       "Run rust debug on current file",
+--     },
+--   },
+-- }
+--
+-- M.dap_go = {
+--   plugin = true,
+--   n = {
+--     ["<leader>dgr"] = {
+--       function()
+--         require("dap-go").debug_test()
+--       end,
+--       "Debug go test",
+--     },
+--     ["<leader>dgl"] = {
+--       function()
+--         require("dap-go").debug_last()
+--       end,
+--       "Debug last go test",
+--     },
+--   },
+-- }
 
-M.dap = {
-  plugin = true,
-  n = {
-    ["<leader>db"] = { "<cmd> DapToggleBreakpoint <CR>" },
-    ["<leader>dr"] = {
-      "<cmd> DapContinue <CR>",
-      "Run or continue the debugger",
-    },
-    ["<leader>dus"] = {
-      function()
-        local widgets = require("dap.ui.widgets")
-        local sidebar = widgets.sidebar(widgets.scopes)
-        sidebar.open()
-      end,
-      "Open debugging sidebar",
-    },
-    ["<leader>drr"] = {
-      "<cmd> RustLsp debuggables <CR>",
-      "Run rust debug on current file",
-    },
-  },
-}
-
-M.dap_go = {
-  plugin = true,
-  n = {
-    ["<leader>dgr"] = {
-      function()
-        require("dap-go").debug_test()
-      end,
-      "Debug go test",
-    },
-    ["<leader>dgl"] = {
-      function()
-        require("dap-go").debug_last()
-      end,
-      "Debug last go test",
-    },
-  },
-}
-
-M.gopher = {
-  plugin = true,
-  n = {
-    ["<leader>gsj"] = {
-      "<cmd> GoTagAdd json <CR>",
-      "Add json struct tags",
-    },
-    ["<leader>gsy"] = {
-      "<cmd> GoTagAdd yaml <CR>",
-      "Add yaml struct tags",
-    },
-  },
-}
-
-M.lspsaga = {
-  n = {
-    ["<C-.>"] = {
-      function()
-        vim.lsp.buf.code_action()
-      end,
-      "󰅱 Code Action",
-    },
-    --[[ ["gf"] = {
-      function()
-        vim.cmd "Lspsaga lsp_finder"
-      end,
-      " Go to definition",
-    },
-    ["gt"] = {
-      "<CMD>Lspsaga goto_definition<CR>",
-      " Go to definition",
-    },
-    ["<leader>lp"] = {
-      "<CMD>Lspsaga peek_definition<CR>",
-      " Peek definition",
-    }, ]]
-    ["gh"] = {
-      function()
-        --[[ vim.lsp.buf.hover() ]]
-        require("pretty_hover").hover()
-      end,
-      "󱙼 Hover lsp",
-    },
-    ["gr"] = { "<CMD>Telescope lsp_references<CR>", " Lsp references" },
-    ["gd"] = { "<CMD>Telescope lsp_definitions <CR>", " Lsp definitions" },
-  },
-}
+-- M.gopher = {
+--   plugin = true,
+--   n = {
+--     ["<leader>gsj"] = {
+--       "<cmd> GoTagAdd json <CR>",
+--       "Add json struct tags",
+--     },
+--     ["<leader>gsy"] = {
+--       "<cmd> GoTagAdd yaml <CR>",
+--       "Add yaml struct tags",
+--     },
+--   },
+-- }
+--
+-- M.lspsaga = {
+--   n = {
+--     ["<C-.>"] = {
+--       function()
+--         vim.lsp.buf.code_action()
+--       end,
+--       "󰅱 Code Action",
+--     },
+--     --[[ ["gf"] = {
+--       function()
+--         vim.cmd "Lspsaga lsp_finder"
+--       end,
+--       " Go to definition",
+--     },
+--     ["gt"] = {
+--       "<CMD>Lspsaga goto_definition<CR>",
+--       " Go to definition",
+--     },
+--     ["<leader>lp"] = {
+--       "<CMD>Lspsaga peek_definition<CR>",
+--       " Peek definition",
+--     }, ]]
+--     ["gh"] = {
+--       function()
+--         --[[ vim.lsp.buf.hover() ]]
+--         require("pretty_hover").hover()
+--       end,
+--       "󱙼 Hover lsp",
+--     },
+--     ["gr"] = { "<CMD>Telescope lsp_references<CR>", " Lsp references" },
+--     ["gd"] = { "<CMD>Telescope lsp_definitions <CR>", " Lsp definitions" },
+--   },
+-- }
 
 M.rua = {
   n = {
