@@ -29,13 +29,6 @@ local opts = {
     }),
     -- Lua
     formatting.stylua,
-    -- XML and SVG
-    --[[ formatting.xmlformat.with({
-      filetypes = {
-        "xml",
-        "svg",
-      },
-    }), ]]
     -- Bash
     formatting.shfmt,
     -- sql
@@ -48,6 +41,9 @@ local opts = {
   },
   on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then
+      if vim.bo.filetype == "vue" then
+        return
+      end
       vim.api.nvim_clear_autocmds({
         group = augroup,
         buffer = bufnr,
