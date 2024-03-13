@@ -6,7 +6,6 @@ vim.fn.sign_define(
   { text = "", numhl = "DapBreakpointRejected", texthl = "DapBreakpointRejected" }
 )
 
-require "utils.autocmd"
-require "utils.usercmd"
-require "utils.options"
-require "utils.neovide"
+require("utils.autocmd")
+require("utils.usercmd")
+require("utils.neovide")
