@@ -107,6 +107,7 @@ end, { desc = "Terminal New horizontal term" })
 map({ "n", "t" }, "<D-i>", function()
   require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
 end, { desc = "Terminal Toggle Floating term" })
+map({ "n", "t" }, "<leader>tt", "<CMD> term <CR>", { desc = "Open new terminal in new buffer" })
 -- arrange buffer
 map("n", "<leader>pl", function()
   require("nvchad.tabufline").move_buf(1)
