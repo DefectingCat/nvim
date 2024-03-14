@@ -1,6 +1,9 @@
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 local null_ls = require("null-ls")
 
+-- auto format mark
+vim.g.auto_format = true
+
 local formatting = null_ls.builtins.formatting   -- to setup formatters
 local diagnostics = null_ls.builtins.diagnostics -- to setup linters
 local code_actions = null_ls.builtins.code_actions
@@ -42,9 +45,6 @@ local opts = {
   },
   on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then
-      if vim.bo.filetype == "vue" then
-        return
-      end
       vim.api.nvim_clear_autocmds({
         group = augroup,
         buffer = bufnr,
@@ -53,6 +53,9 @@ local opts = {
         group = augroup,
         buffer = bufnr,
         callback = function()
+          if vim.g.auto_format == false then
+            return
+          end
           vim.lsp.buf.format({ bufnr = bufnr })
         end,
       })

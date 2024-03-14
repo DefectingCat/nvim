@@ -152,6 +152,11 @@ map(
   '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
   { desc = "Spectre search on current file" }
 )
+-- none-ls
+map("n", "<leader>tf", function()
+  vim.g.auto_format = not vim.g.auto_format
+  vim.notify("auto format " .. tostring(vim.g.auto_format))
+end, { desc = "Toggle auto format" })
 
 -- trobule
 map("n", "<leader>tx", "<cmd>TroubleToggle<CR>")
