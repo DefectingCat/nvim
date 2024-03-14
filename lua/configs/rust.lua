@@ -53,6 +53,7 @@ vim.g.rustaceanvim = function()
               "screenshots",
               "target",
               "out",
+              "examples/node_modules",
               "../out",
               "../node_modules",
               "../.next",
