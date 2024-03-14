@@ -44,7 +44,7 @@ end, { desc = "Goto next buffer" })
 map("n", "<S-h>", function()
   require("nvchad.tabufline").prev()
 end, { desc = "Goto prev buffer" })
-map("n", "<leader>pa", "<CMD> %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
+map("n", "<leader>la", "<CMD> %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
 map("n", "<C-a>", "gg<S-v>G")
 map("n", "$", "g_")
 map("v", "$", "g_")
@@ -109,12 +109,12 @@ map({ "n", "t" }, "<D-i>", function()
 end, { desc = "Terminal Toggle Floating term" })
 map({ "n", "t" }, "<leader>tt", "<CMD> term <CR>", { desc = "Open new terminal in new buffer" })
 -- arrange buffer
-map("n", "<leader>pl", function()
+map("n", "<leader>ll", function()
   require("nvchad.tabufline").move_buf(1)
 end, {
   desc = "Move buffer right",
 })
-map("n", "<leader>ph", function()
+map("n", "<leader>lh", function()
   require("nvchad.tabufline").move_buf(-1)
 end, { desc = "Move buffer left" })
 -- notify
