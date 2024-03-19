@@ -59,6 +59,29 @@ local opts = {
           vim.lsp.buf.format({ bufnr = bufnr })
         end,
       })
+      --[[ if client.server_capabilities.documentFormattingProvider then
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          group = augroup,
+          buffer = bufnr,
+          callback = function()
+            if vim.g.auto_format == false then
+              return
+            end
+            vim.lsp.buf.format({ async = true, bufnr = bufnr })
+          end,
+        })
+      elseif client.server_capabilities.documentRangeFormattingProvider then
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          group = augroup,
+          buffer = bufnr,
+          callback = function()
+            if vim.g.auto_format == false then
+              return
+            end
+            vim.lsp.formatexpr()
+          end,
+        })
+      end ]]
     end
   end,
 }

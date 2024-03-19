@@ -155,7 +155,7 @@ map(
 -- none-ls
 map("n", "<leader>tf", function()
   vim.g.auto_format = not vim.g.auto_format
-  vim.notify("auto format " .. tostring(vim.g.auto_format))
+  vim.notify("Auto format " .. tostring(vim.g.auto_format))
 end, { desc = "Toggle auto format" })
 
 -- trobule
