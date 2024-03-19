@@ -337,16 +337,20 @@ local plugins = {
     },
   },
   -- ui
-  {
+  --[[ {
     "rcarriga/nvim-notify",
     opts = {
       fps = 120,
       render = "minimal",
       stages = "slide",
-      --[[ top_down = false, ]]
     },
-  },
+  } ]]
   {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
+  --[[ {
     "folke/noice.nvim",
     event = "VeryLazy",
     dependencies = {
@@ -383,7 +387,7 @@ local plugins = {
         lsp_doc_border = true,    -- add a border to hover docs and signature help
       },
     },
-  },
+  } ]]
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble", "TroubleRefresh" },
