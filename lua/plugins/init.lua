@@ -105,6 +105,7 @@ local plugins = {
         "toml",
         "go",
         "gomod",
+        "kotlin",
       },
       autotag = {
         enable = true,
