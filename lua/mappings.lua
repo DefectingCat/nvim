@@ -33,7 +33,7 @@ map("n", "gh", function()
   --[[ require("pretty_hover").hover() ]]
 end, { desc = "󱙼 Hover lsp" })
 map("n", "gr", "<CMD>Telescope lsp_references<CR>", { desc = " Lsp references" })
-map("n", "gr", "<CMD>Telescope lsp_definitions <CR>", { desc = " Lsp definitions" })
+--[[ map("n", "gr", "<CMD>Telescope lsp_definitions <CR>", { desc = " Lsp definitions" }) ]]
 
 -- rua
 map("n", "<tab>", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
