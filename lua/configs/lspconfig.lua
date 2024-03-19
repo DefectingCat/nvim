@@ -19,6 +19,7 @@ local has_volar, volar = pcall(mason_registry.get_package, "vue-language-server"
 local vue_ts_plugin_path = volar:get_install_path()
     .. "/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
 -- after volar 2.0.7
+-- npm i -g @vue/typescript-plugin
 -- local vue_ts_plugin_path = mason_registry.get_package('vue-language-server'):get_install_path() .. '/typescript-plugin'
 
 require("mason-lspconfig").setup_handlers({
