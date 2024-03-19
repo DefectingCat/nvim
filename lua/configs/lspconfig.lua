@@ -2,7 +2,7 @@ local on_attach = require("nvchad.configs.lspconfig").on_attach
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
-local lspconfig_configs = require("lspconfig.configs")
+--[[ local lspconfig_configs = require("lspconfig.configs") ]]
 local util = require("lspconfig/util")
 
 local function organize_imports()
@@ -13,7 +13,13 @@ local function organize_imports()
   vim.lsp.buf.execute_command(params)
 end
 
-local tspath = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/typescript/lib/"
+--[[ local tspath = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/typescript/lib/" ]]
+local mason_registry = require("mason-registry")
+local has_volar, volar = pcall(mason_registry.get_package, "vue-language-server")
+local vue_ts_plugin_path = volar:get_install_path()
+    .. "/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin"
+-- after volar 2.0.7
+-- local vue_ts_plugin_path = mason_registry.get_package('vue-language-server'):get_install_path() .. '/typescript-plugin'
 
 require("mason-lspconfig").setup_handlers({
   function(server)
@@ -34,57 +40,18 @@ lspconfig.volar.setup({
   on_attach = on_attach,
 })
 
---[[ lspconfig.rust_analyzer.setup({
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    ["rust-analyzer"] = {
-      standalone = true,
-      files = {
-        excludeDirs = {
-          ".flatpak-builder",
-          "_build",
-          ".dart_tool",
-          ".flatpak-builder",
-          ".git",
-          ".gitlab",
-          ".gitlab-ci",
-          ".gradle",
-          ".idea",
-          ".next",
-          ".project",
-          ".scannerwork",
-          ".settings",
-          ".venv",
-          "archetype-resources",
-          "bin",
-          "hooks",
-          "node_modules",
-          "po",
-          "screenshots",
-          "target",
-          "out",
-          "../out",
-          "../node_modules",
-          "../.next",
-        },
-      },
-    },
-    procMacro = {
-      enable = true,
-      ignored = {
-        ["async-trait"] = { "async_trait" },
-        ["napi-derive"] = { "napi" },
-        ["async-recursion"] = { "async_recursion" },
-      },
-    },
-  },
-}) ]]
-
 lspconfig.tsserver.setup({
   on_attach = on_attach,
   capabilities = capabilities,
+  filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
   init_options = {
+    plugins = {
+      {
+        name = "@vue/typescript-plugin",
+        location = vue_ts_plugin_path,
+        languages = { "vue" },
+      },
+    },
     preferences = {
       disableSuggestions = true,
     },
