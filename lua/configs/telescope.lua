@@ -10,7 +10,7 @@ local options = {
 
 local telescope = require("telescope")
 --[[ telescope.load_extension "ui-select" ]]
-telescope.load_extension("notify")
+--[[ telescope.load_extension("notify") ]]
 telescope.load_extension("fzf")
 
 return options
