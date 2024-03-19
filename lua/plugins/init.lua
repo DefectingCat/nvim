@@ -341,9 +341,9 @@ local plugins = {
     "rcarriga/nvim-notify",
     opts = {
       fps = 120,
-      render = "wrapped-compact",
+      render = "minimal",
       stages = "slide",
-      top_down = false,
+      --[[ top_down = false, ]]
     },
   },
   {
