@@ -35,6 +35,9 @@ vim.g.rustaceanvim = function()
       settings = {
         ["rust-analyzer"] = {
           standalone = true,
+          checkOnSave = {
+            command = "clippy",
+          },
           files = {
             excludeDirs = {
               ".flatpak-builder",
