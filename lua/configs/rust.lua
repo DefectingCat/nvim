@@ -22,7 +22,7 @@ vim.g.rustaceanvim = function()
   vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { silent = true, buffer = bufnr })
   vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { silent = true, buffer = bufnr })
   vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, { silent = true, buffer = bufnr })
+  vim.keymap.set("n", "gd", "<CMD> Telescope lsp_definitions <CR>", { silent = true, buffer = bufnr })
   vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { silent = true, buffer = bufnr })
   --[[ vim.keymap.set("n", "gr", vim.lsp.buf.references, { silent = true, buffer = bufnr }) ]]
   vim.keymap.set("n", "gr", "<CMD>Telescope lsp_references<CR>", { silent = true, buffer = bufnr })
