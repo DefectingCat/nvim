@@ -21,14 +21,15 @@ vim.g.rustaceanvim = function()
     vim.cmd.RustLsp("codeAction") -- supports rust-analyzer's grouping
     --[[ vim.lsp.buf.code_action() ]]
   end, { silent = true, buffer = bufnr }, "Lsp Code action")
-  map("n", "[d", vim.diagnostic.goto_prev, { silent = true, buffer = bufnr })
-  map("n", "]d", vim.diagnostic.goto_next, { silent = true, buffer = bufnr })
-  map("n", "gD", vim.lsp.buf.declaration, { silent = true, buffer = bufnr })
-  map("n", "gd", "<CMD> Telescope lsp_definitions <CR>", { silent = true, buffer = bufnr })
-  map("n", "gi", vim.lsp.buf.implementation, { silent = true, buffer = bufnr })
-  --[[ map("n", "gr", vim.lsp.buf.references, { silent = true, buffer = bufnr }) ]]
-  map("n", "gr", "<CMD>Telescope lsp_references<CR>", { silent = true, buffer = bufnr })
-  map("n", "<leader>D", vim.lsp.buf.type_definition, { silent = true, buffer = bufnr })
+  --[[ map("n", "[d", vim.diagnostic.goto_prev, { silent = false, buffer = bufnr }) ]]
+  --[[ map("n", "]d", vim.diagnostic.goto_next, { silent = false, buffer = bufnr }) ]]
+  --[[ map("n", "gD", vim.lsp.buf.declaration, { silent = false, buffer = bufnr }) ]]
+  --[[ map("n", "gd", vim.lsp.buf.definition, { silent = false, buffer = bufnr }) ]]
+  --[[ map("n", "gi", vim.lsp.buf.implementation, { silent = false, buffer = bufnr }) ]]
+  --[[ map("n", "gr", vim.lsp.buf.references, { silent = false, buffer = bufnr }) ]]
+  --[[ map("n", "<leader>D", vim.lsp.buf.type_definition, { silent = false, buffer = bufnr }) ]]
+  map("n", "gd", "<CMD>Telescope lsp_definitions<CR>", { silent = false, buffer = bufnr })
+  map("n", "gr", "<CMD>Telescope lsp_references<CR>", { silent = false, buffer = bufnr })
 
   local cfg = require("rustaceanvim.config")
   return {
