@@ -17,7 +17,7 @@ autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
-autocmd("FileType", {
+--[[ autocmd("FileType", {
   desc = "Close NvimTree before quit nvim",
   pattern = { "NvimTree" },
   callback = function(args)
@@ -28,7 +28,7 @@ autocmd("FileType", {
       end,
     })
   end,
-})
+}) ]]
 
 autocmd("BufEnter", {
   desc = "Close nvim if NvimTree is only running buffer",
