@@ -1,3 +1,5 @@
+local map = vim.keymap.set
+
 vim.g.rustaceanvim = function()
   local mason_registry = require("mason-registry")
   local codelldb = mason_registry.get_package("codelldb")
@@ -15,18 +17,18 @@ vim.g.rustaceanvim = function()
 
   -- keymap
   local bufnr = vim.api.nvim_get_current_buf()
-  vim.keymap.set("n", "<leader>ca", function()
-    --[[ vim.cmd.RustLsp("codeAction") -- supports rust-analyzer's grouping ]]
-    vim.lsp.buf.code_action()
-  end, { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "gd", "<CMD> Telescope lsp_definitions <CR>", { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { silent = true, buffer = bufnr })
-  --[[ vim.keymap.set("n", "gr", vim.lsp.buf.references, { silent = true, buffer = bufnr }) ]]
-  vim.keymap.set("n", "gr", "<CMD>Telescope lsp_references<CR>", { silent = true, buffer = bufnr })
-  vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, { silent = true, buffer = bufnr })
+  map({ "n", "v" }, "<leader>ca", function()
+    vim.cmd.RustLsp("codeAction") -- supports rust-analyzer's grouping
+    --[[ vim.lsp.buf.code_action() ]]
+  end, { silent = true, buffer = bufnr }, "Lsp Code action")
+  map("n", "[d", vim.diagnostic.goto_prev, { silent = true, buffer = bufnr })
+  map("n", "]d", vim.diagnostic.goto_next, { silent = true, buffer = bufnr })
+  map("n", "gD", vim.lsp.buf.declaration, { silent = true, buffer = bufnr })
+  map("n", "gd", "<CMD> Telescope lsp_definitions <CR>", { silent = true, buffer = bufnr })
+  map("n", "gi", vim.lsp.buf.implementation, { silent = true, buffer = bufnr })
+  --[[ map("n", "gr", vim.lsp.buf.references, { silent = true, buffer = bufnr }) ]]
+  map("n", "gr", "<CMD>Telescope lsp_references<CR>", { silent = true, buffer = bufnr })
+  map("n", "<leader>D", vim.lsp.buf.type_definition, { silent = true, buffer = bufnr })
 
   local cfg = require("rustaceanvim.config")
   return {
