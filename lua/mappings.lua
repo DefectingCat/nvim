@@ -185,9 +185,9 @@ end, { desc = "Set current filetype" })
 map("n", "<leader>fd", function()
   require("telescope.builtin").diagnostics()
 end, { desc = "Find Diagnostics" })
-map("n", "<leader>fn", function()
+--[[ map("n", "<leader>fn", function()
   require("telescope").extensions.notify.notify()
-end, { desc = "View notify history" })
+end, { desc = "View notify history" }) ]]
 
 -- lspconfig
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
