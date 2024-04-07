@@ -337,6 +337,18 @@ local plugins = {
     },
   },
   -- ui
+  {
+    "mistricky/codesnap.nvim",
+    build = "make",
+    event = "BufRead",
+    opts = {
+      mac_window_bar = true,
+      title = "RUA",
+      code_font_family = "JetBrains Mono NL",
+      watermark = "RUA",
+      bg_color = "#535c68",
+    },
+  },
   --[[ {
     "rcarriga/nvim-notify",
     opts = {
