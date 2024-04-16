@@ -35,6 +35,13 @@ require("mason-lspconfig").setup_handlers({
   end,
 })
 
+local rust_config = require("configs.rust_config")
+lspconfig["rust_analyzer"].setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+  server = rust_config,
+})
+
 lspconfig.volar.setup({})
 
 lspconfig.tsserver.setup({

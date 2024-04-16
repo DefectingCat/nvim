@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local rust_config = require("configs.rust_config")
 
 vim.g.rustaceanvim = function()
   local mason_registry = require("mason-registry")
@@ -34,54 +35,7 @@ vim.g.rustaceanvim = function()
   local cfg = require("rustaceanvim.config")
   return {
     tools = {},
-    server = {
-      settings = {
-        ["rust-analyzer"] = {
-          standalone = true,
-          checkOnSave = {
-            command = "clippy",
-          },
-          files = {
-            excludeDirs = {
-              ".flatpak-builder",
-              "_build",
-              ".dart_tool",
-              ".flatpak-builder",
-              ".git",
-              ".gitlab",
-              ".gitlab-ci",
-              ".gradle",
-              ".idea",
-              ".next",
-              ".project",
-              ".scannerwork",
-              ".settings",
-              ".venv",
-              "archetype-resources",
-              "bin",
-              "hooks",
-              "node_modules",
-              "po",
-              "screenshots",
-              "target",
-              "out",
-              "examples/node_modules",
-              "../out",
-              "../node_modules",
-              "../.next",
-            },
-          },
-        },
-        procMacro = {
-          enable = true,
-          ignored = {
-            ["async-trait"] = { "async_trait" },
-            ["napi-derive"] = { "napi" },
-            ["async-recursion"] = { "async_recursion" },
-          },
-        },
-      },
-    },
+    server = rust_config,
     dap = {
       adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
     },

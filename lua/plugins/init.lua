@@ -152,14 +152,14 @@ local plugins = {
     end,
   },
   -- rust
-  {
+  --[[ {
     "mrcjkb/rustaceanvim",
     version = "^4", -- Recommended
     ft = "rust",
     config = function()
       require("configs.rust")
     end,
-  },
+  }, ]]
   {
     "saecki/crates.nvim",
     ft = { "toml" },
