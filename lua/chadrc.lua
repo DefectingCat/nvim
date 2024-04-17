@@ -1,22 +1,37 @@
 ---@type ChadrcConfig
 local M = {}
 
+local stbufnr = function()
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
+end
+
 M.ui = {
   lsp_semantic_tokens = false,
   transparency = false,
   theme = "catppuccin",
   statusline = {
     theme = "default", -- default/vscode/vscode_colored/minimal
-
     -- default/round/block/arrow (separators work only for "default" statusline theme;
     -- round and block will work for the minimal theme only)
     separator_style = "round",
-    overriden_modules = nil,
+    modules = {
+      lsp = function()
+        if rawget(vim, "lsp") then
+          for _, client in ipairs(vim.lsp.get_active_clients()) do
+            if client.attached_buffers[stbufnr()] and client.name ~= "null-ls" then
+              return (vim.o.columns > 100 and "   " .. client.name .. " ") or "   LSP "
+            end
+          end
+        end
+
+        return ""
+      end,
+    },
   },
 
   tabufline = {
     lazyload = true,
-    overriden_modules = nil,
+    modules = nil,
   },
 
   nvdash = {
@@ -76,8 +91,8 @@ M.ui = {
   cmp = {
     icons = true,
     lspkind_text = true,
-    style = "atom",               -- default/flat_light/flat_dark/atom/atom_colored
-    border_color = "grey_fg",     -- only applicable for "default" style, use color names from base30 variables
+    style = "atom",             -- default/flat_light/flat_dark/atom/atom_colored
+    border_color = "grey_fg",   -- only applicable for "default" style, use color names from base30 variables
     selected_item_bg = "colored", -- colored / simple
   },
 }

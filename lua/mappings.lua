@@ -8,20 +8,20 @@ map("n", "<leader>rcu", function()
 end, { desc = "Update crates" })
 
 -- dap
-map("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>")
-map("n", "<leader>dr", "<cmd> DapContinue <CR>", { desc = "Run or continue the debugger" })
-map("n", "<leader>dus", function()
-  local widgets = require("dap.ui.widgets")
-  local sidebar = widgets.sidebar(widgets.scopes)
-  sidebar.open()
-end, { desc = "Open debugging sidebar" })
-map("n", "<leader>drr", "<cmd> RustLsp debuggables <CR>", { desc = "Run rust debug on current file" })
-map("n", "<leader>dgr", function()
-  require("dap-go").debug_test()
-end, { desc = "Open debugging sidebar" })
-map("n", "<leader>dgl", function()
-  require("dap-go").debug_last()
-end, { desc = "Debug last go test" })
+--[[ map("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>") ]]
+--[[ map("n", "<leader>dr", "<cmd> DapContinue <CR>", { desc = "Run or continue the debugger" }) ]]
+--[[ map("n", "<leader>dus", function() ]]
+--[[   local widgets = require("dap.ui.widgets") ]]
+--[[   local sidebar = widgets.sidebar(widgets.scopes) ]]
+--[[   sidebar.open() ]]
+--[[ end, { desc = "Open debugging sidebar" }) ]]
+--[[ map("n", "<leader>drr", "<cmd> RustLsp debuggables <CR>", { desc = "Run rust debug on current file" }) ]]
+--[[ map("n", "<leader>dgr", function() ]]
+--[[   require("dap-go").debug_test() ]]
+--[[ end, { desc = "Open debugging sidebar" }) ]]
+--[[ map("n", "<leader>dgl", function() ]]
+--[[   require("dap-go").debug_last() ]]
+--[[ end, { desc = "Debug last go test" }) ]]
 
 -- golang
 map("n", "<leader>gsj", "<cmd> GoTagAdd json <CR>", { desc = "Add json struct tags" })

@@ -18,7 +18,7 @@ local plugins = {
       require("nvchad.configs.lspconfig").defaults()
     end,
   },
-  {
+  --[[ {
     "jay-babu/mason-nvim-dap.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
@@ -29,7 +29,7 @@ local plugins = {
         automatic_installation = true,
       })
     end,
-  },
+  }, ]]
   {
     "jay-babu/mason-null-ls.nvim",
     event = { "BufReadPre", "BufNewFile" },
@@ -191,20 +191,20 @@ local plugins = {
       vim.cmd([[silent! GoInstallDeps]])
     end,
   },
-  {
+  --[[ {
     "dreamsofcode-io/nvim-dap-go",
     ft = "go",
     dependencies = "mfussenegger/nvim-dap",
     config = function(_, opts)
       require("dap-go").setup(opts)
     end,
-  },
+  }, ]]
   {
     "b0o/schemastore.nvim",
   },
 
   -- debug
-  {
+  --[[ {
     "rcarriga/nvim-dap-ui",
     event = "VeryLazy",
     dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
@@ -222,21 +222,20 @@ local plugins = {
         dapui.close()
       end
     end,
-  },
-  {
+  }, ]]
+  --[[ {
     "mfussenegger/nvim-dap",
     config = function()
       require("configs.dap")
-      --[[ require("nvchad.utils").load_mappings("dap") ]]
     end,
-  },
-  {
+  }, ]]
+  --[[ {
     "theHamsta/nvim-dap-virtual-text",
     lazy = false,
     config = function(_, opts)
       require("nvim-dap-virtual-text").setup(opts)
     end,
-  },
+  }, ]]
 
   -- telescope, code action ui
   {
