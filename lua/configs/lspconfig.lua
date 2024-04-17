@@ -39,7 +39,7 @@ local rust_config = require("configs.rust_config")
 lspconfig["rust_analyzer"].setup({
   on_attach = on_attach,
   capabilities = capabilities,
-  server = rust_config,
+  settings = rust_config,
 })
 
 lspconfig.volar.setup({})
