@@ -34,6 +34,8 @@ M.ui = {
     modules = nil,
   },
 
+  telescope = { style = "borderless" }, -- borderless / bordered
+
   nvdash = {
     load_on_startup = true,
 
@@ -94,6 +96,21 @@ M.ui = {
     style = "atom",             -- default/flat_light/flat_dark/atom/atom_colored
     border_color = "grey_fg",   -- only applicable for "default" style, use color names from base30 variables
     selected_item_bg = "colored", -- colored / simple
+  },
+
+  lsp = { signature = true },
+
+  term = {
+    hl = "Normal:term,WinSeparator:WinSeparator",
+    sizes = { sp = 0.3, vsp = 0.2 },
+    float = {
+      relative = "editor",
+      row = 0.25,
+      col = 0.25,
+      width = 0.5,
+      height = 0.5,
+      border = "single",
+    },
   },
 }
 
