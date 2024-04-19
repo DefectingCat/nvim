@@ -53,6 +53,9 @@ local opts = {
         group = augroup,
         buffer = bufnr,
         callback = function()
+          if vim.bo.filetype == "vue" then
+            return
+          end
           if vim.g.auto_format == false then
             return
           end
