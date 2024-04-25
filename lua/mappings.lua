@@ -161,10 +161,10 @@ map(
   { desc = "Spectre search on current file" }
 )
 -- none-ls
-map("n", "<leader>tf", function()
+--[[ map("n", "<leader>tf", function()
   vim.g.auto_format = not vim.g.auto_format
   vim.notify("Auto format " .. tostring(vim.g.auto_format))
-end, { desc = "Toggle auto format" })
+end, { desc = "Toggle auto format" }) ]]
 
 -- trobule
 map("n", "<leader>tx", "<cmd>TroubleToggle<CR>")

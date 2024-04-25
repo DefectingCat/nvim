@@ -30,7 +30,7 @@ local plugins = {
       })
     end,
   }, ]]
-  {
+  --[[ {
     "jay-babu/mason-null-ls.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
@@ -49,7 +49,7 @@ local plugins = {
         automatic_installation = true,
       })
     end,
-  },
+  }, ]]
   {
     "williamboman/mason-lspconfig.nvim",
     opts = {
@@ -121,11 +121,19 @@ local plugins = {
       },
     },
   },
-  {
+  --[[ {
     "nvimtools/none-ls.nvim",
     event = "VeryLazy",
     opts = function()
       return require("configs.null-ls")
+    end,
+  }, ]]
+  {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    opts = function()
+      return require("configs.conform")
     end,
   },
   {
