@@ -15,4 +15,4 @@ opt.wildignore:append({ "*/node_modules/*" })
 opt.clipboard:append({ "unnamedplus" })
 opt.iskeyword:append("-")
 opt.termguicolors = true -- True color support
-opt.autoindent = true    --- Good auto indent
+opt.autoindent = true --- Good auto indent
