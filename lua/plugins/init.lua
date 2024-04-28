@@ -70,8 +70,7 @@ local plugins = {
 				"bashls",
 				"clangd",
 				"lemminx",
-				--[[ "phpactor", ]]
-				--[[ "phpcbf", ]]
+				"intelephense",
 			},
 			automatic_installation = true,
 		},

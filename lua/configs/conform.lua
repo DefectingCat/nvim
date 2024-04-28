@@ -22,7 +22,7 @@ local options = {
 		markdown = { "prettier" },
 		graphql = { "prettier" },
 		python = { "isort", "black" },
-		php = { "phpcbf" },
+		php = { "intelephense" },
 		-- Use the "*" filetype to run formatters on all filetypes.
 		["*"] = { "codespell" },
 		-- Use the "_" filetype to run formatters on filetypes that don't
