@@ -201,6 +201,5 @@ end, { desc = "View notify history" }) ]]
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
 
 -- disable
-local nomap = vim.keymap.del
-
-nomap("t", "<ESC>")
+--[[ local nomap = vim.keymap.del ]]
+--[[ nomap("t", "<ESC>") ]]
