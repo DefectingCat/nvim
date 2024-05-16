@@ -3,7 +3,7 @@ require("nvchad.mappings")
 local map = vim.keymap.set
 
 -- rust
-map("n", "<leader>rcu", function()
+map("n", "<leader>cu", function()
 	require("crates").upgrade_all_crates()
 end, { desc = "Update crates" })
 
@@ -199,6 +199,8 @@ end, { desc = "View notify history" }) ]]
 
 -- lspconfig
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
+-- nvim tree
+map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvim tree" })
 
 -- disable
 --[[ local nomap = vim.keymap.del ]]

@@ -275,6 +275,10 @@ local plugins = {
 		end,
 	},
 	{
+		"mg979/vim-visual-multi",
+		event = "BufRead",
+	},
+	--[[ {
 		"smoka7/multicursors.nvim",
 		event = "VeryLazy",
 		dependencies = {
@@ -288,12 +292,11 @@ local plugins = {
 			{
 				mode = { "v", "n" },
 				"<Leader>m",
-				--[[ "<C-n>", ]]
 				"<cmd>MCstart<cr>",
 				desc = "Create a selection for selected text or word under the cursor",
 			},
 		},
-	},
+	}, ]]
 	{
 		"jxnblk/vim-mdx-js",
 	},
