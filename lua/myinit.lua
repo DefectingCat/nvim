@@ -6,6 +6,8 @@ vim.fn.sign_define(
 	{ text = "", numhl = "DapBreakpointRejected", texthl = "DapBreakpointRejected" }
 )
 
+vim.cmd.colorscheme("catppuccin")
+
 require("utils.autocmd")
 require("utils.usercmd")
 require("utils.neovide")
