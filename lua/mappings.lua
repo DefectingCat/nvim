@@ -201,6 +201,7 @@ end, { desc = "View notify history" }) ]]
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
 -- nvim tree
 map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvim tree" })
+map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- disable
 --[[ local nomap = vim.keymap.del ]]

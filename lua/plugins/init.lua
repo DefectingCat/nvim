@@ -7,7 +7,6 @@ local plugins = {
 		"NvChad/nvcommunity",
 		{ import = "nvcommunity.git.diffview" },
 		{ import = "nvcommunity.git.lazygit" },
-		--[[ { import = "nvcommunity.lsp.prettyhover" }, ]]
 	},
 
 	-- LSP, formatter, linter
@@ -122,13 +121,6 @@ local plugins = {
 			},
 		},
 	},
-	--[[ {
-    "nvimtools/none-ls.nvim",
-    event = "VeryLazy",
-    opts = function()
-      return require("configs.null-ls")
-    end,
-  }, ]]
 	{
 		"stevearc/conform.nvim",
 		event = { "BufWritePre" },
@@ -265,6 +257,16 @@ local plugins = {
 		"nvim-pack/nvim-spectre",
 		event = "BufRead",
 	},
+	{
+		"stevearc/oil.nvim",
+		event = "VeryLazy",
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function(opts)
+			require("oil").setup(opts)
+		end,
+	},
 	-- motion, UI and others
 	{
 		"phaazon/hop.nvim",
@@ -279,25 +281,6 @@ local plugins = {
 		"mg979/vim-visual-multi",
 		event = "BufRead",
 	},
-	--[[ {
-		"smoka7/multicursors.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			"smoka7/hydra.nvim",
-		},
-		opts = {
-			hint_config = false,
-		},
-		cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
-		keys = {
-			{
-				mode = { "v", "n" },
-				"<Leader>m",
-				"<cmd>MCstart<cr>",
-				desc = "Create a selection for selected text or word under the cursor",
-			},
-		},
-	}, ]]
 	{
 		"jxnblk/vim-mdx-js",
 	},
@@ -360,57 +343,11 @@ local plugins = {
 			bg_color = "#535c68",
 		},
 	},
-	--[[ {
-    "rcarriga/nvim-notify",
-    opts = {
-      fps = 120,
-      render = "minimal",
-      stages = "slide",
-    },
-  } ]]
 	{
 		"stevearc/dressing.nvim",
 		event = "VeryLazy",
 		opts = {},
 	},
-	--[[ {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
-    },
-    opts = {
-      lsp = {
-        message = {
-          enabled = true,
-        },
-        progress = {
-          enabled = false,
-        },
-        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
-        },
-        hover = {
-          enabled = false,
-        },
-        signature = {
-          enabled = false,
-        },
-      },
-      -- you can enable a preset for easier configuration
-      presets = {
-        bottom_search = true,     -- use a classic bottom cmdline for search
-        command_palette = true,   -- position the cmdline and popupmenu together
-        long_message_to_split = true, -- long messages will be sent to a split
-        inc_rename = false,       -- enables an input dialog for inc-rename.nvim
-        lsp_doc_border = true,    -- add a border to hover docs and signature help
-      },
-    },
-  } ]]
 	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble", "TroubleRefresh" },
