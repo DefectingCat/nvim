@@ -260,11 +260,14 @@ local plugins = {
 	{
 		"stevearc/oil.nvim",
 		event = "VeryLazy",
-		opts = {},
 		-- Optional dependencies
 		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function(opts)
-			require("oil").setup(opts)
+		config = function()
+			require("oil").setup({
+				view_options = {
+					show_hidden = true,
+				},
+			})
 		end,
 	},
 	-- motion, UI and others
@@ -367,14 +370,14 @@ local plugins = {
 		event = "BufReadPost",
 		opts = {},
 	},
-	{
+	--[[ {
 		"chikko80/error-lens.nvim",
 		event = "BufRead",
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
 		},
 		opts = {},
-	},
+	}, ]]
 	{
 		"RRethy/vim-illuminate",
 		event = "BufRead",
