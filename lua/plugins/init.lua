@@ -105,7 +105,6 @@ local plugins = {
 				"toml",
 				"go",
 				"gomod",
-				"kotlin",
 			},
 			autotag = {
 				enable = true,
@@ -299,7 +298,7 @@ local plugins = {
 			require("nvim-ts-autotag").setup({})
 		end,
 		lazy = true,
-		event = "VeryLazy",
+		event = "BufRead",
 	},
 	{
 		"kylechui/nvim-surround",
