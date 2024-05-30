@@ -106,9 +106,6 @@ local plugins = {
 				"go",
 				"gomod",
 			},
-			autotag = {
-				enable = true,
-			},
 			highlight = {
 				disable = function(_, buf)
 					local max_filesize = 100 * 1024 -- 100 KB
@@ -298,7 +295,7 @@ local plugins = {
 			require("nvim-ts-autotag").setup({})
 		end,
 		lazy = true,
-		event = "BufRead",
+		event = "BufReadPre",
 	},
 	{
 		"kylechui/nvim-surround",
