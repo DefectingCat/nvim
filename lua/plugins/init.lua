@@ -203,12 +203,15 @@ local plugins = {
 	-- database
 	{
 		"tpope/vim-dadbod",
+		event = "BufReadPre",
 	},
 	{
 		"kristijanhusak/vim-dadbod-ui",
+		event = "BufReadPre",
 	},
 	{
 		"kristijanhusak/vim-dadbod-completion",
+		event = "BufReadPre",
 	},
 
 	-- debug

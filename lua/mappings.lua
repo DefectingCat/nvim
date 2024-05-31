@@ -195,6 +195,9 @@ map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports"
 map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvim tree" })
 map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
+-- database
+map("n", "<leader>db", "<cmd>DBUIToggle<CR>", { desc = "Toggle DBUI" })
+
 -- disable
 --[[ local nomap = vim.keymap.del ]]
 --[[ nomap("t", "<ESC>") ]]
