@@ -105,6 +105,7 @@ local plugins = {
 				"toml",
 				"go",
 				"gomod",
+				"sql",
 			},
 			highlight = {
 				disable = function(_, buf)
@@ -199,6 +200,16 @@ local plugins = {
 	{
 		"b0o/schemastore.nvim",
 	},
+	-- database
+	{
+		"tpope/vim-dadbod",
+	},
+	{
+		"kristijanhusak/vim-dadbod-ui",
+	},
+	{
+		"kristijanhusak/vim-dadbod-completion",
+	},
 
 	-- debug
 	--[[ {
@@ -290,7 +301,6 @@ local plugins = {
 	},
 	{
 		"windwp/nvim-ts-autotag",
-		--[[ dependencies = "nvim-treesitter/nvim-treesitter", ]]
 		config = function()
 			require("nvim-ts-autotag").setup({})
 		end,

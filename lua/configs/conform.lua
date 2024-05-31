@@ -1,7 +1,7 @@
 local options = {
 	lsp_fallback = true,
-
 	formatters_by_ft = {
+		sql = { "sqlfluff" },
 		lua = { "stylua" },
 		go = {
 			"goimports",
@@ -41,9 +41,20 @@ local options = {
 	},
 	notify_on_error = true,
 	formatters = {
-		injected = { options = { ignore_errors = true } },
+		injected = {
+			options = {
+				ignore_errors = true,
+				lang_to_formatters = {
+					sql = { "sqlfluff" },
+				},
+				lang_to_ext = {
+					sql = "sql",
+				},
+			},
+		},
 		lang_to_ext = {
 			bash = "sh",
+			sql = "sql",
 			c_sharp = "cs",
 			elixir = "exs",
 			latex = "tex",
@@ -51,6 +62,19 @@ local options = {
 			python = "py",
 			ruby = "rb",
 			teal = "tl",
+		},
+		sqlfluff = {
+			command = "sqlfluff",
+			args = {
+				"fix",
+				"--dialect",
+				"sqlite",
+				"--disable-progress-bar",
+				"-f",
+				"-n",
+				"-",
+			},
+			stdin = true,
 		},
 		rustfmt = {
 			options = {
