@@ -166,14 +166,6 @@ map(
   vim.notify("Auto format " .. tostring(vim.g.auto_format))
 end, { desc = "Toggle auto format" }) ]]
 
--- trobule
-map("n", "<leader>tx", "<cmd>TroubleToggle<CR>")
-map("n", "<leader>tw", "<cmd>TroubleToggle workspace_diagnostics<CR>")
-map("n", "<leader>td", "<cmd>TroubleToggle document_diagnostics<CR>")
-map("n", "<leader>tq", "<cmd>TroubleToggle quickfix<CR>")
-map("n", "<leader>tl", "<cmd>TroubleToggle loclist<CR>")
-map("n", "gR", "<cmd>TroubleToggle lsp_references<CR>")
-
 -- telescope
 map("n", "<leader>gm", "<cmd> Telescope git_commits <CR>", { desc = "Git commits" })
 map("n", "<leader>gd", "<cmd> DiffviewOpen <CR>", { desc = "Open diff view" })
