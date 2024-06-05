@@ -6,7 +6,6 @@ vim.g.dap_virtual_text = true
 vim.wo.relativenumber = true
 vim.wo.wrap = false
 vim.o.cursorlineopt = "number,line"
--- opt.iskeyword:append("-")
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldlevel = 20
