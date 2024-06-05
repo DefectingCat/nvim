@@ -49,6 +49,8 @@ map("n", "<leader>la", "<CMD> silent! %bd|e#|bd# <CR>", { desc = "Close all othe
 map("n", "<C-a>", "gg<S-v>G")
 map("n", "$", "g_")
 map("v", "$", "g_")
+map("v", ">", ">gv")
+map("v", "<", "<gv")
 -- move lines
 --[[ map("n", "<A-j>", ":m .+1<CR>==") ]]
 --[[ map("n", "<A-k>", ":m .-2<CR>==") ]]
@@ -66,16 +68,20 @@ map("n", "F", function()
 	local directions = require("hop.hint").HintDirection
 	hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false })
 end, { desc = "Hop motion search in current line before cursor" })
-map("n", "<leader>w", function()
+map("n", "<leader><leader>", function()
 	local hop = require("hop")
-	local directions = require("hop.hint").HintDirection
-	hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
+	hop.hint_words({ current_line_only = false })
 end, { desc = "Hop motion search words after cursor" })
-map("n", "<leader>b", function()
-	local hop = require("hop")
-	local directions = require("hop.hint").HintDirection
-	hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
-end, { desc = "Hop motion search words before cursor" })
+-- map("n", "<leader>w", function()
+-- 	local hop = require("hop")
+-- 	local directions = require("hop.hint").HintDirection
+-- 	hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
+-- end, { desc = "Hop motion search words after cursor" })
+-- map("n", "<leader>b", function()
+-- 	local hop = require("hop")
+-- 	local directions = require("hop.hint").HintDirection
+-- 	hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
+-- end, { desc = "Hop motion search words before cursor" })
 map("v", "f", function()
 	local hop = require("hop")
 	local directions = require("hop.hint").HintDirection
@@ -126,10 +132,6 @@ end, {
 map("n", "<leader>lh", function()
 	require("nvchad.tabufline").move_buf(-1)
 end, { desc = "Move buffer left" })
--- notify
-map("n", "<leader>un", function()
-	require("notify").dismiss({ silent = true, pending = true })
-end, { desc = "Dismiss all Notifications" })
 -- markdown preview
 map("n", "<leader>pm", "<cmd> MarkdownPreview <CR>", { desc = "Preview Markdown file" })
 -- window split
@@ -161,11 +163,6 @@ map(
 	'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
 	{ desc = "Spectre search on current file" }
 )
--- none-ls
---[[ map("n", "<leader>tf", function()
-  vim.g.auto_format = not vim.g.auto_format
-  vim.notify("Auto format " .. tostring(vim.g.auto_format))
-end, { desc = "Toggle auto format" }) ]]
 
 -- telescope
 map("n", "<leader>gm", "<cmd> Telescope git_commits <CR>", { desc = "Git commits" })
@@ -186,9 +183,6 @@ end, { desc = "Set current filetype" })
 map("n", "<leader>fd", function()
 	require("telescope.builtin").diagnostics()
 end, { desc = "Find Diagnostics" })
---[[ map("n", "<leader>fn", function()
-  require("telescope").extensions.notify.notify()
-end, { desc = "View notify history" }) ]]
 
 -- lspconfig
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
