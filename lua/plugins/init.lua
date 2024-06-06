@@ -292,7 +292,7 @@ local plugins = {
 	},
 	{
 		"mg979/vim-visual-multi",
-		event = "BufRead",
+		event = "BufReadPost",
 	},
 	{
 		"jxnblk/vim-mdx-js",
