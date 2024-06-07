@@ -15,3 +15,4 @@ opt.clipboard:append({ "unnamedplus" })
 opt.iskeyword:append("-")
 opt.termguicolors = true -- True color support
 opt.autoindent = true --- Good auto indent
+opt.scrolloff = 3
