@@ -283,9 +283,8 @@ local plugins = {
 	-- motion, UI and others
 	{
 		"phaazon/hop.nvim",
-		branch = "v2", -- optional but strongly recommended
+		branch = "v2",
 		config = function()
-			-- you can configure Hop the way you like here; see :h hop-config
 			local hop = require("hop")
 			hop.setup({ keys = "etovxqpdygfblzhckisuran" })
 		end,
@@ -312,8 +311,8 @@ local plugins = {
 	},
 	{
 		"kylechui/nvim-surround",
-		version = "*", -- Use for stability; omit to use `main` branch for the latest features
-		event = "VeryLazy",
+		version = "*",
+		event = "BufReadPre",
 		config = function()
 			require("nvim-surround").setup({})
 		end,
@@ -413,14 +412,6 @@ local plugins = {
 		event = "BufReadPost",
 		opts = {},
 	},
-	--[[ {
-		"chikko80/error-lens.nvim",
-		event = "BufRead",
-		dependencies = {
-			"nvim-telescope/telescope.nvim",
-		},
-		opts = {},
-	}, ]]
 	{
 		"RRethy/vim-illuminate",
 		event = "BufRead",
