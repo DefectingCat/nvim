@@ -20,3 +20,5 @@ opt.scrolloff = 3
 opt.tabstop = TAB_WIDTH
 opt.shiftwidth = TAB_WIDTH
 opt.expandtab = true
+opt.encoding = utf8
+opt.fileencoding = utf8
