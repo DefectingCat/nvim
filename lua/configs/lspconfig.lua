@@ -28,7 +28,13 @@ require("mason-lspconfig").setup_handlers({
 			on_attach = on_attach,
 			capabilities = capabilities,
 		}
-		if server == "rust_analyzer" or server == "clangd" or server == "tsserver" or server == "pylsp" then
+		if
+			server == "rust_analyzer"
+			or server == "clangd"
+			or server == "tsserver"
+			or server == "pylsp"
+			or server == "intelephense"
+		then
 			return nil
 		end
 		lspconfig[server].setup(server_config)
