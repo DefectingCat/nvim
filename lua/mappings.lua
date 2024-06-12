@@ -39,10 +39,10 @@ map("n", "<leader>ls", "<CMD>LspRestart<CR>", { desc = " Restart lsp" })
 -- rua
 map("n", "<tab>", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
 map("n", "<S-tab>", "<CMD> tabprevious <CR>", { desc = "Goto prev tab" })
-map("n", "<S-l>", function()
+map({ "n", "t" }, "<S-l>", function()
 	require("nvchad.tabufline").next()
 end, { desc = "Goto next buffer" })
-map("n", "<S-h>", function()
+map({ "n", "t" }, "<S-h>", function()
 	require("nvchad.tabufline").prev()
 end, { desc = "Goto prev buffer" })
 map("n", "<leader>la", "<CMD> silent! %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
@@ -72,16 +72,6 @@ map("n", "<leader><leader>", function()
 	local hop = require("hop")
 	hop.hint_words({ current_line_only = false })
 end, { desc = "Hop motion search words after cursor" })
--- map("n", "<leader>w", function()
--- 	local hop = require("hop")
--- 	local directions = require("hop.hint").HintDirection
--- 	hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
--- end, { desc = "Hop motion search words after cursor" })
--- map("n", "<leader>b", function()
--- 	local hop = require("hop")
--- 	local directions = require("hop.hint").HintDirection
--- 	hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
--- end, { desc = "Hop motion search words before cursor" })
 map("v", "f", function()
 	local hop = require("hop")
 	local directions = require("hop.hint").HintDirection
@@ -102,6 +92,7 @@ map("v", "<leader>b", function()
 	local directions = require("hop.hint").HintDirection
 	hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
 end, { desc = "Hop motion search words before cursor" })
+
 --term
 map({ "n", "t" }, "<A-u>", function()
 	require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm", size = 0.4 })
@@ -121,8 +112,12 @@ end, { desc = "Terminal New horizontal term" })
 map({ "n", "t" }, "<D-i>", function()
 	require("nvchad.term").toggle({ pos = "float", id = "floatTerm" })
 end, { desc = "Terminal Toggle Floating term" })
---[[ map({ "n" }, "<leader>tt", "<CMD> tabnew <CR><CMD> term <CR>", { desc = "Open new terminal in new buffer" }) ]]
+map("t", "<C-j>", "<C-\\><C-N><C-w>j", { desc = "switch window down" })
+map("t", "<C-k>", "<C-\\><C-N><C-w>k", { desc = "switch window up" })
+map("t", "<C-h>", "<C-\\><C-N><C-w>h", { desc = "switch window left" })
+map("t", "<C-l>", "<C-\\><C-N><C-w>l", { desc = "switch window right" })
 map({ "n" }, "<leader>tt", "<CMD> term <CR>", { desc = "Open new terminal in new buffer" })
+
 -- arrange buffer
 map("n", "<leader>ll", function()
 	require("nvchad.tabufline").move_buf(1)
