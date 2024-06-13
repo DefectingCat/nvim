@@ -12,7 +12,7 @@ opt.foldlevel = 20
 opt.ignorecase = true
 opt.wildignore:append({ "*/node_modules/*" })
 opt.clipboard:append({ "unnamedplus" })
-opt.iskeyword:append("-")
+--[[ opt.iskeyword:append("-") ]]
 opt.termguicolors = true -- True color support
 opt.autoindent = true --- Good auto indent
 opt.scrolloff = 3
