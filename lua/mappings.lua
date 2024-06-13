@@ -39,10 +39,10 @@ map("n", "<leader>ls", "<CMD>LspRestart<CR>", { desc = " Restart lsp" })
 -- rua
 map("n", "<tab>", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
 map("n", "<S-tab>", "<CMD> tabprevious <CR>", { desc = "Goto prev tab" })
-map({ "n", "t" }, "<S-l>", function()
+map({ "n" }, "<S-l>", function()
 	require("nvchad.tabufline").next()
 end, { desc = "Goto next buffer" })
-map({ "n", "t" }, "<S-h>", function()
+map({ "n" }, "<S-h>", function()
 	require("nvchad.tabufline").prev()
 end, { desc = "Goto prev buffer" })
 map("n", "<leader>la", "<CMD> silent! %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
@@ -115,7 +115,7 @@ end, { desc = "Terminal Toggle Floating term" })
 map("t", "<C-j>", "<C-\\><C-N><C-w>j", { desc = "switch window down" })
 map("t", "<C-k>", "<C-\\><C-N><C-w>k", { desc = "switch window up" })
 map("t", "<C-h>", "<C-\\><C-N><C-w>h", { desc = "switch window left" })
-map("t", "<C-l>", "<C-\\><C-N><C-w>l", { desc = "switch window right" })
+--[[ map("t", "<C-l>", "<C-\\><C-N><C-w>l", { desc = "switch window right" }) ]]
 map({ "n" }, "<leader>tt", "<CMD> term <CR>", { desc = "Open new terminal in new buffer" })
 
 -- arrange buffer
