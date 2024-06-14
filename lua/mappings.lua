@@ -93,6 +93,9 @@ map("v", "<leader>b", function()
 	hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
 end, { desc = "Hop motion search words before cursor" })
 
+-- format
+map("n", "<leader>tf", "<cmd> FormatToggle <cr>", { desc = "Re-enable autoformat-on-save" })
+
 --term
 map({ "n", "t" }, "<A-u>", function()
 	require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm", size = 0.4 })
