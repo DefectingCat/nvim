@@ -39,9 +39,13 @@ local options = {
 	-- If this is set, Conform will run the formatter asynchronously after save.
 	-- It will pass the table to conform.format().
 	-- This can also be a function that returns the table.
-	format_after_save = {
-		lsp_fallback = true,
-	},
+	format_after_save = function(bufnr)
+		-- Disable with a global or buffer-local variable
+		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+			return { lsp_fallback = false }
+		end
+		return { lsp_fallback = true }
+	end,
 	notify_on_error = true,
 	formatters = {
 		injected = {

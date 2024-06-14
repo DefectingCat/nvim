@@ -33,7 +33,7 @@ require("mason-lspconfig").setup_handlers({
 			or server == "clangd"
 			or server == "tsserver"
 			or server == "pylsp"
-			or server == "intelephense"
+			--[[ or server == "intelephense" ]]
 		then
 			return nil
 		end
