@@ -6,7 +6,7 @@ local plugins = {
 	{
 		"NvChad/nvcommunity",
 		{ import = "nvcommunity.git.diffview" },
-		{ import = "nvcommunity.git.lazygit" },
+		--[[ { import = "nvcommunity.git.lazygit" }, ]]
 	},
 
 	-- LSP, formatter, linter

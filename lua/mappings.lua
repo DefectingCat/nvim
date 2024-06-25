@@ -37,8 +37,9 @@ map("n", "<leader>ls", "<CMD>LspRestart<CR>", { desc = " Restart lsp" })
 --[[ map("n", "gr", "<CMD>Telescope lsp_definitions <CR>", { desc = " Lsp definitions" }) ]]
 
 -- rua
-map("n", "<tab>", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
-map("n", "<S-tab>", "<CMD> tabprevious <CR>", { desc = "Goto prev tab" })
+map("n", "<leader>tn", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
+map("n", "<leader>tp", "<CMD> tabprevious <CR>", { desc = "Goto prev tab" })
+map("n", "<leader>tc", "<CMD> tabclose <CR>", { desc = "Close tab" })
 map({ "n" }, "<S-l>", function()
 	require("nvchad.tabufline").next()
 end, { desc = "Goto next buffer" })
@@ -165,7 +166,7 @@ map(
 -- telescope
 map("n", "<leader>gm", "<cmd> Telescope git_commits <CR>", { desc = "Git commits" })
 map("n", "<leader>gd", "<cmd> DiffviewOpen <CR>", { desc = "Open diff view" })
-map("n", "<leader>gg", "<cmd> LazyGit <CR>", { desc = "Open LazyGit" })
+map("n", "<leader>gg", "<cmd> Neogit <CR>", { desc = "Open Neogit" })
 map("n", "<leader>gf", "<cmd> LazyGitFilterCurrentFile <CR>", { desc = "Open LazyGit fitler current file" })
 map("n", "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", { desc = "Open current file history" })
 map("n", "<leader>gc", "<cmd> DiffviewClose <CR>", { desc = "Close Diffview" })
