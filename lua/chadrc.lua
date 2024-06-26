@@ -6,11 +6,10 @@ local M = {}
 end ]]
 
 M.ui = {
-	lsp_semantic_tokens = false,
 	transparency = false,
 	theme = "catppuccin",
 	statusline = {
-		theme = "default", -- default/vscode/vscode_colored/minimal
+		--[[ theme = "default", -- default/vscode/vscode_colored/minimal ]]
 		-- default/round/block/arrow (separators work only for "default" statusline theme;
 		-- round and block will work for the minimal theme only)
 		separator_style = "round",
@@ -93,9 +92,9 @@ M.ui = {
 	cmp = {
 		icons = true,
 		lspkind_text = true,
-		style = "atom", -- default/flat_light/flat_dark/atom/atom_colored
+		style = "default", -- default/flat_light/flat_dark/atom/atom_colored
 		border_color = "grey_fg", -- only applicable for "default" style, use color names from base30 variables
-		selected_item_bg = "colored", -- colored / simple
+		selected_item_bg = "simple", -- colored / simple
 	},
 
 	lsp = { signature = true },

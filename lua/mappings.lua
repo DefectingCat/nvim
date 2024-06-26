@@ -29,8 +29,8 @@ map("n", "<leader>gsy", "<cmd> GoTagAdd yaml <CR>", { desc = "Add yaml struct ta
 
 -- lsp
 map("n", "gh", function()
-	vim.lsp.buf.hover()
-	--[[ require("pretty_hover").hover() ]]
+	--[[ vim.lsp.buf.hover() ]]
+	require("pretty_hover").hover()
 end, { desc = "󱙼 Hover lsp" })
 map("n", "gr", "<CMD>Telescope lsp_references<CR>", { desc = " Lsp references" })
 map("n", "<leader>ls", "<CMD>LspRestart<CR>", { desc = " Restart lsp" })

@@ -1,5 +1,4 @@
 local cmp = require("cmp")
-
 local overrides = require("configs.overrides")
 
 local plugins = {
@@ -382,6 +381,11 @@ local plugins = {
 		opts = {},
 	},
 	{
+		"Fildo7525/pretty_hover",
+		event = "LspAttach",
+		opts = {},
+	},
+	{
 		"folke/trouble.nvim",
 		cmd = "Trouble",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -478,7 +482,7 @@ local plugins = {
 			"sindrets/diffview.nvim", -- optional - Diff integration
 			"nvim-telescope/telescope.nvim", -- optional
 		},
-		event = { "VeryLazy" },
+		event = { "BufRead" },
 		config = true,
 	},
 
