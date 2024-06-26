@@ -1,4 +1,5 @@
 local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
 
 -- set markdown highlight for mdx file
 autocmd({ "BufNewFile", "BufRead" }, {
@@ -17,19 +18,6 @@ autocmd({ "BufNewFile", "BufRead" }, {
 	end,
 })
 
---[[ autocmd("FileType", {
-  desc = "Close NvimTree before quit nvim",
-  pattern = { "NvimTree" },
-  callback = function(args)
-    autocmd("VimLeavePre", {
-      callback = function()
-        vim.api.nvim_buf_delete(args.buf, { force = true })
-        return true
-      end,
-    })
-  end,
-}) ]]
-
 autocmd("BufEnter", {
 	desc = "Close nvim if NvimTree is only running buffer",
 	command = [[if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif]],
@@ -39,9 +27,9 @@ autocmd("BufEnter", {
 -- Triger `autoread` when files changes on disk
 -- https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
 -- https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
--- autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
---   command = [[silent! if mode() != 'c' && !bufexists("[Command Line]") | checktime | endif]],
--- })
+autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+	command = [[silent! if mode() != 'c' && !bufexists("[Command Line]") | checktime | endif]],
+})
 
 -- Notification after file change
 -- https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
@@ -74,18 +62,10 @@ autocmd("TextYankPost", {
 })
 
 -- Remove all trailing whitespace on save
--- autocmd("BufWritePre", {
---  command = [[:%s/\s\+$//e]],
---  group = augroup("TrimWhiteSpaceGrp", { clear = true }),
---})
-
--- conform.nvim auto save
--- vim.api.nvim_create_autocmd("BufWritePre", {
---   pattern = "*",
---   callback = function(args)
---     require("conform").format { bufnr = args.buf }
---   end,
--- })
+autocmd("BufWritePre", {
+	command = [[:%s/\s\+$//e]],
+	group = augroup("TrimWhiteSpaceGrp", { clear = true }),
+})
 
 -- This autocmd will restore cursor position on file open
 autocmd("BufReadPost", {
@@ -101,4 +81,11 @@ autocmd("BufReadPost", {
 			vim.cmd('normal! g`"')
 		end
 	end,
+})
+
+-- start terminal in insert mode
+autocmd("TermOpen", {
+	group = augroup("bufcheck", { clear = true }),
+	pattern = "*",
+	command = "startinsert | set winfixheight",
 })
