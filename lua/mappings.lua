@@ -131,6 +131,7 @@ map(
 	{ desc = "Spectre search on current file" }
 )
 map("v", "<leader>sw", '<esc><cmd>lua require("spectre").open_visual()<CR>', { desc = "Spectre search current word" })
+map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
 
 -- telescope
 map("n", "<leader>gm", "<cmd> Telescope git_commits <CR>", { desc = "Git commits" })
