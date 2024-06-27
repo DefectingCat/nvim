@@ -4,7 +4,7 @@ local overrides = require("configs.overrides")
 local plugins = {
 	{
 		"NvChad/nvcommunity",
-		{ import = "nvcommunity.git.diffview" },
+		--[[ { import = "nvcommunity.git.diffview" }, ]]
 		--[[ { import = "nvcommunity.git.lazygit" }, ]]
 	},
 
@@ -483,7 +483,13 @@ local plugins = {
 			"nvim-telescope/telescope.nvim", -- optional
 		},
 		event = { "BufRead" },
-		config = true,
+		opts = function()
+			return require("configs.neogit")
+		end,
+		--[[ config = true, ]]
+		config = function(_, opts)
+			require("neogit").setup(opts)
+		end,
 	},
 
 	--[[ overrides ]]
