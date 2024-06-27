@@ -59,40 +59,20 @@ map("v", "<", "<gv")
 --[[ map("i", "<A-k>", "<Esc>:m .-2<CR>==gi") ]]
 --[[ map("v", "<A-j>", ":m '>+1<CR>gv=gv") ]]
 --[[ map("v", "<A-k>", ":m '<-2<CR>gv=gv") ]]
-map("n", "f", function()
+map({ "n", "v" }, "f", function()
 	local hop = require("hop")
 	local directions = require("hop.hint").HintDirection
 	hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false })
 end, { desc = "Hop motion search in current line after cursor" })
-map("n", "F", function()
+map({ "n", "v" }, "F", function()
 	local hop = require("hop")
 	local directions = require("hop.hint").HintDirection
 	hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false })
 end, { desc = "Hop motion search in current line before cursor" })
-map("n", "<leader><leader>", function()
+map({ "n", "v" }, "<leader><leader>", function()
 	local hop = require("hop")
 	hop.hint_words({ current_line_only = false })
 end, { desc = "Hop motion search words after cursor" })
-map("v", "f", function()
-	local hop = require("hop")
-	local directions = require("hop.hint").HintDirection
-	hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false })
-end, { desc = "Hop motion search in current line after cursor" })
-map("v", "F", function()
-	local hop = require("hop")
-	local directions = require("hop.hint").HintDirection
-	hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false })
-end, { desc = "Hop motion search in current line before cursor" })
-map("v", "<leader>w", function()
-	local hop = require("hop")
-	local directions = require("hop.hint").HintDirection
-	hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
-end, { desc = "Hop motion search words after cursor" })
-map("v", "<leader>b", function()
-	local hop = require("hop")
-	local directions = require("hop.hint").HintDirection
-	hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
-end, { desc = "Hop motion search words before cursor" })
 
 -- format
 map("n", "<leader>tf", "<cmd> FormatToggle <cr>", { desc = "Re-enable autoformat-on-save" })
@@ -137,7 +117,7 @@ map("n", "<leader>pm", "<cmd> MarkdownPreview <CR>", { desc = "Preview Markdown 
 map("n", "<leader>|", "<cmd> vs <CR>", { desc = "Split window vertically" })
 map("n", "<leader>_", "<cmd> sp <CR>", { desc = "Split window horizontally" })
 -- spectre search
-map("n", "<leader>ss", '<cmd>lua require("spectre").toggle()<CR>', { desc = "Toggle Spectre" })
+map("n", "<leader>ss", '<cmd>lua require("spectre").open()<CR>', { desc = "Toggle Spectre" })
 map(
 	"n",
 	"<leader>sw",
@@ -150,18 +130,7 @@ map(
 	'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
 	{ desc = "Spectre search on current file" }
 )
-map(
-	"v",
-	"<leader>sw",
-	'<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
-	{ desc = "Spectre search current word" }
-)
-map(
-	"v",
-	"<leader>sp",
-	'<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
-	{ desc = "Spectre search on current file" }
-)
+map("v", "<leader>sw", '<esc><cmd>lua require("spectre").open_visual()<CR>', { desc = "Spectre search current word" })
 
 -- telescope
 map("n", "<leader>gm", "<cmd> Telescope git_commits <CR>", { desc = "Git commits" })
