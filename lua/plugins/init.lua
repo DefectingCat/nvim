@@ -29,25 +29,25 @@ local plugins = {
     end,
   }, ]]
 	--[[ {
-    "jay-babu/mason-null-ls.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      require("mason-null-ls").setup({
-        ensure_installed = {
-          "stylua",
-          "prettierd",
-          "ymlfmt",
-          "shellharden",
-          "shfmt",
-          "goimports",
-          "goimports-reviser",
-          "golines",
-          "gopls",
-        },
-        automatic_installation = true,
-      })
-    end,
-  }, ]]
+		"jay-babu/mason-null-ls.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			require("mason-null-ls").setup({
+				ensure_installed = {
+					"stylua",
+					"prettierd",
+					"ymlfmt",
+					"shellharden",
+					"shfmt",
+					"goimports",
+					"goimports-reviser",
+					"golines",
+					"gopls",
+				},
+				automatic_installation = true,
+			})
+		end,
+	}, ]]
 	{
 		"williamboman/mason-lspconfig.nvim",
 		opts = {
@@ -482,8 +482,8 @@ local plugins = {
 	{
 		"NeogitOrg/neogit",
 		dependencies = {
-			"nvim-lua/plenary.nvim", -- required
-			"sindrets/diffview.nvim", -- optional - Diff integration
+			"nvim-lua/plenary.nvim",      -- required
+			"sindrets/diffview.nvim",     -- optional - Diff integration
 			"nvim-telescope/telescope.nvim", -- optional
 		},
 		event = { "BufRead" },
