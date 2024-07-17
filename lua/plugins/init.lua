@@ -42,7 +42,6 @@ local plugins = {
 					"goimports",
 					"goimports-reviser",
 					"golines",
-					"gopls",
 				},
 				automatic_installation = true,
 			})
@@ -52,6 +51,7 @@ local plugins = {
 		"williamboman/mason-lspconfig.nvim",
 		opts = {
 			ensure_installed = {
+				"gopls",
 				"lua_ls",
 				"rust_analyzer",
 				"html",
