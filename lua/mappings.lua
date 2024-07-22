@@ -137,7 +137,7 @@ map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selecti
 map("n", "<leader>gm", "<cmd> Telescope git_commits <CR>", { desc = "Git commits" })
 map("n", "<leader>gd", "<cmd> DiffviewOpen <CR>", { desc = "Open diff view" })
 map("n", "<leader>gg", "<cmd> Neogit <CR>", { desc = "Open Neogit" })
-map({ "n", "t" }, "<leader>gl", function()
+map({ "n" }, "<leader>gl", function()
 	require("nvchad.term").toggle({ pos = "float", id = "lazygit", cmd = "lazygit", float_opts = { width = 0.9, height = 0.8, row = 0.05, col = 0.05 } })
 end, { desc = "Toggle Floating lazygit" })
 --[[ map("n", "<leader>gf", "<cmd> LazyGitFilterCurrentFile <CR>", { desc = "Open LazyGit fitler current file" }) ]]
