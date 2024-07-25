@@ -29,10 +29,15 @@ require("mason-lspconfig").setup_handlers({
 			capabilities = capabilities,
 		}
 		if
-			server == "rust_analyzer"
-			or server == "clangd"
-			or server == "tsserver"
-			--[[ or server == "intelephense" ]]
+				server == "rust_analyzer"
+				or server == "clangd"
+				or server == "tsserver"
+				or server == "vtsls"
+				or server == "pylsp"
+				or server == "gopls"
+				or server == "jsonls"
+				or server == "yamlls"
+		--[[ or server == "intelephense" ]]
 		then
 			return nil
 		end
@@ -47,7 +52,34 @@ lspconfig["rust_analyzer"].setup({
 	settings = rust_config,
 })
 
-lspconfig.tsserver.setup({
+lspconfig.vtsls.setup {
+	filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+	settings = {
+		vtsls = {
+			-- autoUseWorkspaceTsdk = true,
+			tsserver = {
+				globalPlugins = {
+					{
+						name = '@vue/typescript-plugin',
+						location = vue_language_server_path,
+						languages = { 'vue' },
+						configNamespace = "typescript",
+						enableForWorkspaceTypeScriptVersions = true,
+					},
+				},
+			},
+		},
+	},
+	commands = {
+		OrganizeImports = {
+			organize_imports,
+			description = "Organize Imports",
+		},
+	},
+	on_attach = on_attach,
+	capabilities = capabilities,
+}
+--[[ lspconfig.vtsls.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
@@ -66,7 +98,7 @@ lspconfig.tsserver.setup({
 			description = "Organize Imports",
 		},
 	},
-})
+}) ]]
 
 lspconfig.clangd.setup({
 	on_attach = on_attach,

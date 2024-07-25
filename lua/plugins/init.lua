@@ -56,7 +56,8 @@ local plugins = {
 				"rust_analyzer",
 				"html",
 				"volar",
-				"tsserver",
+				--[[ "tsserver", ]]
+				"vtsls",
 				"tailwindcss",
 				"eslint",
 				"cssls",
@@ -384,11 +385,11 @@ local plugins = {
 		event = "VeryLazy",
 		opts = {},
 	},
-	{
+	--[[ {
 		"Fildo7525/pretty_hover",
 		event = "LspAttach",
 		opts = {},
-	},
+	}, ]]
 	{
 		"folke/trouble.nvim",
 		cmd = "Trouble",
