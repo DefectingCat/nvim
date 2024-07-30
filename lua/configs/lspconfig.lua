@@ -2,25 +2,7 @@ local on_attach = require("nvchad.configs.lspconfig").on_attach
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
---[[ local lspconfig_configs = require("lspconfig.configs") ]]
 local util = require("lspconfig/util")
-
-local function organize_imports()
-	local params = {
-		command = "_typescript.organizeImports",
-		arguments = { vim.api.nvim_buf_get_name(0) },
-	}
-	vim.lsp.buf.execute_command(params)
-end
-
-local mason_registry = require("mason-registry")
-local has_volar, volar = pcall(mason_registry.get_package, "vue-language-server")
-
--- npm i -g @vue/typescript-plugin
-local vue_language_server_path
-if has_volar then
-	vue_language_server_path = volar:get_install_path() .. "/node_modules/@vue/language-server"
-end
 
 require("mason-lspconfig").setup_handlers({
 	function(server)
@@ -52,53 +34,8 @@ lspconfig["rust_analyzer"].setup({
 	settings = rust_config,
 })
 
-lspconfig.vtsls.setup {
-	filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-	settings = {
-		vtsls = {
-			-- autoUseWorkspaceTsdk = true,
-			tsserver = {
-				globalPlugins = {
-					{
-						name = '@vue/typescript-plugin',
-						location = vue_language_server_path,
-						languages = { 'vue' },
-						configNamespace = "typescript",
-						enableForWorkspaceTypeScriptVersions = true,
-					},
-				},
-			},
-		},
-	},
-	commands = {
-		OrganizeImports = {
-			organize_imports,
-			description = "Organize Imports",
-		},
-	},
-	on_attach = on_attach,
-	capabilities = capabilities,
-}
---[[ lspconfig.vtsls.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-	init_options = {
-		plugins = {
-			{
-				name = "@vue/typescript-plugin",
-				location = vue_language_server_path,
-				languages = { "vue" },
-			},
-		},
-	},
-	commands = {
-		OrganizeImports = {
-			organize_imports,
-			description = "Organize Imports",
-		},
-	},
-}) ]]
+local vtsls_config = require("configs.vtsls")
+lspconfig.vtsls.setup(vtsls_config)
 
 lspconfig.clangd.setup({
 	on_attach = on_attach,

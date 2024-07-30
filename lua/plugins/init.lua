@@ -2,12 +2,6 @@ local cmp = require("cmp")
 local overrides = require("configs.overrides")
 
 local plugins = {
-	{
-		"NvChad/nvcommunity",
-		--[[ { import = "nvcommunity.git.diffview" }, ]]
-		--[[ { import = "nvcommunity.git.lazygit" }, ]]
-	},
-
 	-- LSP, formatter, linter
 	{
 		"neovim/nvim-lspconfig",
@@ -385,11 +379,6 @@ local plugins = {
 		event = "VeryLazy",
 		opts = {},
 	},
-	--[[ {
-		"Fildo7525/pretty_hover",
-		event = "LspAttach",
-		opts = {},
-	}, ]]
 	{
 		"folke/trouble.nvim",
 		cmd = "Trouble",
