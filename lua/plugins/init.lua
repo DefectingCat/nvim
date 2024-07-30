@@ -50,7 +50,6 @@ local plugins = {
 				"rust_analyzer",
 				"html",
 				"volar",
-				--[[ "tsserver", ]]
 				"vtsls",
 				"tailwindcss",
 				"eslint",
@@ -63,7 +62,7 @@ local plugins = {
 				"bashls",
 				"clangd",
 				"lemminx",
-				"intelephense",
+				--[[ "intelephense", ]]
 			},
 			automatic_installation = true,
 		},
