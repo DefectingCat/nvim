@@ -46,8 +46,8 @@ autocmd("BufEnter", {
 	pattern = "*",
 	callback = function()
 		vim.opt.formatoptions = vim.opt.formatoptions
-			- "o" -- O and o, don't continue comments
-			+ "r" -- But do continue when pressing enter.
+				- "o" -- O and o, don't continue comments
+				+ "r" -- But do continue when pressing enter.
 	end,
 })
 
@@ -73,10 +73,10 @@ autocmd("BufReadPost", {
 	callback = function()
 		local line = vim.fn.line("'\"")
 		if
-			line > 1
-			and line <= vim.fn.line("$")
-			and vim.bo.filetype ~= "commit"
-			and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
+				line > 1
+				and line <= vim.fn.line("$")
+				and vim.bo.filetype ~= "commit"
+				and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
 		then
 			vim.cmd('normal! g`"')
 		end
