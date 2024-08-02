@@ -28,13 +28,13 @@ require("mason-lspconfig").setup_handlers({
 })
 
 -- cj
-vim.lsp.start({
+--[[ vim.lsp.start({
 	cmd = { 'cjLSPServer' },
 	filetypes = { 'cj' },
 	root_dir = vim.fn.getcwd(),
 	settings = {},
-})
-vim.cmd([[autocmd BufRead,BufNewFile *.cj setfiletype cj]])
+}) ]]
+-- vim.cmd([[autocmd BufRead,BufNewFile *.cj setfiletype cj]])
 
 local rust_config = require("configs.rust_config")
 lspconfig["rust_analyzer"].setup({
