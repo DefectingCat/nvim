@@ -1,6 +1,10 @@
 require("nvchad.mappings")
 
 local map = vim.keymap.set
+-- disable
+local nomap = vim.keymap.del
+--[[ nomap("t", "<ESC>") ]]
+nomap("n", "<leader>x")
 
 -- rust
 map("n", "<leader>cu", function()
@@ -40,13 +44,16 @@ map("n", "<leader>ls", "<CMD>LspRestart<CR>", { desc = " Restart lsp" })
 map("n", "<leader>tn", "<CMD> tabNext <CR>", { desc = "Goto next tab" })
 map("n", "<leader>tp", "<CMD> tabprevious <CR>", { desc = "Goto prev tab" })
 map("n", "<leader>tc", "<CMD> tabclose <CR>", { desc = "Close tab" })
-map({ "n" }, "<S-l>", function()
+--[[ map({ "n" }, "<S-l>", function()
 	require("nvchad.tabufline").next()
 end, { desc = "Goto next buffer" })
 map({ "n" }, "<S-h>", function()
 	require("nvchad.tabufline").prev()
-end, { desc = "Goto prev buffer" })
+end, { desc = "Goto prev buffer" }) ]]
+map("n", "<S-l>", "<CMD> bn <CR>", { desc = "Goto next buffer" })
+map("n", "<S-h>", "<CMD> bp <CR>", { desc = "Goto prev buffer" })
 map("n", "<leader>la", "<CMD> silent! %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
+map("n", "<leader>x", "<CMD> bd <CR>", { desc = "Close current buffer" })
 map("n", "<C-a>", "gg<S-v>G")
 map("n", "$", "g_")
 map("v", "$", "g_")
@@ -164,7 +171,3 @@ map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- database
 map("n", "<leader>db", "<cmd>DBUIToggle<CR>", { desc = "Toggle DBUI" })
-
--- disable
---[[ local nomap = vim.keymap.del ]]
---[[ nomap("t", "<ESC>") ]]

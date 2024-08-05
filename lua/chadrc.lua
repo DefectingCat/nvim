@@ -29,8 +29,13 @@ M.ui = {
 	},
 
 	tabufline = {
+		enabled = false,
 		lazyload = true,
-		modules = nil,
+		modules = {
+			btns = function()
+				return ''
+			end,
+		},
 	},
 
 	telescope = { style = "borderless" }, -- borderless / bordered
@@ -92,8 +97,8 @@ M.ui = {
 	cmp = {
 		icons = true,
 		lspkind_text = true,
-		style = "default", -- default/flat_light/flat_dark/atom/atom_colored
-		border_color = "grey_fg", -- only applicable for "default" style, use color names from base30 variables
+		style = "default",         -- default/flat_light/flat_dark/atom/atom_colored
+		border_color = "grey_fg",  -- only applicable for "default" style, use color names from base30 variables
 		selected_item_bg = "simple", -- colored / simple
 	},
 
