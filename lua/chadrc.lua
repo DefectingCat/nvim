@@ -31,11 +31,7 @@ M.ui = {
 	tabufline = {
 		enabled = false,
 		lazyload = true,
-		modules = {
-			btns = function()
-				return ''
-			end,
-		},
+		modules = {}
 	},
 
 	telescope = { style = "borderless" }, -- borderless / bordered
