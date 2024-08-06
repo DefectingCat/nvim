@@ -5,6 +5,13 @@ local map = vim.keymap.set
 local nomap = vim.keymap.del
 --[[ nomap("t", "<ESC>") ]]
 nomap("n", "<leader>x")
+nomap("n", "<leader>n")
+nomap("n", "<leader>rn")
+nomap("n", "<leader>b")
+nomap("n", "<leader>h")
+nomap("n", "<leader>v")
+nomap("n", "<C-c>")
+nomap("n", "<C-n>")
 
 -- rust
 map("n", "<leader>cu", function()
@@ -86,6 +93,12 @@ end, { desc = "Hop motion search words after cursor" })
 map("n", "<leader>tf", "<cmd> FormatToggle <cr>", { desc = "Re-enable autoformat-on-save" })
 
 --term
+map({ "n", "t" }, "<leader>h", function()
+	require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" }
+end, { desc = "terminal new horizontal term" })
+map({ "n", "t" }, "<leader>v", function()
+	require("nvchad.term").toggle { pos = "vsp", id = "vtoggleTerm" }
+end, { desc = "terminal toggleable vertical term" })
 map({ "n", "t" }, "<A-u>", function()
 	require("nvchad.term").toggle({ pos = "vsp", id = "vtoggleTerm", size = 0.4 })
 end, { desc = "Terminal Toggleable vertical term" })
@@ -163,6 +176,7 @@ end, { desc = "Set current filetype" })
 map("n", "<leader>fd", function()
 	require("telescope.builtin").diagnostics()
 end, { desc = "Find Diagnostics" })
+map("n", "<leader>b", "<cmd>Telescope buffers<CR>", { desc = "telescope find buffers" })
 
 -- lspconfig
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
