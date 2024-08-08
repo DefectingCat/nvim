@@ -10,6 +10,15 @@ autocmd({ "BufNewFile", "BufRead" }, {
 	end,
 })
 
+-- set env files to sh
+autocmd({ "BufNewFile", "BufRead" }, {
+	pattern = { ".env.example", ".env.local", ".env.development", ".env.production" },
+	callback = function()
+		local buf = vim.api.nvim_get_current_buf()
+		vim.api.nvim_buf_set_option(buf, "filetype", "sh")
+	end,
+})
+
 -- Disbale diagnostic for files in node_modules
 autocmd({ "BufNewFile", "BufRead" }, {
 	pattern = { "**/node_modules/**", "node_modules", "/node_modules/*" },
