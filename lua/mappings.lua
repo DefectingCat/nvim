@@ -10,6 +10,7 @@ nomap("n", "<leader>rn")
 nomap("n", "<leader>b")
 nomap("n", "<C-c>")
 nomap("n", "<C-n>")
+nomap("n", "<tab>")
 
 -- rust
 map("n", "<leader>cu", function()
