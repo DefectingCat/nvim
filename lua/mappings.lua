@@ -170,6 +170,7 @@ map("n", "<leader>fd", function()
 	require("telescope.builtin").diagnostics()
 end, { desc = "Find Diagnostics" })
 map("n", "<leader>b", "<cmd>Telescope buffers<CR>", { desc = "telescope find buffers" })
+map("n", "<leader>fe", "<cmd>TodoTelescope<CR>", { desc = "telescope todos" })
 
 -- lspconfig
 map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
