@@ -6,7 +6,7 @@ local M = {}
 end ]]
 
 M.ui = {
-	transparency = false,
+	transparency = true,
 	theme = "catppuccin",
 	statusline = {
 		--[[ theme = "default", -- default/vscode/vscode_colored/minimal ]]
