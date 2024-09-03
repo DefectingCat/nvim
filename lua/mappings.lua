@@ -55,14 +55,14 @@ map("n", "<leader>tn",
 	end,
 	{ desc = "Toggle transparent" })
 map("n", "<leader>tc", "<CMD> tabclose <CR>", { desc = "Close tab" })
---[[ map({ "n" }, "<S-l>", function()
+map({ "n" }, "<S-l>", function()
 	require("nvchad.tabufline").next()
 end, { desc = "Goto next buffer" })
 map({ "n" }, "<S-h>", function()
 	require("nvchad.tabufline").prev()
-end, { desc = "Goto prev buffer" }) ]]
-map("n", "<S-l>", "<CMD> bn <CR>", { desc = "Goto next buffer" })
-map("n", "<S-h>", "<CMD> bp <CR>", { desc = "Goto prev buffer" })
+end, { desc = "Goto prev buffer" })
+--[[ map("n", "<S-l>", "<CMD> bn <CR>", { desc = "Goto next buffer" }) ]]
+--[[ map("n", "<S-h>", "<CMD> bp <CR>", { desc = "Goto prev buffer" }) ]]
 map("n", "<leader>la", "<CMD> silent! %bd|e#|bd# <CR>", { desc = "Close all other buffers" })
 map("n", "<leader>x", "<CMD> bp|bd# <CR>", { desc = "Close current buffer" })
 --[[ map("t", "<leader>x", "<CMD> bp|bd! # <CR>", { desc = "Close current terminal buffer" }) ]]
