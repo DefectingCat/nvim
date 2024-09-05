@@ -4,6 +4,13 @@ local rust_server = {
 		checkOnSave = {
 			command = "clippy",
 		},
+		cargo = {
+			allFeatures = true,
+			loadOutDirsFromCheck = true,
+			buildScripts = {
+				enable = true,
+			},
+		},
 		files = {
 			excludeDirs = {
 				".flatpak-builder",

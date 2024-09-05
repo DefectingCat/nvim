@@ -19,22 +19,13 @@ require("mason-lspconfig").setup_handlers({
 				or server == "gopls"
 				or server == "jsonls"
 				or server == "yamlls"
-		--[[ or server == "intelephense" ]]
+				or server == "taplo"
 		then
 			return nil
 		end
 		lspconfig[server].setup(server_config)
 	end,
 })
-
--- cj
---[[ vim.lsp.start({
-	cmd = { 'cjLSPServer' },
-	filetypes = { 'cj' },
-	root_dir = vim.fn.getcwd(),
-	settings = {},
-}) ]]
--- vim.cmd([[autocmd BufRead,BufNewFile *.cj setfiletype cj]])
 
 local rust_config = require("configs.rust_config")
 lspconfig["rust_analyzer"].setup({
@@ -112,6 +103,22 @@ lspconfig.yamlls.setup({
 				url = "",
 			},
 			schemas = require("schemastore").yaml.schemas(),
+		},
+	},
+})
+
+lspconfig.taplo.setup({
+	keys = {
+		{
+			"gh",
+			function()
+				if vim.fn.expand("%:t") == "Cargo.toml" and require("crates").popup_available() then
+					require("crates").show_popup()
+				else
+					vim.lsp.buf.hover()
+				end
+			end,
+			desc = "Show Crate Documentation",
 		},
 	},
 })
