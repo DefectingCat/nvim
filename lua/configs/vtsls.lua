@@ -20,10 +20,31 @@ if has_volar then
 end
 
 local M = {
-	filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+	filetypes = { 'typescript', 'javascript', 'typescript.tsx', 'javascript.jsx', 'javascriptreact', 'typescriptreact', 'vue' },
 	settings = {
+		typescript = {
+			updateImportsOnFileMove = { enabled = "always" },
+			suggest = {
+				completeFunctionCalls = true,
+			},
+			inlayHints = {
+				enumMemberValues = { enabled = true },
+				functionLikeReturnTypes = { enabled = true },
+				parameterNames = { enabled = "literals" },
+				parameterTypes = { enabled = true },
+				propertyDeclarationTypes = { enabled = true },
+				variableTypes = { enabled = false },
+			},
+		},
 		vtsls = {
 			-- autoUseWorkspaceTsdk = true,
+			enableMoveToFileCodeAction = true,
+			autoUseWorkspaceTsdk = true,
+			experimental = {
+				completion = {
+					enableServerSideFuzzyMatch = true,
+				},
+			},
 			tsserver = {
 				globalPlugins = {
 					{
