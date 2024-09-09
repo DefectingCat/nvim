@@ -13,8 +13,8 @@ opt.clipboard:append({ "unnamedplus" })
 opt.termguicolors = true -- True color support
 opt.autoindent = true --- Good auto indent
 opt.scrolloff = 3
-opt.encoding = utf8
-opt.fileencoding = utf8
+opt.encoding = "utf8"
+opt.fileencoding = "utf8"
 opt.cursorline = true
 opt.relativenumber = true
 opt.number = true
