@@ -458,6 +458,23 @@ local plugins = {
 			if vim.fn.executable "npx" then vim.g.mkdp_filetypes = { "markdown" } end
 		end,
 	},
+	{
+		"MeanderingProgrammer/render-markdown.nvim",
+		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+		opts = {
+			file_types = { "markdown", "norg", "rmd", "org" },
+			code = {
+				sign = false,
+				width = "block",
+				right_pad = 1,
+			},
+			heading = {
+				sign = false,
+				icons = {},
+			},
+		},
+		ft = { "markdown", "norg", "rmd", "org" },
+	},
 	-- git
 	{
 		"sindrets/diffview.nvim",
