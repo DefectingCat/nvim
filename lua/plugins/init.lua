@@ -29,13 +29,14 @@ local plugins = {
 			require("mason-null-ls").setup({
 				ensure_installed = {
 					"stylua",
-					"prettierd",
+					"prettier",
 					"ymlfmt",
 					"shellharden",
 					"shfmt",
 					"goimports",
 					"goimports-reviser",
 					"golines",
+					"taplo",
 				},
 				automatic_installation = true,
 			})
@@ -92,6 +93,7 @@ local plugins = {
 				"markdown_inline",
 				"jsdoc",
 				"scss",
+				"styled", -- styled components
 				-- low level
 				"rust",
 				"toml",
