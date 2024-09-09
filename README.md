@@ -1,1 +1,0 @@
-# Nvchad configuration
