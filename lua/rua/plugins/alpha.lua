@@ -23,7 +23,7 @@ return {
       dashboard.button("SPC ff", "󰱼  > Find File", "<cmd>Telescope find_files<CR>"),
       dashboard.button("SPC fw", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
       dashboard.button("SPC wr", "󰁯  > Restore Session For Current Directory", "<cmd>SessionRestore<CR>"),
-      dashboard.button("q", "  > Quit NVIM", "<cmd>qa<CR>"),
+      dashboard.button("q", "  > Quit", "<cmd>qa<CR>"),
     }
 
     -- Send config to alpha

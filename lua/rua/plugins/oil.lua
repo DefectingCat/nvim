@@ -31,5 +31,7 @@ return {
       },
       skip_confirm_for_simple_edits = true,
     })
+    local map = vim.keymap.set
+    map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
   end,
 }

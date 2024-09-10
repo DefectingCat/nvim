@@ -1,6 +1,15 @@
 local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
+-- set markdown highlight for mdx file
+autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { "*.mdx" },
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+  end,
+})
+
 -- set env files to sh
 autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { ".env.example", ".env.local", ".env.development", ".env.production" },
