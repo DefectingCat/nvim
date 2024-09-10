@@ -77,6 +77,7 @@ return {
       end,
       ["vtsls"] = function()
         lspconfig["vtsls"].setup(require("rua.config.vtsls"))
+        map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
       end,
       ["lua_ls"] = function()
         lspconfig["lua_ls"].setup({
