@@ -2,6 +2,7 @@ local opt = vim.opt
 
 vim.g.dap_virtual_text = true
 vim.o.cursorlineopt = "number,line"
+vim.opt.termguicolors = true
 
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
