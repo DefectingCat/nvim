@@ -19,4 +19,7 @@ require("lazy").setup({ { import = "rua.plugins" }, { import = "rua.plugins.lsp"
   change_detection = {
     notify = false,
   },
+  defaults = {
+    lazy = true,
+  },
 })

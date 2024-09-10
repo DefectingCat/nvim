@@ -31,7 +31,9 @@ return {
   },
   {
     "mg979/vim-visual-multi",
-    event = "BufReadPost",
+    keys = {
+      { "<C-n>", desc = "vim visual multi" },
+    },
   },
   {
     "mistricky/codesnap.nvim",
