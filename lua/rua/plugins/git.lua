@@ -1,6 +1,9 @@
 return {
   {
     "sindrets/diffview.nvim",
+    keys = {
+      { "<leader>gd", "<cmd> DiffviewOpen <CR>", desc = "Open diff view" },
+    },
     opts = {
       enhanced_diff_hl = true,
       view = {
@@ -41,7 +44,7 @@ return {
       require("neogit").setup(opts)
 
       local map = vim.keymap.set
-      map("n", "<leader>gd", "<cmd> DiffviewOpen <CR>", { desc = "Open diff view" })
+      -- map("n", "<leader>gd", "<cmd> DiffviewOpen <CR>", { desc = "Open diff view" })
       map("n", "<leader>gg", "<cmd> Neogit <CR>", { desc = "Open Neogit" })
       map("n", "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", { desc = "Open current file history" })
       map("n", "<leader>gc", "<cmd> DiffviewClose <CR>", { desc = "Close Diffview" })

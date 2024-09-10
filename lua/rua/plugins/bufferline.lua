@@ -25,11 +25,11 @@ return {
     require("bufferline").setup(opts)
 
     local map = vim.keymap.set
-    map("n", "<leader>la", ":BufferLineCloseOthers<CR>")
-    map("n", "<leader>x", ":bp|bd# <CR>")
-    map("n", "<S-l>", ":BufferLineCycleNext<CR>")
-    map("n", "<S-h>", ":BufferLineCyclePrev<CR>")
-    map("n", "<A-l>", ":BufferLineMoveNext<CR>")
-    map("n", "<A-h>", ":BufferLineMovePrev<CR>")
+    map("n", "<leader>la", ":BufferLineCloseOthers<CR>", { silent = true })
+    map("n", "<leader>x", ":bp|bd# <CR>", { silent = true })
+    map("n", "<S-l>", ":BufferLineCycleNext<CR>", { silent = true })
+    map("n", "<S-h>", ":BufferLineCyclePrev<CR>", { silent = true })
+    map("n", "<A-l>", ":BufferLineMoveNext<CR>", { silent = true })
+    map("n", "<A-h>", ":BufferLineMovePrev<CR>", { silent = true })
   end,
 }
