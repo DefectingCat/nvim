@@ -10,6 +10,7 @@ return {
       options = {
         theme = "catppuccin",
       },
+      extensions = { "quickfix", "trouble", "mason", "lazy", "nvim-tree" },
       sections = {
         lualine_x = {
           {
