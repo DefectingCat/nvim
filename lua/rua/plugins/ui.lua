@@ -75,6 +75,39 @@ return {
     main = "ibl",
     ---@module "ibl"
     ---@type ibl.config
-    opts = {},
+    opts = {
+      indent = { char = "│" },
+      scope = { enabled = false },
+    },
+  },
+  {
+    "echasnovski/mini.indentscope",
+    version = false,
+    event = "BufRead",
+    opts = {
+      symbol = "│",
+      -- options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "alpha",
+          "dashboard",
+          "fzf",
+          "help",
+          "lazy",
+          "lazyterm",
+          "mason",
+          "neo-tree",
+          "notify",
+          "toggleterm",
+          "Trouble",
+          "trouble",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
   },
 }
