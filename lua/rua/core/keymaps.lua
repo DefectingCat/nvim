@@ -1,5 +1,3 @@
-vim.g.mapleader = " "
-
 local map = vim.keymap.set
 
 map("n", "<ESC>", ":nohl<CR>", { desc = "Clear search highlights", silent = true })
