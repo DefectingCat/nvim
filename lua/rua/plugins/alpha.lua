@@ -5,12 +5,13 @@ return {
     local alpha = require("alpha")
     local dashboard = require("alpha.themes.dashboard")
 
-    -- Set menu
+    local logo = require("rua.config.logos")
+    dashboard.section.header.val = logo.e
     dashboard.section.buttons.val = {
-      dashboard.button("SPC e", "  > Toggle file explorer", "<cmd>NvimTreeToggle<CR>"),
+      dashboard.button("SPC e", "  > Nvim Tree", "<cmd>NvimTreeToggle<CR>"),
       dashboard.button("SPC ff", "󰱼  > Find File", "<cmd>Telescope find_files<CR>"),
       dashboard.button("SPC fw", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
-      dashboard.button("SPC wr", "󰁯  > Restore Session For Current Directory", "<cmd>SessionRestore<CR>"),
+      dashboard.button("SPC wr", "󰁯  > Restore Session", "<cmd>SessionRestore<CR>"),
       dashboard.button("q", "  > Quit", "<cmd>qa<CR>"),
     }
     dashboard.opts.layout[1].val = 8
