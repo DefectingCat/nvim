@@ -18,4 +18,11 @@ return {
       },
     },
   },
+  config = function(_, opts)
+    require("bufferline").setup(opts)
+
+    local map = vim.keymap.set
+    map("n", "<S-l>", ":BufferLineCycleNext<CR>")
+    map("n", "<S-h>", ":BufferLineCyclePrev<CR>")
+  end,
 }
