@@ -4,7 +4,6 @@ return {
   version = "*",
   opts = {
     options = {
-      -- mode = "tabs",
       diagnostics = "nvim_lsp",
       show_buffer_close_icons = false,
       themable = true,
