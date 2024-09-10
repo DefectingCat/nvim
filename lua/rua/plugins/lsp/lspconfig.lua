@@ -1,12 +1,11 @@
 return {
-  { "b0o/schemastore.nvim", lazy = true }, -- json schema store
+  { "b0o/schemastore.nvim" }, -- json schema store
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "hrsh7th/cmp-nvim-lsp", lazy = true },
-      { "antosha417/nvim-lsp-file-operations", config = true, lazy = true },
-      { "folke/neodev.nvim", opts = {}, lazy = true },
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "antosha417/nvim-lsp-file-operations", config = true },
+      { "folke/neodev.nvim", opts = {} },
     },
     opts = { document_highlight = { enabled = false } },
     config = function()
@@ -75,6 +74,26 @@ return {
         function(server_name)
           lspconfig[server_name].setup({
             capabilities = capabilities,
+          })
+        end,
+        ["rust_analyzer"] = function()
+          -- lspconfig["rust_analyzer"].setup(require("rua.config.rust-analyzer"))
+        end,
+        ["taplo"] = function()
+          lspconfig["taplo"].setup({
+            keys = {
+              {
+                "gh",
+                function()
+                  if vim.fn.expand("%:t") == "Cargo.toml" and require("crates").popup_available() then
+                    require("crates").show_popup()
+                  else
+                    vim.lsp.buf.hover()
+                  end
+                end,
+                desc = "Show Crate Documentation",
+              },
+            },
           })
         end,
         ["vtsls"] = function()

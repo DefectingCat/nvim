@@ -31,9 +31,6 @@ return {
   },
   {
     "mg979/vim-visual-multi",
-    keys = {
-      { "<C-n>", desc = "vim visual multi" },
-    },
   },
   {
     "mistricky/codesnap.nvim",
