@@ -88,6 +88,7 @@ return {
   },
   {
     "NvChad/nvim-colorizer.lua",
+    event = "BufRead",
     opts = {
       user_default_options = {
         tailwind = true,

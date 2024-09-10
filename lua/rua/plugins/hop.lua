@@ -1,6 +1,7 @@
 return {
   "phaazon/hop.nvim",
   branch = "v2",
+  event = "BufRead",
   config = function()
     local hop = require("hop")
     hop.setup({ keys = "etovxqpdygfblzhckisuran" })
