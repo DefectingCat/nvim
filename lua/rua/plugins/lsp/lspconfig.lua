@@ -52,6 +52,7 @@ return {
         map("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
 
         opts.desc = "Show documentation for what is under cursor"
+        opts.silent = true
         map("n", "gh", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
 
         opts.desc = "Restart LSP"
@@ -73,6 +74,9 @@ return {
         lspconfig[server_name].setup({
           capabilities = capabilities,
         })
+      end,
+      ["vtsls"] = function()
+        lspconfig["vtsls"].setup(require("rua.config.vtsls"))
       end,
       ["lua_ls"] = function()
         lspconfig["lua_ls"].setup({
