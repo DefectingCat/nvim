@@ -135,4 +135,15 @@ return {
       })
     end,
   },
+  {
+    "j-hui/fidget.nvim",
+    event = "VeryLazy",
+    opts = {
+      notification = {
+        window = {
+          winblend = 0, -- Background color opacity in the notification window
+        },
+      },
+    },
+  },
 }
