@@ -3,6 +3,31 @@ return {
   {
     "nvim-pack/nvim-spectre",
     event = "BufRead",
+    config = function(_, opts)
+      require("spectre").setup(opts)
+      local map = vim.keymap.set
+
+      map("n", "<leader>ss", '<cmd>lua require("spectre").open()<CR>', { desc = "Toggle Spectre" })
+      map(
+        "n",
+        "<leader>sw",
+        '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+        { desc = "Spectre search current word" }
+      )
+      map(
+        "n",
+        "<leader>sp",
+        '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
+        { desc = "Spectre search on current file" }
+      )
+      map(
+        "v",
+        "<leader>sw",
+        '<esc><cmd>lua require("spectre").open_visual()<CR>',
+        { desc = "Spectre search current word" }
+      )
+      map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
+    end,
   },
   {
     "mg979/vim-visual-multi",
