@@ -6,9 +6,6 @@ return {
   },
   {
     "windwp/nvim-ts-autotag",
-    -- config = function()
-    --   require("nvim-ts-autotag").setup({})
-    -- end,
     lazy = true,
     event = "InsertEnter",
   },
@@ -19,5 +16,11 @@ return {
     config = function()
       require("nvim-surround").setup({})
     end,
+  },
+  {
+    "folke/ts-comments.nvim",
+    opts = {},
+    event = "BufRead",
+    enabled = vim.fn.has("nvim-0.10.0") == 1,
   },
 }
