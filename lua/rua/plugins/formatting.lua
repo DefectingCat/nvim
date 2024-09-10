@@ -35,11 +35,23 @@ return {
         -- have other formatters configured.
         ["_"] = { "trim_whitespace" },
       },
-      format_on_save = {
-        lsp_fallback = true,
-        -- async = false,
-        timeout_ms = 1000,
-      },
+      format_on_save = function(bufnr)
+        -- Disable with a global or buffer-local variable
+        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+          return
+        end
+        return { timeout_ms = 1000, lsp_fallback = true }
+      end,
+      -- If this is set, Conform will run the formatter asynchronously after save.
+      -- It will pass the table to conform.format().
+      -- This can also be a function that returns the table.
+      format_after_save = function(bufnr)
+        -- Disable with a global or buffer-local variable
+        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+          return { lsp_fallback = false }
+        end
+        return { lsp_fallback = true }
+      end,
       notify_on_error = true,
       formatters = {
         injected = {
@@ -126,9 +138,9 @@ return {
     vim.keymap.set({ "n", "v" }, "<leader>fm", function()
       conform.format({
         lsp_fallback = true,
-        -- async = false,
         timeout_ms = 1000,
       })
     end, { desc = "Format file or range (in visual mode)" })
+    vim.keymap.set("n", "<leader>tf", "<cmd> FormatToggle <cr>", { desc = "Re-enable autoformat-on-save" })
   end,
 }
