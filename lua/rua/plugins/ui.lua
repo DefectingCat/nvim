@@ -31,11 +31,18 @@ return {
   },
   {
     "mg979/vim-visual-multi",
+    keys = { "<C-n>", desc = "Start vim visual multi" }
   },
   {
     "mistricky/codesnap.nvim",
     build = "make",
-    event = "BufRead",
+    cmd = {
+      "CodeSnap",
+      "CodeSnapASCII",
+      "CodeSnapHighlight",
+      "CodeSnapSave",
+      "CodeSnapSaveHighlight",
+    },
     opts = {
       mac_window_bar = true,
       title = "RUA",
