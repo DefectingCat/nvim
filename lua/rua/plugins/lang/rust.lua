@@ -2,6 +2,15 @@ return {
   {
     "Saecki/crates.nvim",
     event = { "BufRead Cargo.toml" },
+    keys = {
+      {
+        "<leader>cu",
+        function()
+          require("crates").upgrade_all_crates()
+        end,
+        desc = "Update crates",
+      },
+    },
     opts = {
       completion = {
         cmp = { enabled = true },
