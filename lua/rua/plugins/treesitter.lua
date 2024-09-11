@@ -24,9 +24,12 @@ return {
       "styled", -- styled components
       -- low level
       "rust",
+      "ron",
       "toml",
       "go",
       "gomod",
+      "gowork",
+      "gosum",
       "sql",
       -- git
       "git_config",

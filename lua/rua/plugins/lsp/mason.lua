@@ -31,7 +31,7 @@ return {
         "volar",
         "vtsls",
         "tailwindcss",
-        "eslint-lsp",
+        "eslint",
         "cssls",
         "cssmodules_ls",
         "jsonls",
