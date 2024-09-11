@@ -15,7 +15,7 @@ return {
       "javascript",
       "typescript",
       "tsx",
-      "json",
+      "json5",
       "vue",
       "markdown",
       "markdown_inline",

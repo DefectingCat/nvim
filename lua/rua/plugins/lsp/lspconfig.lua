@@ -1,11 +1,10 @@
 return {
-  { "b0o/schemastore.nvim" }, -- json schema store
   {
     "neovim/nvim-lspconfig",
     dependencies = {
       { "hrsh7th/cmp-nvim-lsp" },
       { "antosha417/nvim-lsp-file-operations", config = true },
-      { "folke/neodev.nvim", opts = {} },
+      { "folke/neodev.nvim",                   opts = {} },
     },
     opts = { document_highlight = { enabled = false } },
     config = function()
@@ -99,6 +98,23 @@ return {
         ["vtsls"] = function()
           lspconfig["vtsls"].setup(require("rua.config.vtsls"))
           map("n", "<leader>co", "<cmd> OrganizeImports <CR>", { desc = "Organize imports" })
+        end,
+        ["jsonls"] = function()
+          lspconfig["jsonls"].setup({
+            -- lazy-load schemastore when needed
+            on_new_config = function(new_config)
+              new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+              vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
+            end,
+            settings = {
+              json = {
+                format = {
+                  enable = true,
+                },
+                validate = { enable = true },
+              },
+            }
+          })
         end,
         ["lua_ls"] = function()
           lspconfig["lua_ls"].setup({
