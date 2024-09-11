@@ -54,8 +54,10 @@ return {
         "stylua",
         "shfmt",
         "goimports",
-        "goimports-reviser",
+        "gofumpt",
         "golines",
+        "gomodifytags",
+        "impl", -- go
         "clang-format",
         "taplo",
       },

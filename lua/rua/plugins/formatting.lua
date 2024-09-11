@@ -8,12 +8,7 @@ return {
       formatters_by_ft = {
         sql = { "sqlfluff" },
         lua = { "stylua" },
-        go = {
-          "goimports",
-          "goimports-reviser",
-          "golines",
-          "gopls",
-        },
+        go = { "goimports", "gofumpt" },
         sh = { "shfmt" },
         javascript = { "prettier" },
         typescript = { "prettier" },
