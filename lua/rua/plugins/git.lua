@@ -31,25 +31,18 @@ return {
   {
     "NeogitOrg/neogit",
     dependencies = {
-      "nvim-lua/plenary.nvim",         -- required
-      "sindrets/diffview.nvim",        -- optional - Diff integration
+      "nvim-lua/plenary.nvim", -- required
+      "sindrets/diffview.nvim", -- optional - Diff integration
       "nvim-telescope/telescope.nvim", -- optional
     },
     keys = {
-      { "<leader>gg", "<cmd> Neogit <CR>",                desc = "Open Neogit" },
+      { "<leader>gg", "<cmd> Neogit <CR>", desc = "Open Neogit" },
       { "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", desc = "Open current file history" },
-      { "<leader>gc", "<cmd> DiffviewClose <CR>",         desc = "Close Diffview" },
+      { "<leader>gc", "<cmd> DiffviewClose <CR>", desc = "Close Diffview" },
     },
     opts = {
       console_timeout = 10000,
     },
-    config = function(_, opts)
-      require("neogit").setup(opts)
-      -- local map = vim.keymap.set
-      -- map("n", "<leader>gg", "<cmd> Neogit <CR>", { desc = "Open Neogit" })
-      -- map("n", "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", { desc = "Open current file history" })
-      -- map("n", "<leader>gc", "<cmd> DiffviewClose <CR>", { desc = "Close Diffview" })
-    end,
   },
   {
     "lewis6991/gitsigns.nvim",

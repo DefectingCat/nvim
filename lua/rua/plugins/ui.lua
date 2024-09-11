@@ -1,37 +1,49 @@
 return {
-  -- search
   {
-    "nvim-pack/nvim-spectre",
-    event = "BufRead",
-    config = function(_, opts)
-      require("spectre").setup(opts)
-      local map = vim.keymap.set
-
-      map("n", "<leader>ss", '<cmd>lua require("spectre").open()<CR>', { desc = "Toggle Spectre" })
-      map(
-        "n",
-        "<leader>sw",
-        '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
-        { desc = "Spectre search current word" }
-      )
-      map(
-        "n",
-        "<leader>sp",
-        '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
-        { desc = "Spectre search on current file" }
-      )
-      map(
-        "v",
-        "<leader>sw",
-        '<esc><cmd>lua require("spectre").open_visual()<CR>',
-        { desc = "Spectre search current word" }
-      )
-      map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
+    "echasnovski/mini.icons",
+    lazy = true,
+    opts = {
+      file = {
+        [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
+        ["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
+      },
+      filetype = {
+        dotenv = { glyph = "", hl = "MiniIconsYellow" },
+      },
+    },
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
     end,
   },
   {
+    "nvim-pack/nvim-spectre",
+    opts = {},
+    keys = {
+      { "<leader>ss", '<cmd>lua require("spectre").open()<CR>', desc = "Toggle Spectre" },
+      {
+        "<leader>sw",
+        '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',
+        desc = "Spectre search current word",
+      },
+      {
+        "<leader>sp",
+        '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>',
+        desc = "Spectre search on current file",
+      },
+      {
+        "<leader>sw",
+        '<esc><cmd>lua require("spectre").open_visual()<CR>',
+        desc = "Spectre search current word",
+        mode = "v",
+      },
+    },
+  },
+  {
     "mg979/vim-visual-multi",
-    keys = { "<C-n>", desc = "Start vim visual multi" }
+    keys = { "<C-n>", desc = "Start vim visual multi" },
   },
   {
     "mistricky/codesnap.nvim",
