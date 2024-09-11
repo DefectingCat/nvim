@@ -7,9 +7,9 @@ map("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
 map("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- window management
-map("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
+map("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" })   -- split window vertically
 map("n", "<leader>_", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
-map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
+map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })   -- make split windows equal width & height
 
 -- move lines
 map("n", "<A-j>", ":m .+1<CR>==")
@@ -24,3 +24,10 @@ map("n", "$", "g_")
 map("v", "$", "g_")
 map("v", ">", ">gv")
 map("v", "<", "<gv")
+
+-- terminal
+map("t", "<C-x>", "<c-\\><c-n>")
+map("n", "<leader>tt", ":term", { desc = "Open new terminal" })
+
+-- tabs
+map("n", "<leader>tc", ":tabclose", { desc = "Close current tab" })

@@ -36,22 +36,19 @@ return {
       "nvim-telescope/telescope.nvim", -- optional
     },
     keys = {
-      "<leader>gg",
-      "<leader>gh",
-      "<leader>gc",
+      { "<leader>gg", "<cmd> Neogit <CR>",                desc = "Open Neogit" },
+      { "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", desc = "Open current file history" },
+      { "<leader>gc", "<cmd> DiffviewClose <CR>",         desc = "Close Diffview" },
     },
     opts = {
       console_timeout = 10000,
     },
-    --[[ config = true, ]]
     config = function(_, opts)
       require("neogit").setup(opts)
-
-      local map = vim.keymap.set
-      -- map("n", "<leader>gd", "<cmd> DiffviewOpen <CR>", { desc = "Open diff view" })
-      map("n", "<leader>gg", "<cmd> Neogit <CR>", { desc = "Open Neogit" })
-      map("n", "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", { desc = "Open current file history" })
-      map("n", "<leader>gc", "<cmd> DiffviewClose <CR>", { desc = "Close Diffview" })
+      -- local map = vim.keymap.set
+      -- map("n", "<leader>gg", "<cmd> Neogit <CR>", { desc = "Open Neogit" })
+      -- map("n", "<leader>gh", "<cmd> DiffviewFileHistory % <CR>", { desc = "Open current file history" })
+      -- map("n", "<leader>gc", "<cmd> DiffviewClose <CR>", { desc = "Close Diffview" })
     end,
   },
   {
