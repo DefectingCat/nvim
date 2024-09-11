@@ -27,9 +27,9 @@ map("v", "<", "<gv")
 
 -- terminal
 map("t", "<C-x>", "<c-\\><c-n>")
-map("n", "<leader>tt", ":term", { desc = "Open new terminal" })
+map("n", "<leader>tt", ":term<CR>", { desc = "Open new terminal" })
 
 -- tabs
-map("n", "<leader>tc", ":tabclose", { desc = "Close current tab" })
+map("n", "<leader>tc", ":tabclose<CR>", { desc = "Close current tab" })
 
 map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
