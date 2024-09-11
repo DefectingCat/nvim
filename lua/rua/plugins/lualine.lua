@@ -15,15 +15,6 @@ return {
       extensions = { "quickfix", "trouble", "mason", "lazy", "nvim-tree" },
       sections = {
         lualine_x = {
-          {
-            "fileformat",
-            icons_enabled = true,
-            symbols = {
-              unix = "LF",
-              dos = "CRLF",
-              mac = "CR",
-            },
-          },
           { "encoding" },
           { "fileformat" },
           { "filetype" },
