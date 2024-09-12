@@ -1,3 +1,39 @@
+local leader = "SPC"
+local if_nil = vim.F.if_nil
+
+--- @param sc string
+--- @param txt string
+--- @param keybind string? optional
+--- @param keybind_opts table? optional
+local function button(sc, txt, keybind, keybind_opts)
+  local sc_ = sc:gsub("%s", ""):gsub(leader, "<leader>")
+
+  local opts = {
+    position = "center",
+    shortcut = sc,
+    cursor = 3,
+    width = 30,
+    align_shortcut = "right",
+    hl_shortcut = "Keyword",
+  }
+  if keybind then
+    keybind_opts = if_nil(keybind_opts, { noremap = true, silent = true, nowait = true })
+    opts.keymap = { "n", sc_, keybind, keybind_opts }
+  end
+
+  local function on_press()
+    local key = vim.api.nvim_replace_termcodes(keybind or sc_ .. "<Ignore>", true, false, true)
+    vim.api.nvim_feedkeys(key, "t", false)
+  end
+
+  return {
+    type = "button",
+    val = txt,
+    on_press = on_press,
+    opts = opts,
+  }
+end
+
 return {
   "goolord/alpha-nvim",
   event = "VimEnter",
@@ -8,11 +44,11 @@ return {
     local logo = require("rua.config.logos")
     dashboard.section.header.val = logo.e
     dashboard.section.buttons.val = {
-      dashboard.button("SPC e", "  > Nvim Tree", "<cmd>NvimTreeToggle<CR>"),
-      dashboard.button("SPC ff", "󰱼  > Find File", "<cmd>Telescope find_files<CR>"),
-      dashboard.button("SPC fw", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
-      dashboard.button("SPC wr", "󰁯  > Restore Session", "<cmd>SessionRestore<CR>"),
-      dashboard.button("q", "  > Quit", "<cmd>qa<CR>"),
+      button("SPC e", "  > Nvim Tree", "<cmd>NvimTreeToggle<CR>"),
+      button("SPC ff", "󰱼  > Find File", "<cmd>Telescope find_files<CR>"),
+      button("SPC fw", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
+      button("SPC wr", "󰁯  > Restore Session", "<cmd>SessionRestore<CR>"),
+      button("q", "  > Quit", "<cmd>qa<CR>"),
     }
     dashboard.opts.layout[1].val = 8
 
