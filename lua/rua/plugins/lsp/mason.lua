@@ -47,9 +47,9 @@ return {
     mason_tool_installer.setup({
       ensure_installed = {
         "prettier", -- prettier formatter
-        "stylua",   -- lua formatter
-        "isort",    -- python formatter
-        "black",    -- python formatter
+        "stylua", -- lua formatter
+        "isort", -- python formatter
+        "black", -- python formatter
         "pylint",
         "stylua",
         "shfmt",
@@ -60,6 +60,7 @@ return {
         "impl", -- go
         "clang-format",
         "taplo",
+        "delve", -- golang debug adapter
       },
     })
   end,
