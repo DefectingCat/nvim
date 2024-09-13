@@ -11,10 +11,18 @@ return {
           border = "curved",
         },
       })
-      vim.keymap.set({ "n", "t" }, "<A-i>", function()
+      local horizontal = Terminal:new({
+        direction = "horizontal",
+      })
+
+      local map = vim.keymap.set
+      map({ "n", "t" }, "<A-i>", function()
         float:toggle()
       end, { noremap = true, silent = true })
+      map({ "n", "t" }, "<A-u>", function()
+        horizontal:toggle()
+      end, { noremap = true, silent = true })
     end,
-    keys = { "<A-i>" },
+    keys = { "<A-i>", "<A-u>" },
   },
 }
