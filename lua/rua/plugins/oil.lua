@@ -1,12 +1,27 @@
 return {
   "stevearc/oil.nvim",
-  event = "BufReadPost",
-  -- Optional dependencies
+  keys = {
+    { "-", "<CMD>Oil<CR>", desc = "Open parent directory" },
+    {
+      "_",
+      function()
+        require("oil").open(vim.fn.getcwd())
+      end,
+      desc = "Open parent directory",
+    },
+  },
+  cmd = { "Oil" },
   dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
     require("oil").setup({
       view_options = {
         show_hidden = true,
+      },
+      columns = {
+        "icon",
+        "permissions",
+        "size",
+        "mtime",
       },
       keymaps = {
         ["g?"] = "actions.show_help",
@@ -28,10 +43,27 @@ return {
         ["gx"] = "actions.open_external",
         ["g."] = "actions.toggle_hidden",
         ["g\\"] = "actions.toggle_trash",
+        -- Mappings can be a string
+        -- ["~"] = "<cmd>edit $HOME<CR>",
+        -- Mappings can be a function
+        -- ["gd"] = function()
+        --   require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
+        -- end,
+        -- You can pass additional opts to vim.keymap.set by using
+        -- a table with the mapping as the first element.
+        ["<leader>ff"] = {
+          function()
+            require("telescope.builtin").find_files({
+              cwd = require("oil").get_current_dir(),
+            })
+          end,
+          mode = "n",
+          nowait = true,
+          desc = "Find files in the current directory",
+        },
       },
       skip_confirm_for_simple_edits = true,
+      watch_for_changes = true,
     })
-    local map = vim.keymap.set
-    map("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
   end,
 }
