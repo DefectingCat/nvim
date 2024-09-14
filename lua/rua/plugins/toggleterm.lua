@@ -10,9 +10,15 @@ return {
         float_opts = {
           border = "curved",
         },
+        on_open = function()
+          vim.wo.cursorline = true
+        end,
       })
       local horizontal = Terminal:new({
         direction = "horizontal",
+        on_open = function()
+          vim.wo.cursorline = true
+        end,
       })
 
       local map = vim.keymap.set
