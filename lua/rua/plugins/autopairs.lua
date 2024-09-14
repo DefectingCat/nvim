@@ -6,8 +6,10 @@ return {
   },
   {
     "windwp/nvim-ts-autotag",
-    lazy = true,
-    event = "InsertEnter",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("nvim-ts-autotag").setup({})
+    end,
   },
   {
     "kylechui/nvim-surround",
