@@ -75,6 +75,9 @@ return {
             capabilities = capabilities,
           })
         end,
+        ["tailwindcss"] = function()
+          lspconfig["tailwindcss"].setup(require("rua.config.tailwindcss"))
+        end,
         ["rust_analyzer"] = function()
           -- lspconfig["rust_analyzer"].setup(require("rua.config.rust-analyzer"))
         end,
