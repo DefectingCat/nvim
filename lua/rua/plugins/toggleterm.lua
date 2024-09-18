@@ -10,22 +10,10 @@ return {
         float_opts = {
           border = "curved",
         },
-        on_open = function()
-          vim.wo.cursorline = true
-        end,
-        on_close = function()
-          vim.wo.cursorline = true
-        end,
         display_name = "RUA",
       })
       local horizontal = Terminal:new({
         direction = "horizontal",
-        on_open = function()
-          vim.wo.cursorline = true
-        end,
-        on_close = function()
-          vim.wo.cursorline = true
-        end,
         display_name = "RUA",
       })
 
