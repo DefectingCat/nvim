@@ -7,6 +7,9 @@ return {
       local Terminal = require("toggleterm.terminal").Terminal
       local float = Terminal:new({
         direction = "float",
+        auto_scroll = true,
+        persist_mode = false,
+        start_in_insert = true,
         float_opts = {
           border = "curved",
         },
@@ -14,6 +17,9 @@ return {
       })
       local horizontal = Terminal:new({
         direction = "horizontal",
+        persist_mode = false,
+        auto_scroll = true,
+        start_in_insert = true,
         display_name = "RUA",
       })
 
