@@ -12,7 +12,7 @@ local function button(sc, txt, keybind, keybind_opts)
     position = "center",
     shortcut = sc,
     cursor = 3,
-    width = 30,
+    width = 40,
     align_shortcut = "right",
     hl_shortcut = "Keyword",
   }
@@ -42,7 +42,7 @@ return {
     local dashboard = require("alpha.themes.dashboard")
 
     local logo = require("rua.config.logos")
-    dashboard.section.header.val = logo.e
+    dashboard.section.header.val = logo.c
     dashboard.section.buttons.val = {
       button("SPC e", "  > Nvim Tree", "<cmd>NvimTreeToggle<CR>"),
       button("SPC ff", "󰱼  > Find File", "<cmd>Telescope find_files<CR>"),
