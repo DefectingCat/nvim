@@ -3,8 +3,8 @@ local map = vim.keymap.set
 map("n", "<ESC>", ":nohl<CR>", { desc = "Clear search highlights", silent = true })
 
 -- increment/decrement numbers
-map("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
-map("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
+-- map("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
+-- map("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- window management
 map("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
@@ -19,7 +19,7 @@ map("i", "<A-k>", "<Esc>:m .-2<CR>==gi")
 map("v", "<A-j>", ":m '>+1<CR>gv=gv")
 map("v", "<A-k>", ":m '<-2<CR>gv=gv")
 
-map("n", "<C-a>", "gg<S-v>G")
+-- map("n", "<C-a>", "gg<S-v>G")
 map("n", "$", "g_")
 map("v", "$", "g_")
 map("v", ">", ">gv")
