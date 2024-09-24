@@ -61,6 +61,16 @@ return {
           nowait = true,
           desc = "Find files in the current directory",
         },
+        ["<leader>fw"] = {
+          function()
+            require("telescope.builtin").live_grep({
+              cwd = require("oil").get_current_dir(),
+            })
+          end,
+          mode = "n",
+          nowait = true,
+          desc = "Find files in the current directory",
+        },
       },
       skip_confirm_for_simple_edits = true,
       watch_for_changes = true,

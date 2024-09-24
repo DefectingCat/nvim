@@ -177,7 +177,11 @@ return {
     end,
   },
   {
-    "j-hui/fidget.nvim",
+    "folke/todo-comments.nvim",
+    opts = {},
+  },
+  {
+    "j-hui/fidget.nvim", -- lsp messages
     event = "VeryLazy",
     opts = {
       notification = {
