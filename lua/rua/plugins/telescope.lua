@@ -6,7 +6,10 @@ return {
     { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Fuzzy find recent files" },
     { "<leader>fw", "<cmd>Telescope live_grep<cr>", desc = "Find string in cwd" },
     { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find todos" },
-    { "<leader>gm", "<cmd> Telescope git_commits <CR>", desc = "Git commits" },
+    { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Find keymaps" },
+    -- { "<leader>fm", "<cmd>Telescope marks<cr>", desc = "Find marks" },
+    { "<leader>fh", "<cmd>Telescope search_history<cr>", desc = "Find search history" },
+    { "<leader>gm", "<cmd>Telescope git_commits<CR>", desc = "Git commits" },
     {
 
       "<leader>fc",
