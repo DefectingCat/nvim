@@ -104,6 +104,9 @@ return {
         lsp_dynamic_workspace_symbols = {
           theme = "ivy",
         },
+        lsp_references = {
+          theme = "ivy",
+        },
       },
     })
     telescope.load_extension("fzf")
