@@ -88,8 +88,12 @@ autocmd("BufReadPost", {
 -- vim.cmd(string.format([[highlight WinBar2 guifg=%s]], colors["linkarzu_color02"]))
 -- Function to get the full path and replace the home directory with ~
 local function get_winbar_path()
-  local full_path = vim.fn.expand("%:p")
-  return full_path:gsub(vim.fn.expand("$HOME"), "~")
+  -- local filename = vim.fn.expand("%:t")
+  -- local absolute_filepath = vim.fn.expand("%:p")
+  local relative_filepath = vim.fn.expand("%:.")
+  -- local full_path = vim.fn.expand("%:p")
+  -- return full_path:gsub(vim.fn.expand("$HOME"), "~")
+  return relative_filepath
 end
 -- Function to get the number of open buffers using the :ls command
 local function get_buffer_count()
