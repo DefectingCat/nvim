@@ -44,9 +44,10 @@ return {
     local logo = require("rua.config.logos")
     dashboard.section.header.val = logo.c
     dashboard.section.buttons.val = {
+      button("SPC l", "💤  > Lazy", "<cmd>Lazy<CR>"),
       button("SPC e", "  > Nvim Tree", "<cmd>NvimTreeToggle<CR>"),
-      button("SPC ff", "󰱼  > Find File", "<cmd>Telescope find_files<CR>"),
-      button("SPC fw", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
+      button("SPC m", "󰱼  > Mason", "<cmd>Mason<CR>"),
+      -- button("SPC fw", "  > Find Word", "<cmd>Telescope live_grep<CR>"),
       button("SPC wr", "󰁯  > Restore Session", "<cmd>SessionRestore<CR>"),
       button("q", "  > Quit", "<cmd>qa<CR>"),
     }
