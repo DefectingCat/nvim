@@ -1,5 +1,6 @@
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local capabilities = cmp_nvim_lsp.default_capabilities()
+local lspconfig = require("lspconfig")
 
 local function organize_imports()
   local params = {
@@ -19,6 +20,7 @@ if has_volar then
 end
 
 local M = {
+  root_dir = lspconfig.util.root_pattern("package.json"), -- for deno
   filetypes = {
     "typescript",
     "javascript",
@@ -65,7 +67,7 @@ local M = {
       },
     },
   },
-  single_file_support = true,
+  single_file_support = false,
   commands = {
     OrganizeImports = {
       organize_imports,

@@ -28,8 +28,8 @@ return {
         "lua_ls",
         "rust_analyzer",
         "html",
-        "volar",
-        "vtsls",
+        "volar", -- vue
+        "vtsls", -- typescript
         "tailwindcss",
         "eslint",
         "cssls",
@@ -40,7 +40,8 @@ return {
         "dockerls",
         "bashls",
         "clangd",
-        "lemminx",
+        "lemminx", -- xml svg
+        "denols",
       },
     })
 
@@ -59,7 +60,7 @@ return {
         "gomodifytags",
         "impl", -- go
         "clang-format",
-        "taplo",
+        "taplo", -- toml
         "delve", -- golang debug adapter
       },
     })
