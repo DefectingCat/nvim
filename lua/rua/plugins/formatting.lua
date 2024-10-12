@@ -19,7 +19,7 @@ return {
         html = { "prettier" },
         json = { "prettier" },
         yaml = { "prettier" },
-        ["markdown"] = { "prettier", },
+        ["markdown"] = { "prettier" },
         ["markdown.mdx"] = { "prettier" },
         graphql = { "prettier" },
         python = { "isort", "black" },

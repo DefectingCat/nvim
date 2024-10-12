@@ -6,7 +6,7 @@ return {
     "hrsh7th/cmp-path", -- source for file system paths
     { "petertriho/cmp-git", opts = {} }, -- source for git
     {
-      "L3MON4D3/LuaSnip",
+      "L3MON4D3/LuaSnip", -- snippet
       -- follow latest release.
       version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
       -- install jsregexp (optional!).
@@ -41,10 +41,10 @@ return {
         end,
       },
       mapping = cmp.mapping.preset.insert({
-        ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
-        ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        -- ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
+        -- ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
+        ["<C-u>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
         ["<C-e>"] = cmp.mapping.abort(), -- close completion window
         ["<CR>"] = cmp.mapping.confirm({ select = true }),
@@ -59,6 +59,7 @@ return {
         { name = "git" },
       }),
 
+      ---@diagnostic disable-next-line: missing-fields
       formatting = {
         format = function(entry, item)
           format_kinds(entry, item) -- add icons
