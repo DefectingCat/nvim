@@ -1,20 +1,72 @@
 return {
-  servers = {
-    tailwindcss = {
-      -- exclude a filetype from the default_config
-      filetypes_exclude = { "markdown" },
-      -- add additional filetypes to the default_config
-      filetypes_include = {},
-      -- to fully override the default_config, change the below
-      -- filetypes = {}
-    },
-    settings = {
-      tailwindCSS = {
-        includeLanguages = {
-          elixir = "html-eex",
-          eelixir = "html-eex",
-          heex = "html-eex",
-        },
+  tailwindcss = {
+    -- exclude a filetype from the default_config
+    filetypes_exclude = { "markdown" },
+    -- add additional filetypes to the default_config
+    filetypes_include = { "rust" },
+    -- to fully override the default_config, change the below
+    -- filetypes = {}
+  },
+  filetypes = {
+    "aspnetcorerazor",
+    "astro",
+    "astro-markdown",
+    "blade",
+    "clojure",
+    "django-html",
+    "htmldjango",
+    "edge",
+    "eelixir",
+    "elixir",
+    "ejs",
+    "erb",
+    "eruby",
+    "gohtml",
+    "gohtmltmpl",
+    "haml",
+    "handlebars",
+    "hbs",
+    "html",
+    "htmlangular",
+    "html-eex",
+    "heex",
+    "jade",
+    "leaf",
+    "liquid",
+    "markdown",
+    "mdx",
+    "mustache",
+    "njk",
+    "nunjucks",
+    "php",
+    "razor",
+    "slim",
+    "twig",
+    "css",
+    "less",
+    "postcss",
+    "sass",
+    "scss",
+    "stylus",
+    "sugarss",
+    "javascript",
+    "javascriptreact",
+    "reason",
+    "rescript",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "svelte",
+    "templ",
+    "rust",
+  },
+  settings = {
+    tailwindCSS = {
+      includeLanguages = {
+        elixir = "html-eex",
+        eelixir = "html-eex",
+        heex = "html-eex",
+        rust = "html",
       },
     },
   },
