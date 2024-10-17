@@ -29,6 +29,12 @@ map("v", "<", "<gv")
 map("t", "<C-x>", "<c-\\><c-n>")
 map("n", "<leader>tt", ":term<CR>", { desc = "Open new terminal" })
 
+-- buffers
+map("n", "<S-l>", "<CMD>bn<CR>")
+map("n", "<S-h>", "<CMD>bp<CR>")
+map("n", "<leader>x", "<CMD>bd<CR>")
+map("n", "<C-s>", "<CMD>w<CR>")
+
 -- tabs
 map("n", "<leader>tc", ":tabclose<CR>", { desc = "Close current tab" })
 
