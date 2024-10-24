@@ -1,4 +1,4 @@
-local rust_settings = require("rua.config.rust-analyzer")
+local rok, rust_settings = pcall(require, "rua.config.rust-analyzer")
 
 return {
   {
