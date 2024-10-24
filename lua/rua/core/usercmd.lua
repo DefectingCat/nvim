@@ -29,3 +29,47 @@ user_command("FormatToggle", function()
 end, {
   desc = "Re-enable autoformat-on-save",
 })
+
+-- mason install command
+-- create install all command
+local ensure_installed = {
+  "gopls",
+  "lua-language-server",
+  "rust-analyzer",
+  "html-lsp",
+  "vue-language-server", -- vue
+  "vtsls", -- typescript
+  "tailwindcss-language-server",
+  "eslint-lsp",
+  "css-lsp",
+  "cssmodules-language-server",
+  "json-lsp",
+  "yaml-language-server",
+  "docker-compose-language-service",
+  "dockerfile-language-server",
+  "bash-language-server",
+  "clangd",
+  "lemminx", -- xml svg
+  "deno",
+  -- tools
+  "prettier", -- prettier formatter
+  "stylua", -- lua formatter
+  "isort", -- python formatter
+  -- "black", -- python formatter
+  "pylint",
+  "shfmt",
+  "goimports",
+  "gofumpt",
+  "golines",
+  "gomodifytags",
+  "impl", -- go
+  "clang-format",
+  "taplo", -- toml
+  "delve", -- golang debug adapter
+}
+-- Create user command to synchronously install all Mason tools in `opts.ensure_installed`.
+user_command("MasonInstallAll", function()
+  for _, tool in ipairs(ensure_installed) do
+    vim.cmd("MasonInstall " .. tool)
+  end
+end, {})
