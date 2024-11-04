@@ -72,12 +72,12 @@ return {
   },
   {
     "stevearc/dressing.nvim",
-    event = "BufRead",
+    event = "BufReadPost",
     opts = {},
   },
   {
     "RRethy/vim-illuminate",
-    event = "BufRead",
+    event = "BufReadPost",
     opts = {
       delay = 200,
       large_file_cutoff = 2000,
@@ -113,7 +113,7 @@ return {
   },
   {
     "NvChad/nvim-colorizer.lua",
-    event = "BufRead",
+    event = "BufReadPost",
     opts = {
       user_default_options = {
         tailwind = true,
@@ -122,7 +122,7 @@ return {
   },
   {
     "lukas-reineke/indent-blankline.nvim",
-    event = "BufRead",
+    event = "BufReadPost",
     main = "ibl",
     ---@module "ibl"
     ---@type ibl.config
@@ -149,7 +149,7 @@ return {
   {
     "echasnovski/mini.indentscope",
     version = false,
-    event = "BufRead",
+    event = "BufReadPost",
     opts = {
       symbol = "│",
       -- options = { try_as_border = true },

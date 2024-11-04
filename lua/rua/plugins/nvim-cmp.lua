@@ -72,7 +72,7 @@ return {
   },
   {
     "supermaven-inc/supermaven-nvim",
-    event = "BufEnter",
+    event = "BufReadPost",
     config = function()
       require("supermaven-nvim").setup({})
     end,
