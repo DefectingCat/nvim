@@ -33,6 +33,7 @@ map("n", "<S-l>", "<CMD>bn<CR>")
 map("n", "<S-h>", "<CMD>bp<CR>")
 map("n", "<leader>x", "<CMD>bd<CR>")
 map("n", "<C-s>", "<CMD>w<CR>")
+map("n", "<leader>la", "<CMD>%bd|e#|bd#<CR>")
 
 -- tabs
 map("n", "<leader>tc", ":tabclose<CR>", { desc = "Close current tab" })
