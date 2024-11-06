@@ -19,6 +19,14 @@ autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
+-- remove relative line number when open terminal
+autocmd({ "TermOpen" }, {
+  callback = function()
+    vim.api.nvim_buf_set_option(0, "relativenumber", false)
+    vim.api.nvim_buf_set_option(0, "number", false)
+  end,
+})
+
 -- Automatically update changed file in Vim
 -- Triger `autoread` when files changes on disk
 -- https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
@@ -113,6 +121,7 @@ local function update_winbar()
   local buffer_count = get_buffer_count()
   local ft = vim.bo.filetype
   if ft == "NvimTree" then
+    vim.opt.winbar = ""
     return
   else
     vim.opt.winbar = "%#WinBar1#%m "

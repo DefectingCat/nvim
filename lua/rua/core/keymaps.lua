@@ -19,7 +19,6 @@ map("i", "<A-k>", "<Esc>:m .-2<CR>==gi")
 map("v", "<A-j>", ":m '>+1<CR>gv=gv")
 map("v", "<A-k>", ":m '<-2<CR>gv=gv")
 
--- map("n", "<C-a>", "gg<S-v>G")
 map("n", "$", "g_")
 map("v", "$", "g_")
 map("v", ">", ">gv")
