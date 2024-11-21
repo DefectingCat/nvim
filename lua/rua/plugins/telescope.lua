@@ -41,7 +41,13 @@ return {
       end,
       desc = "Find Diagnostics",
     },
-    { "<leader>b", "<cmd>Telescope buffers initial_mode=normal<CR>", desc = "telescope find buffers" },
+    {
+      "<leader>b",
+      function()
+        require("telescope.builtin").buffers({ sort_lastused = true })
+      end,
+      desc = "Buffers",
+    },
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
@@ -66,7 +72,9 @@ return {
 
     telescope.setup({
       defaults = {
-        path_display = { "smart" },
+        path_display = {
+          shorten = 2,
+        },
         mappings = {
           n = {
             ["d"] = require("telescope.actions").delete_buffer,
