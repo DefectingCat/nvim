@@ -44,7 +44,7 @@ return {
     {
       "<leader>b",
       function()
-        require("telescope.builtin").buffers({ sort_lastused = true, initial_mode = "normal" })
+        require("telescope.builtin").buffers({ sort_lastused = true })
       end,
       desc = "Buffers",
     },
