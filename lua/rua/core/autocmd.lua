@@ -121,7 +121,7 @@ local function update_winbar()
   local buffer_count = get_buffer_count()
   local ft = vim.bo.filetype
   if ft == "NvimTree" then
-    vim.opt.winbar = ""
+    vim.opt.winbar = "RUA"
     return
   else
     vim.opt.winbar = "%#WinBar1#%m "
