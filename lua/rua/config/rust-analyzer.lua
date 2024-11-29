@@ -1,6 +1,10 @@
 local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local capabilities = cmp_nvim_lsp.default_capabilities()
 
+-- vim.lsp.set_log_level("DEBUG")
+
+capabilities.workspace = { didChangeWatchedFiles = { dynamicRegistration = false } }
+
 local M = {
   capabilities = capabilities,
   settings = {
@@ -42,9 +46,21 @@ local M = {
           "target",
           "out",
           "examples/node_modules",
-          "../out",
-          "../node_modules",
-          "../.next",
+        },
+        watcherExclude = {
+          "**/_build",
+          "**/.classpath",
+          "**/.dart_tool",
+          "**/.factorypath",
+          "**/.flatpak-builder",
+          "**/.git/objects/**",
+          "**/.git/subtree-cache/**",
+          "**/.idea",
+          "**/.project",
+          "**/.scannerwork",
+          "**/.settings",
+          "**/.venv",
+          "**/node_modules",
         },
       },
     },
