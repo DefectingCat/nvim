@@ -36,6 +36,7 @@ local M = {
           ".scannerwork",
           ".settings",
           ".venv",
+          ".direnv",
           "archetype-resources",
           "bin",
           "docs",

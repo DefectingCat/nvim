@@ -24,19 +24,34 @@ else
     },
     {
       "mrcjkb/rustaceanvim",
-      version = "^4", -- Recommended
+      version = "^5", -- Recommended
       ft = { "rust" },
       opts = {
         server = {
           on_attach = function(_, bufnr)
-            vim.keymap.set("n", "<leader>ca", function()
+            local map = vim.keymap.set
+            local opts = { buffer = bufnr, silent = true }
+            map("n", "<leader>ca", function()
               vim.cmd.RustLsp("codeAction")
             end, { desc = "Code Action", buffer = bufnr })
-            vim.keymap.set("n", "<leader>da", function()
+            map("n", "<leader>da", function()
               vim.cmd.RustLsp("debuggables")
             end, { desc = "Rust Debuggables", buffer = bufnr })
+            map("n", "gh", function()
+              vim.cmd.RustLsp({ "hover", "actions" })
+            end, { silent = true, buffer = bufnr })
+            opts.desc = "Show LSP references"
+            map("n", "gr", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+            opts.desc = "Go to declaration"
+            map("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+            opts.desc = "Show LSP definitions"
+            map("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
+            opts.desc = "Show LSP implementations"
+            map("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
+            opts.desc = "Show LSP type definitions"
+            map("n", "<leader>gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
           end,
-          default_settings = rust_settings,
+          default_settings = rust_settings.settings,
         },
       },
       config = function(_, opts)
