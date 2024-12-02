@@ -73,7 +73,7 @@ return {
     telescope.setup({
       defaults = {
         path_display = {
-          shorten = 2,
+          shorten = 4,
         },
         mappings = {
           n = {
