@@ -1,3 +1,12 @@
+-- Detect large files and disable syntax highlighting for them
+local file_larger_than_100_kb = function(buf)
+  local max_filesize = 100 * 1024 -- 100 KB
+  local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+  if ok and stats and stats.size > max_filesize then
+    return true
+  end
+end
+
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
@@ -39,13 +48,11 @@ return {
     },
     auto_install = true,
     highlight = {
-      enable = true,
+      enable = function(_, buf)
+        return not file_larger_than_100_kb(buf)
+      end,
       disable = function(_, buf)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-          return true
-        end
+        return file_larger_than_100_kb(buf)
       end,
     },
   },
