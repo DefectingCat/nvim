@@ -11,6 +11,13 @@ return {
     { "<leader>fh", "<cmd>Telescope search_history<cr>", desc = "Find search history" },
     { "<leader>gm", "<cmd>Telescope git_commits<CR>", desc = "Git commits" },
     {
+      "<leader>fb",
+      function()
+        require("telescope.builtin").live_grep({ grep_open_files = true })
+      end,
+      desc = "Find in all buffers",
+    },
+    {
       "<leader>fc",
       function()
         require("telescope.builtin").command_history()
