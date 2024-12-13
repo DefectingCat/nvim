@@ -13,6 +13,9 @@ local M = {
       checkOnSave = {
         command = "clippy",
       },
+      rustfmt = {
+        overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
+      },
       cargo = {
         allFeatures = true,
         loadOutDirsFromCheck = true,
