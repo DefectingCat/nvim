@@ -30,7 +30,10 @@ return {
       map({ "n", "t" }, "<A-u>", function()
         horizontal:toggle()
       end, { noremap = true, silent = true })
+      map("n", "<C-/>", function()
+        horizontal:toggle()
+      end)
     end,
-    keys = { "<A-i>", "<A-u>" },
+    keys = { "<A-i>", "<A-u>", "<C-/>" },
   },
 }
