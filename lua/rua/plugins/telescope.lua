@@ -1,3 +1,13 @@
+local platform = vim.loop.os_uname().sysname
+
+local function fzf_plugin()
+  if platform == "FreeBSD" then
+    return { "nvim-telescope/telescope-fzf-native.nvim", build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release" }
+  else
+    return { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
+  end
+end
+
 return {
   "nvim-telescope/telescope.nvim",
   branch = "0.1.x",
@@ -58,7 +68,7 @@ return {
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    fzf_plugin(),
     "nvim-tree/nvim-web-devicons",
     "folke/todo-comments.nvim",
     "nvim-telescope/telescope-ui-select.nvim",
