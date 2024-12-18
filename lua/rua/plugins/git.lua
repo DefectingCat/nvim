@@ -88,6 +88,7 @@ return {
 
         -- Text object
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns select hunk")
+        map("n", "<leader>gi", ":Gitsigns<CR>", "Gitsigns")
       end,
       preview_config = {
         border = "solid",

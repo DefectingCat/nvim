@@ -38,6 +38,7 @@ map("n", "<leader>la", "<CMD>%bd|e#|bd#<CR>")
 -- tabs
 map("n", "<leader>tc", ":tabclose<CR>", { desc = "Close current tab" })
 
+-- search
 map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
 
 -- copy
