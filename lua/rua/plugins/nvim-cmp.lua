@@ -74,6 +74,10 @@ return {
     "supermaven-inc/supermaven-nvim",
     event = "BufReadPost",
     config = function()
+      local platform = vim.loop.os_uname().sysname
+      if platform == "FreeBSD" then
+        return
+      end
       require("supermaven-nvim").setup({})
     end,
   },
