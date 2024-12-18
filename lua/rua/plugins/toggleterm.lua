@@ -22,6 +22,17 @@ return {
         start_in_insert = true,
         display_name = "RUA",
       })
+      local lazygit = Terminal:new({
+        direction = "float",
+        auto_scroll = true,
+        persist_mode = false,
+        start_in_insert = true,
+        float_opts = {
+          border = "curved",
+        },
+        display_name = "Lazygit",
+        cmd = "lazygit",
+      })
 
       local map = vim.keymap.set
       map({ "n", "t" }, "<A-i>", function()
@@ -30,10 +41,13 @@ return {
       map({ "n", "t" }, "<A-u>", function()
         horizontal:toggle()
       end, { noremap = true, silent = true })
-      map("n", "<C-/>", function()
+      map({ "n", "t" }, "<C-/>", function()
         horizontal:toggle()
       end)
+      map("n", "<leader>gl", function()
+        lazygit:toggle()
+      end, { noremap = true, silent = true })
     end,
-    keys = { "<A-i>", "<A-u>", "<C-/>" },
+    keys = { "<A-i>", "<A-u>", "<C-/>", "<leader>gl" },
   },
 }
