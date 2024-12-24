@@ -77,6 +77,19 @@ return {
             capabilities = capabilities,
           })
         end,
+        ["dockerls"] = function()
+          lspconfig["dockerls"].setup({
+            settings = {
+              docker = {
+                languageserver = {
+                  formatter = {
+                    ignoreMultilineInstructions = true,
+                  },
+                },
+              },
+            },
+          })
+        end,
         ["tailwindcss"] = function()
           lspconfig["tailwindcss"].setup(require("rua.config.tailwindcss"))
         end,
