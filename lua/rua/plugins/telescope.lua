@@ -2,7 +2,10 @@ local platform = vim.loop.os_uname().sysname
 
 local function fzf_plugin()
   if platform == "FreeBSD" then
-    return { "nvim-telescope/telescope-fzf-native.nvim", build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release" }
+    return {
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
+    }
   else
     return { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
   end
@@ -90,7 +93,7 @@ return {
     telescope.setup({
       defaults = {
         path_display = {
-          shorten = 4,
+          -- shorten = 4,
         },
         mappings = {
           n = {
@@ -107,15 +110,19 @@ return {
       pickers = {
         buffers = {
           theme = "ivy",
+          previewer = false,
         },
         git_files = {
           theme = "ivy",
+          previewer = false,
         },
         oldfiles = {
           theme = "ivy",
+          previewer = false,
         },
         find_files = {
           theme = "ivy",
+          previewer = false,
         },
         live_grep = {
           theme = "ivy",
