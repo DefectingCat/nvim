@@ -25,6 +25,7 @@ opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldlevel = 20
 opt.ignorecase = true
 opt.wildignore:append({ "*/node_modules/*" })
+opt.wildignore:append("*/node_modules/*")
 -- opt.clipboard:append({ "unnamedplus" })
 -- opt.iskeyword:append("-")
 opt.termguicolors = true -- True color support
