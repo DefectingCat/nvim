@@ -3,6 +3,7 @@ return {
   build = ":TSUpdate",
   cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
   opts = {
+    indent = { enable = true },
     ensure_installed = {
       -- defaults
       "vim",
