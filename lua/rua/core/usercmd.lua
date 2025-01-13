@@ -1,5 +1,16 @@
 local user_command = vim.api.nvim_create_user_command
 
+user_command("Difft", function()
+  vim.cmd("windo diffthis")
+end, {
+  desc = "windo Diffthis",
+})
+user_command("Diffo", function()
+  vim.cmd("windo diffoff")
+end, {
+  desc = "windo Diffoff",
+})
+
 -- Toggle conform format on save
 user_command("FormatDisable", function(args)
   if args.bang then
