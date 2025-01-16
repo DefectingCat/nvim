@@ -98,6 +98,8 @@ return {
         mappings = {
           n = {
             ["d"] = require("telescope.actions").delete_buffer,
+            ["<C-q>"] = actions.send_selected_to_qflist + custom_actions.open_trouble_qflist,
+            ["<C-t>"] = trouble_telescope.open,
           },
           i = {
             ["<C-p>"] = actions.move_selection_previous, -- move to prev result
