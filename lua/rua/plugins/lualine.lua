@@ -19,6 +19,12 @@ return {
           { "fileformat" },
           { "filetype" },
         },
+        lualine_y = {
+          { "progress", color = { bg = "#de9aa3", fg = "#000000" } },
+        },
+        lualine_z = {
+          { "location", color = { bg = "#eac8c7" } },
+        },
       },
     })
   end,
