@@ -1,47 +1,95 @@
+-- 封装设置文件类型的函数
+local function set_filetype(patterns, filetype)
+  local autocmd = vim.api.nvim_create_autocmd
+  autocmd({ "BufNewFile", "BufRead" }, {
+    pattern = patterns,
+    callback = function()
+      local buf = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_option(buf, "filetype", filetype)
+    end,
+  })
+end
+
+-- 设置 markdown 高亮用于 mdx 文件
+set_filetype({ "*.mdx" }, "markdown")
+
+-- 设置 env 文件为 sh 类型
+set_filetype({ ".env.example", ".env.local", ".env.development", ".env.production" }, "sh")
+
+-- 设置终端相关选项
 local autocmd = vim.api.nvim_create_autocmd
--- local augroup = vim.api.nvim_create_augroup
-
--- set markdown highlight for mdx file
-autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = { "*.mdx" },
-  callback = function()
-    local buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
-  end,
-})
-
--- set env files to sh
-autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = { ".env.example", ".env.local", ".env.development", ".env.production" },
-  callback = function()
-    local buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_set_option(buf, "filetype", "sh")
-  end,
-})
-
--- remove relative line number when open terminal
 autocmd({ "TermOpen" }, {
   callback = function()
-    vim.api.nvim_buf_set_option(0, "relativenumber", false)
-    vim.api.nvim_buf_set_option(0, "number", false)
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "relativenumber", false)
+    vim.api.nvim_buf_set_option(buf, "number", false)
   end,
 })
 
--- Automatically update changed file in Vim
--- Triger `autoread` when files changes on disk
--- https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
--- https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
--- autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
---   command = [[silent! if mode() != 'c' && !bufexists("[Command Line]") | checktime | endif]],
--- })
+-- 解析 .gitignore 文件
+local function parse_gitignore()
+  local gitignore_path = vim.fn.findfile(".gitignore", ".;")
+  if gitignore_path == "" then
+    return {}
+  end
+  local rules = {}
+  local file = io.open(gitignore_path, "r")
+  if file then
+    for line in file:lines() do
+      line = line:gsub("^%s*(.-)%s*$", "%1")
+      if line ~= "" and not line:match("^#") then
+        table.insert(rules, line)
+      end
+    end
+    file:close()
+  end
+  return rules
+end
+-- 检查文件是否匹配 .gitignore 规则
+local function matches_gitignore(file_path, rules)
+  local path_sep = package.config:sub(1, 1)
+  for _, rule in ipairs(rules) do
+    local pattern = "^" .. rule:gsub("%.", "%%."):gsub("%*", ".*"):gsub("%?", ".") .. "$"
+    if file_path:match(pattern) then
+      return true
+    end
+    -- 处理目录匹配
+    if rule:sub(-1) == path_sep then
+      pattern = "^" .. rule:gsub("%.", "%%."):gsub("%*", ".*"):gsub("%?", ".")
+      if file_path:match(pattern) then
+        return true
+      end
+    end
+  end
+  return false
+end
+-- 自动更新磁盘上更改的文件，可跳过某些目录
+local skip_dirs = { "" } -- 手动指定要跳过检测的目录列表
+local gitignore_rules = parse_gitignore()
+autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  callback = function()
+    if vim.fn.mode() == "c" or vim.fn.bufexists("[Command Line]") then
+      return
+    end
+    local bufname = vim.api.nvim_buf_get_name(0)
+    for _, dir in ipairs(skip_dirs) do
+      if string.find(bufname, dir, 1, true) then
+        return -- 如果文件在手动跳过的目录中，不进行检测
+      end
+    end
+    if matches_gitignore(bufname, gitignore_rules) then
+      return -- 如果文件匹配 .gitignore 规则，不进行检测
+    end
+    vim.cmd("checktime")
+  end,
+})
 
--- Notification after file change
--- https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+-- 文件更改后的通知
 autocmd("FileChangedShellPost", {
   command = [[echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None]],
 })
 
----- 用o换行不要延续注释
+-- 用 o 换行不要延续注释
 local myAutoGroup = vim.api.nvim_create_augroup("myAutoGroup", {
   clear = true,
 })
@@ -50,12 +98,12 @@ autocmd("BufEnter", {
   pattern = "*",
   callback = function()
     vim.opt.formatoptions = vim.opt.formatoptions
-      - "o" -- O and o, don't continue comments
-      + "r" -- But do continue when pressing enter.
+      - "o" -- O 和 o，不延续注释
+      + "r" -- 按回车键时延续注释
   end,
 })
 
--- Highlight on yank
+-- 复制文本后高亮显示
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 autocmd("TextYankPost", {
   callback = function()
@@ -65,69 +113,83 @@ autocmd("TextYankPost", {
   pattern = "*",
 })
 
--- This autocmd will restore cursor position on file open
+-- 恢复光标位置
 autocmd("BufReadPost", {
   pattern = "*",
   callback = function()
     local line = vim.fn.line("'\"")
+    local filetype = vim.bo.filetype
     if
       line > 1
       and line <= vim.fn.line("$")
-      and vim.bo.filetype ~= "commit"
-      and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
+      and filetype ~= "commit"
+      and vim.fn.index({ "xxd", "gitrebase" }, filetype) == -1
     then
       vim.cmd('normal! g`"')
     end
   end,
 })
 
--- Function to get the full path and replace the home directory with ~
+-- 函数：获取窗口栏路径
 local function get_winbar_path()
-  local relative_filepath = vim.fn.expand("%:.")
-  return relative_filepath
+  return vim.fn.expand("%:.")
 end
--- Function to get the number of open buffers using vim.fn.getbufinfo()
+
+-- 函数：获取打开缓冲区的数量
 local function get_buffer_count()
   local buffers = vim.fn.getbufinfo({ buflisted = 1 })
   return #buffers
 end
--- Function to get the hostname with error handling
+
+-- 函数：获取主机名，添加错误日志
 local function get_hostname()
   local hostname = vim.fn.systemlist("hostname")
   if #hostname > 0 then
     return hostname[1]
   else
+    vim.notify("Failed to get hostname", vim.log.levels.ERROR)
     return "unknown"
   end
 end
--- Function to update the winbar for a specific buffer
+
+-- 函数：更新指定缓冲区的窗口栏
 local function update_winbar(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   local old_buf = vim.api.nvim_get_current_buf()
   vim.api.nvim_set_current_buf(bufnr)
   local home_replaced = get_winbar_path()
-  local buffer_count = get_buffer_count()
+  -- local buffer_count = get_buffer_count()
   local ft = vim.bo.filetype
   local hostname = get_hostname()
+  local winbar
+
   if ft == "NvimTree" then
-    vim.api.nvim_buf_set_option(bufnr, "winbar", "RUA")
+    winbar = "RUA"
   else
     local winbar_prefix = "%#WinBar1#%m "
-    -- local buffer_count_str = "%#WinBar2#(" .. buffer_count .. ") "
     local winbar_suffix = "%*%=%#WinBar2#" .. hostname
-    -- local winbar = winbar_prefix .. buffer_count_str .. "%#WinBar1#" .. home_replaced .. winbar_suffix
-    local winbar = winbar_prefix .. "%#WinBar1#" .. home_replaced .. winbar_suffix
-    vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
+    winbar = winbar_prefix .. "%#WinBar1#" .. home_replaced .. winbar_suffix
   end
-  vim.api.nvim_set_current_buf(old_buf)
+
+  vim.opt.winbar = winbar
+  -- 检查缓冲区是否支持设置 winbar
+  -- if vim.api.nvim_buf_is_valid(bufnr) then
+  --   vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
+  -- end
+  -- 检查 old_buf 是否有效
+  -- if vim.api.nvim_buf_is_valid(old_buf) then
+  --   vim.api.nvim_set_current_buf(old_buf)
+  -- end
 end
--- Autocmd to update the winbar on BufEnter and WinEnter events
-vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+
+-- 自动命令：在 BufEnter 和 WinEnter 事件时更新窗口栏
+autocmd({ "BufEnter", "WinEnter" }, {
   callback = function(args)
     update_winbar(args.buf)
   end,
 })
--- Update winbar for all existing buffers on startup
+
+-- 启动时更新所有现有缓冲区的窗口栏
 local all_buffers = vim.api.nvim_list_bufs()
 for _, buf in ipairs(all_buffers) do
   if vim.api.nvim_buf_is_valid(buf) then
@@ -135,20 +197,24 @@ for _, buf in ipairs(all_buffers) do
   end
 end
 
--- large file detection
+-- 大文件检测
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
-
-vim.api.nvim_create_autocmd({ "BufReadPre" }, {
+autocmd({ "BufReadPre" }, {
   callback = function()
-    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
-    -- 100 KB
-    if ok and stats and (stats.size > 100 * 1024) then
+    local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+    local ok, stats = pcall(vim.loop.fs_stat, bufname)
+    local large_file_size = 100 * 1024 -- 100 KB
+
+    if ok and stats and stats.size > large_file_size then
       vim.b.large_buf = true
-      -- vim.cmd("syntax off")
-      -- vim.cmd("IlluminatePauseBuf") -- disable vim-illuminate
-      -- vim.cmd("IndentBlanklineDisable") -- disable indent-blankline.nvim
       vim.opt_local.foldmethod = "manual"
       vim.opt_local.spell = false
+      -- 可以根据文件类型进一步优化
+      local filetype = vim.bo.filetype
+      if filetype == "lua" then
+        -- 例如，对于 Lua 文件禁用某些插件
+        -- vim.cmd("SomeLuaPluginDisable")
+      end
     else
       vim.b.large_buf = false
     end
