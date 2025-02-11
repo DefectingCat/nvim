@@ -81,57 +81,43 @@ autocmd("BufReadPost", {
   end,
 })
 
--- This add the bar that shows the file path on the top right
--- vim.opt.winbar = "%=%m %f"
---
--- Modified version of the bar, shows pathname on right, hostname left
--- vim.opt.winbar = "%=" .. vim.fn.systemlist("hostname")[1] .. "            %m %f"
---
--- This shows pathname on the left and hostname on the right
--- vim.opt.winbar = "%m %f%=" .. vim.fn.systemlist("hostname")[1]
---
+-- Function to get the full path and replace the home directory with ~
+local function get_winbar_path()
+  local relative_filepath = vim.fn.expand("%:.")
+  return relative_filepath
+end
+-- Function to get the number of open buffers using vim.fn.getbufinfo()
+local function get_buffer_count()
+  local buffers = vim.fn.getbufinfo({ buflisted = 1 })
+  return #buffers
+end
+-- Function to get the hostname with error handling
+local function get_hostname()
+  local hostname = vim.fn.systemlist("hostname")
+  if #hostname > 0 then
+    return hostname[1]
+  else
+    return "unknown"
+  end
+end
 -- Using different colors, defining the colors in this file
 -- local colors = require("config.colors").load_colors()
 -- vim.cmd(string.format([[highlight WinBar1 guifg=%s]], colors["linkarzu_color03"]))
 -- vim.cmd(string.format([[highlight WinBar2 guifg=%s]], colors["linkarzu_color02"]))
--- Function to get the full path and replace the home directory with ~
-local function get_winbar_path()
-  -- local filename = vim.fn.expand("%:t")
-  -- local absolute_filepath = vim.fn.expand("%:p")
-  local relative_filepath = vim.fn.expand("%:.")
-  -- local full_path = vim.fn.expand("%:p")
-  -- return full_path:gsub(vim.fn.expand("$HOME"), "~")
-  return relative_filepath
-end
--- Function to get the number of open buffers using the :ls command
-local function get_buffer_count()
-  local buffers = vim.fn.execute("ls")
-  local count = 0
-  -- Match only lines that represent buffers, typically starting with a number followed by a space
-  for line in string.gmatch(buffers, "[^\r\n]+") do
-    if string.match(line, "^%s*%d+") then
-      count = count + 1
-    end
-  end
-  return count
-end
 -- Function to update the winbar
 local function update_winbar()
   local home_replaced = get_winbar_path()
   local buffer_count = get_buffer_count()
   local ft = vim.bo.filetype
+  local hostname = get_hostname()
   if ft == "NvimTree" then
     vim.opt.winbar = "RUA"
     return
   else
-    vim.opt.winbar = "%#WinBar1#%m "
-      .. "%#WinBar2#("
-      .. buffer_count
-      .. ") "
-      .. "%#WinBar1#"
-      .. home_replaced
-      .. "%*%=%#WinBar2#"
-      .. vim.fn.systemlist("hostname")[1]
+    local winbar_prefix = "%#WinBar1#%m "
+    local buffer_count_str = "%#WinBar2#(" .. buffer_count .. ") "
+    local winbar_suffix = "%*%=%#WinBar2#" .. hostname
+    vim.opt.winbar = winbar_prefix .. buffer_count_str .. "%#WinBar1#" .. home_replaced .. winbar_suffix
   end
 end
 -- Autocmd to update the winbar on BufEnter and WinEnter events
