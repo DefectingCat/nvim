@@ -100,30 +100,40 @@ local function get_hostname()
     return "unknown"
   end
 end
--- Using different colors, defining the colors in this file
--- local colors = require("config.colors").load_colors()
--- vim.cmd(string.format([[highlight WinBar1 guifg=%s]], colors["linkarzu_color03"]))
--- vim.cmd(string.format([[highlight WinBar2 guifg=%s]], colors["linkarzu_color02"]))
--- Function to update the winbar
-local function update_winbar()
+-- Function to update the winbar for a specific buffer
+local function update_winbar(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  local old_buf = vim.api.nvim_get_current_buf()
+  vim.api.nvim_set_current_buf(bufnr)
   local home_replaced = get_winbar_path()
   local buffer_count = get_buffer_count()
   local ft = vim.bo.filetype
   local hostname = get_hostname()
   if ft == "NvimTree" then
-    vim.opt.winbar = "RUA"
-    return
+    vim.api.nvim_buf_set_option(bufnr, "winbar", "RUA")
   else
     local winbar_prefix = "%#WinBar1#%m "
-    local buffer_count_str = "%#WinBar2#(" .. buffer_count .. ") "
+    -- local buffer_count_str = "%#WinBar2#(" .. buffer_count .. ") "
     local winbar_suffix = "%*%=%#WinBar2#" .. hostname
-    vim.opt.winbar = winbar_prefix .. buffer_count_str .. "%#WinBar1#" .. home_replaced .. winbar_suffix
+    -- local winbar = winbar_prefix .. buffer_count_str .. "%#WinBar1#" .. home_replaced .. winbar_suffix
+    local winbar = winbar_prefix .. "%#WinBar1#" .. home_replaced .. winbar_suffix
+    vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
   end
+  vim.api.nvim_set_current_buf(old_buf)
 end
 -- Autocmd to update the winbar on BufEnter and WinEnter events
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
-  callback = update_winbar,
+  callback = function(args)
+    update_winbar(args.buf)
+  end,
 })
+-- Update winbar for all existing buffers on startup
+local all_buffers = vim.api.nvim_list_bufs()
+for _, buf in ipairs(all_buffers) do
+  if vim.api.nvim_buf_is_valid(buf) then
+    update_winbar(buf)
+  end
+end
 
 -- large file detection
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
