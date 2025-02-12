@@ -57,9 +57,15 @@ return {
   --   end,
   -- },
   {
-    "slugbyte/lackluster.nvim",
-    lazy = false,
-    priority = 1000,
+    "aileot/ex-colors.nvim",
+    lazy = true,
+    cmd = "ExColors",
+    ---@type ExColors.Config
+    opts = {},
+  },
+  {
+    "nvim-tree/nvim-web-devicons",
+    lazy = true,
     init = function()
       local lackluster = require("lackluster")
       require("nvim-web-devicons").setup({
@@ -71,10 +77,37 @@ return {
           },
         },
       })
-      -- require("lackluster").setup({})
-      -- vim.cmd.colorscheme("lackluster")
-      vim.cmd.colorscheme("lackluster-hack") -- my favorite
-      -- vim.cmd.colorscheme("lackluster-mint")
     end,
+  },
+  {
+    "slugbyte/lackluster.nvim",
+    lazy = true,
+    -- priority = 1000,
+    -- init = function()
+    --   require("ex-colors").setup({
+    --     -- included_patterns = require("ex-colors.presets").recommended.included_patterns + {
+    --     --   "^Cmp%u", -- hrsh7th/nvim-cmp
+    --     --   '^GitSigns%u', -- lewis6991/gitsigns.nvim
+    --     --   '^RainbowDelimiter%u', -- HiPhish/rainbow-delimiters.nvim
+    --     -- },
+    --     autocmd_patterns = {
+    --       CmdlineEnter = {
+    --         ["*"] = {
+    --           "^debug%u",
+    --           "^health%u",
+    --         },
+    --       },
+    --       -- FileType = {
+    --       --   ['Telescope*'] = {
+    --       --     '^Telescope%u', -- nvim-telescope/telescope.nvim
+    --       --   },
+    --       -- },
+    --     },
+    --   })
+    --   -- require("lackluster").setup({})
+    --   -- vim.cmd.colorscheme("lackluster")
+    --   -- vim.cmd.colorscheme("ex-lackluster-hack")
+    --   -- vim.cmd.colorscheme("lackluster-mint")
+    -- end,
   },
 }
