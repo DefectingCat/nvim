@@ -8,7 +8,8 @@ return {
     -- configure lualine with modified theme
     lualine.setup({
       options = {
-        theme = "catppuccin",
+        -- theme = "catppuccin",
+        theme = "lackluster",
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
       },
@@ -19,12 +20,12 @@ return {
           { "fileformat" },
           { "filetype" },
         },
-        lualine_y = {
-          { "progress", color = { bg = "#de9aa3", fg = "#000000" } },
-        },
-        lualine_z = {
-          { "location", color = { bg = "#eac8c7" } },
-        },
+        -- lualine_y = {
+        --   { "progress", color = { bg = "#de9aa3", fg = "#000000" } },
+        -- },
+        -- lualine_z = {
+        --   { "location", color = { bg = "#eac8c7" } },
+        -- },
       },
     })
   end,
