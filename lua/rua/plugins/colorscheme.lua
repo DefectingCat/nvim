@@ -1,3 +1,44 @@
+local init_lackluster = function()
+  require("ex-colors").setup({
+    -- included_patterns = require("ex-colors.presets").recommended.included_patterns + {
+    --   "^Cmp%u", -- hrsh7th/nvim-cmp
+    --   '^GitSigns%u', -- lewis6991/gitsigns.nvim
+    --   '^RainbowDelimiter%u', -- HiPhish/rainbow-delimiters.nvim
+    -- },
+    autocmd_patterns = {
+      CmdlineEnter = {
+        ["*"] = {
+          "^debug%u",
+          "^health%u",
+        },
+      },
+      -- FileType = {
+      --   ['Telescope*'] = {
+      --     '^Telescope%u', -- nvim-telescope/telescope.nvim
+      --   },
+      -- },
+    },
+  })
+  require("lackluster").setup({
+    tweak_syntax = {
+      string = "default",
+      string_escape = "default",
+      comment = "#3b3b3b",
+      builtin = "default", -- builtin modules and functions
+      type = "default",
+      keyword = "default",
+      keyword_return = "default",
+      keyword_exception = "default",
+    },
+    tweak_background = {
+      normal = "none",
+    },
+  })
+  -- vim.cmd.colorscheme("lackluster")
+  -- vim.cmd.colorscheme("lackluster-hack")
+  -- vim.cmd.colorscheme("lackluster-mint")
+end
+
 return {
   -- {
   --   "catppuccin/nvim",
@@ -83,31 +124,6 @@ return {
     "slugbyte/lackluster.nvim",
     lazy = true,
     -- priority = 1000,
-    -- init = function()
-    --   require("ex-colors").setup({
-    --     -- included_patterns = require("ex-colors.presets").recommended.included_patterns + {
-    --     --   "^Cmp%u", -- hrsh7th/nvim-cmp
-    --     --   '^GitSigns%u', -- lewis6991/gitsigns.nvim
-    --     --   '^RainbowDelimiter%u', -- HiPhish/rainbow-delimiters.nvim
-    --     -- },
-    --     autocmd_patterns = {
-    --       CmdlineEnter = {
-    --         ["*"] = {
-    --           "^debug%u",
-    --           "^health%u",
-    --         },
-    --       },
-    --       -- FileType = {
-    --       --   ['Telescope*'] = {
-    --       --     '^Telescope%u', -- nvim-telescope/telescope.nvim
-    --       --   },
-    --       -- },
-    --     },
-    --   })
-    --   -- require("lackluster").setup({})
-    --   -- vim.cmd.colorscheme("lackluster")
-    --   -- vim.cmd.colorscheme("ex-lackluster-hack")
-    --   -- vim.cmd.colorscheme("lackluster-mint")
-    -- end,
+    -- init = init_lackluster,
   },
 }
