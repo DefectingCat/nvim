@@ -158,6 +158,9 @@ local function update_winbar(bufnr)
   local old_buf = vim.api.nvim_get_current_buf()
   vim.api.nvim_set_current_buf(bufnr)
   local home_replaced = get_winbar_path()
+  if home_replaced == "" then
+    return
+  end
   -- local buffer_count = get_buffer_count()
   local ft = vim.bo.filetype
   local hostname = get_hostname()
@@ -171,15 +174,15 @@ local function update_winbar(bufnr)
     winbar = winbar_prefix .. "%#WinBar1#" .. home_replaced .. winbar_suffix
   end
 
-  vim.opt.winbar = winbar
+  -- vim.opt.winbar = winbar
   -- 检查缓冲区是否支持设置 winbar
-  -- if vim.api.nvim_buf_is_valid(bufnr) then
-  --   vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
-  -- end
+  if vim.api.nvim_buf_is_valid(bufnr) then
+    vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
+  end
   -- 检查 old_buf 是否有效
-  -- if vim.api.nvim_buf_is_valid(old_buf) then
-  --   vim.api.nvim_set_current_buf(old_buf)
-  -- end
+  if vim.api.nvim_buf_is_valid(old_buf) then
+    vim.api.nvim_set_current_buf(old_buf)
+  end
 end
 
 -- 自动命令：在 BufEnter 和 WinEnter 事件时更新窗口栏
