@@ -108,16 +108,16 @@ return {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
     init = function()
-      local lackluster = require("lackluster")
-      require("nvim-web-devicons").setup({
-        color_icons = false,
-        override = {
-          ["default_icon"] = {
-            color = lackluster.color.gray4,
-            name = "Default",
-          },
-        },
-      })
+      -- local lackluster = require("lackluster")
+      -- require("nvim-web-devicons").setup({
+      --   color_icons = false,
+      --   override = {
+      --     ["default_icon"] = {
+      --       color = lackluster.color.gray4,
+      --       name = "Default",
+      --     },
+      --   },
+      -- })
     end,
   },
   {
@@ -125,5 +125,38 @@ return {
     lazy = true,
     -- priority = 1000,
     -- init = init_lackluster,
+  },
+  {
+    "wheat-thin-wiens/rei.nvim",
+    priority = 1000,
+    lazy = false,
+    config = function()
+      require("rei").setup({
+        styles = {
+          comments = { italic = true },
+          keywords = {},
+          identifiers = {},
+          functions = { italic = true, bold = true },
+          variables = {},
+          booleans = {},
+          loops = { italic = true },
+        },
+        integrations = {
+          gitsigns = true,
+          indent_blankline = true,
+          lsp = true,
+          mason = true,
+          neotree = true,
+          render_markdown = true,
+          telescope = true, -- 'borderless' theme also available, leave as true for default theme
+          treesitter = true,
+          which_key = true,
+        },
+        transparency = true, -- Enables / Disables background transparency
+        terminal_colors = true,
+        highlight_overrides = {},
+      })
+      -- vim.cmd.colorscheme("rei")
+    end,
   },
 }
