@@ -80,7 +80,7 @@ vim.api.nvim_set_hl(0, "Comment", { cterm = { italic = true }, fg = 7434609, ita
 vim.api.nvim_set_hl(0, "Conceal", { fg = 3094595 })
 vim.api.nvim_set_hl(0, "Conditional", { cterm = { italic = true }, fg = 9550057, italic = true })
 vim.api.nvim_set_hl(0, "Constant", { fg = 16618641 })
-vim.api.nvim_set_hl(0, "CurSearch", { bg = 10337488, fg = 5595507 })
+vim.api.nvim_set_hl(0, "CurSearch", { bg = 9550057, fg = 923427 })
 vim.api.nvim_set_hl(0, "Cursor", { bg = 13487565, fg = 5595507 })
 vim.api.nvim_set_hl(0, "CursorIM", { bg = 13487565, fg = 5595507 })
 vim.api.nvim_set_hl(0, "CursorLine", { bg = 3094595 })
@@ -115,7 +115,7 @@ vim.api.nvim_set_hl(
   { bold = true, cterm = { bold = true, italic = true }, fg = 12168934, italic = true }
 )
 vim.api.nvim_set_hl(0, "Identifier", { fg = 13487565 })
-vim.api.nvim_set_hl(0, "IncSearch", { bg = 10337488, fg = 5595507 })
+vim.api.nvim_set_hl(0, "IncSearch", { bg = 9550057, fg = 923427 })
 vim.api.nvim_set_hl(0, "Include", { fg = 12168934 })
 vim.api.nvim_set_hl(0, "Keyword", { fg = 12168934 })
 vim.api.nvim_set_hl(0, "Label", { fg = 12168934 })

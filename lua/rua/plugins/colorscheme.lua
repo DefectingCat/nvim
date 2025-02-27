@@ -161,9 +161,10 @@ return {
     -- init = init_lackluster,
   },
   {
-    "wheat-thin-wiens/rei.nvim",
-    -- priority = 1000,
-    lazy = true,
+    -- "wheat-thin-wiens/rei.nvim",
+    "DefectingCat/rei.nvim",
+    priority = 1000,
+    -- lazy = true,
     config = function()
       require("rei").setup({
         styles = {
@@ -176,15 +177,7 @@ return {
           loops = { italic = true },
         },
         integrations = {
-          gitsigns = true,
-          indent_blankline = true,
-          lsp = true,
-          mason = true,
-          neotree = true,
-          render_markdown = true,
-          telescope = true, -- 'borderless' theme also available, leave as true for default theme
-          treesitter = true,
-          which_key = true,
+          telescope = "borderless", -- 'borderless' theme also available, leave as true for default theme
         },
         transparency = true, -- Enables / Disables background transparency
         terminal_colors = true,
