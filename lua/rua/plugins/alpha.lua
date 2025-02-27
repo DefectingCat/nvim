@@ -42,7 +42,7 @@ return {
     local dashboard = require("alpha.themes.dashboard")
 
     local logo = require("rua.config.logos")
-    dashboard.section.header.val = logo.f
+    dashboard.section.header.val = logo.c
     dashboard.section.buttons.val = {
       button("SPC l", "💤 > Lazy", "<cmd>Lazy<CR>"),
       button("SPC e", "  > Nvim Tree", "<cmd>NvimTreeToggle<CR>"),

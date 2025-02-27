@@ -1,3 +1,15 @@
+local init_lackluster_icons = function()
+  local lackluster = require("lackluster")
+  require("nvim-web-devicons").setup({
+    color_icons = false,
+    override = {
+      ["default_icon"] = {
+        color = lackluster.color.gray4,
+        name = "Default",
+      },
+    },
+  })
+end
 local init_lackluster = function()
   require("ex-colors").setup({
     -- included_patterns = require("ex-colors.presets").recommended.included_patterns + {
@@ -98,6 +110,39 @@ return {
   --   end,
   -- },
   {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons", "wheat-thin-wiens/rei.nvim" },
+    event = "VimEnter",
+    config = function()
+      local lualine = require("lualine")
+
+      -- configure lualine with modified theme
+      lualine.setup({
+        options = {
+          -- theme = "catppuccin",
+          -- theme = "lackluster",
+          theme = "rei",
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
+        },
+        extensions = { "quickfix", "trouble", "mason", "lazy", "nvim-tree" },
+        sections = {
+          lualine_x = {
+            { "encoding" },
+            { "fileformat" },
+            { "filetype" },
+          },
+          -- lualine_y = {
+          --   { "progress", color = { bg = "#de9aa3", fg = "#000000" } },
+          -- },
+          -- lualine_z = {
+          --   { "location", color = { bg = "#eac8c7" } },
+          -- },
+        },
+      })
+    end,
+  },
+  {
     "aileot/ex-colors.nvim",
     lazy = true,
     cmd = "ExColors",
@@ -107,18 +152,7 @@ return {
   {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
-    init = function()
-      -- local lackluster = require("lackluster")
-      -- require("nvim-web-devicons").setup({
-      --   color_icons = false,
-      --   override = {
-      --     ["default_icon"] = {
-      --       color = lackluster.color.gray4,
-      --       name = "Default",
-      --     },
-      --   },
-      -- })
-    end,
+    -- init = init_lackluster_icons,
   },
   {
     "slugbyte/lackluster.nvim",
@@ -128,8 +162,8 @@ return {
   },
   {
     "wheat-thin-wiens/rei.nvim",
-    priority = 1000,
-    lazy = false,
+    -- priority = 1000,
+    lazy = true,
     config = function()
       require("rei").setup({
         styles = {
