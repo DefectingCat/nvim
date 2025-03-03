@@ -208,7 +208,7 @@ return {
   {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
-    -- init = init_lackluster_icons,
+    init = init_lackluster_icons,
   },
   {
     "slugbyte/lackluster.nvim",
