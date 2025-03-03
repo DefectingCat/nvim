@@ -176,7 +176,7 @@ return {
       lualine.setup({
         options = {
           -- theme = "catppuccin",
-          -- theme = "lackluster",
+          theme = "lackluster",
           -- theme = "rei",
           component_separators = { left = "", right = "" },
           section_separators = { left = "", right = "" },
