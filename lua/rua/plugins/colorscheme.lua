@@ -1,10 +1,11 @@
 local init_lackluster_icons = function()
-  local lackluster = require("lackluster")
+  -- local lackluster = require("lackluster")
   require("nvim-web-devicons").setup({
     color_icons = false,
     override = {
       ["default_icon"] = {
-        color = lackluster.color.gray4,
+        -- color = lackluster.color.gray4,
+        color = "#444444",
         name = "Default",
       },
     },

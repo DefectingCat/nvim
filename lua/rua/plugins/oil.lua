@@ -11,7 +11,8 @@ return {
     },
   },
   cmd = { "Oil" },
-  lazy = false,
+  -- lazy = false,
+  event = "VimEnter",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
     require("oil").setup({
