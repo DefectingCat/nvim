@@ -1,6 +1,10 @@
 return {
   "nvim-tree/nvim-tree.lua",
-  dependencies = "nvim-tree/nvim-web-devicons",
+  dependencies = {
+    { "nvim-tree/nvim-web-devicons" },
+    { "antosha417/nvim-lsp-file-operations", config = true },
+  },
+  lazy = true,
   -- event = "VeryLazy",
   cmd = {
     "NvimTreeFindFileToggle",

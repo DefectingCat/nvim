@@ -184,6 +184,14 @@ return {
     "j-hui/fidget.nvim", -- lsp messages
     event = "VeryLazy",
     opts = {
+      integration = {
+        ["nvim-tree"] = {
+          enable = false, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
+        },
+        ["xcodebuild-nvim"] = {
+          enable = false, -- Integrate with wojciech-kulik/xcodebuild.nvim (if installed)
+        },
+      },
       notification = {
         window = {
           winblend = 0, -- Background color opacity in the notification window
