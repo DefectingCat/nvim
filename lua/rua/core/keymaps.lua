@@ -7,9 +7,13 @@ map("n", "<ESC>", ":nohl<CR>", { desc = "Clear search highlights", silent = true
 -- map("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- window management
-map("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
-map("n", "<leader>_", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
-map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
+-- map("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
+-- map("n", "<leader>_", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
+-- map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
+map("n", "<C-j>", "<C-w>j")
+map("n", "<C-k>", "<C-w>k")
+map("n", "<C-l>", "<C-w>l")
+map("n", "<C-h>", "<C-w>h")
 
 -- move lines
 map("n", "<A-j>", ":m .+1<CR>==")
