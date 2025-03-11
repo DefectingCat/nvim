@@ -47,6 +47,9 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
+    cond = function()
+      return vim.fn.isdirectory(".git") == 1
+    end,
     opts = {
       on_attach = function(bufnr)
         local gs = package.loaded.gitsigns

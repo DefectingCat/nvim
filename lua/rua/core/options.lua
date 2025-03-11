@@ -78,7 +78,6 @@ opt.number = true -- 显示行号
 opt.pumblend = 10 -- 弹出菜单透明度
 opt.pumheight = 10 -- 弹出菜单最大条目数
 opt.relativenumber = true -- 显示相对行号
-opt.scrolloff = 4 -- 滚动时保留的行数
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 opt.shiftround = true -- 缩进取整
 opt.shiftwidth = 2 -- 缩进大小

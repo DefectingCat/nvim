@@ -1,23 +1,4 @@
 return {
-  -- {
-  --   "echasnovski/mini.icons",
-  --   lazy = true,
-  --   opts = {
-  --     file = {
-  --       [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
-  --       ["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
-  --     },
-  --     filetype = {
-  --       dotenv = { glyph = "", hl = "MiniIconsYellow" },
-  --     },
-  --   },
-  --   init = function()
-  --     package.preload["nvim-web-devicons"] = function()
-  --       require("mini.icons").mock_nvim_web_devicons()
-  --       return package.loaded["nvim-web-devicons"]
-  --     end
-  --   end,
-  -- },
   {
     "nvim-pack/nvim-spectre",
     opts = {},
@@ -146,6 +127,42 @@ return {
       },
     },
   },
+  {
+    "folke/todo-comments.nvim",
+    opts = {},
+  },
+  {
+    "j-hui/fidget.nvim", -- lsp messages
+    event = "VeryLazy",
+    opts = {
+      integration = {
+        ["nvim-tree"] = {
+          enable = false, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
+        },
+        ["xcodebuild-nvim"] = {
+          enable = false, -- Integrate with wojciech-kulik/xcodebuild.nvim (if installed)
+        },
+      },
+      notification = {
+        window = {
+          winblend = 0, -- Background color opacity in the notification window
+        },
+      },
+    },
+  },
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    init = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 500
+    end,
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
   -- {
   --   "echasnovski/mini.indentscope",
   --   version = false,
@@ -176,27 +193,23 @@ return {
   --     })
   --   end,
   -- },
-  {
-    "folke/todo-comments.nvim",
-    opts = {},
-  },
-  {
-    "j-hui/fidget.nvim", -- lsp messages
-    event = "VeryLazy",
-    opts = {
-      integration = {
-        ["nvim-tree"] = {
-          enable = false, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
-        },
-        ["xcodebuild-nvim"] = {
-          enable = false, -- Integrate with wojciech-kulik/xcodebuild.nvim (if installed)
-        },
-      },
-      notification = {
-        window = {
-          winblend = 0, -- Background color opacity in the notification window
-        },
-      },
-    },
-  },
+  -- {
+  --   "echasnovski/mini.icons",
+  --   lazy = true,
+  --   opts = {
+  --     file = {
+  --       [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
+  --       ["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
+  --     },
+  --     filetype = {
+  --       dotenv = { glyph = "", hl = "MiniIconsYellow" },
+  --     },
+  --   },
+  --   init = function()
+  --     package.preload["nvim-web-devicons"] = function()
+  --       require("mini.icons").mock_nvim_web_devicons()
+  --       return package.loaded["nvim-web-devicons"]
+  --     end
+  --   end,
+  -- },
 }
