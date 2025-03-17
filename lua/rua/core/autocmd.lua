@@ -225,3 +225,8 @@ autocmd({ "BufReadPre" }, {
   group = aug,
   pattern = "*",
 })
+
+-- 在 Vim 退出前保存会话
+autocmd("VimLeavePre", {
+  command = ":SessionSave",
+})

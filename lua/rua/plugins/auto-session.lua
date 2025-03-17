@@ -2,6 +2,7 @@ return {
   "rmagatti/auto-session",
   lazy = true,
   cmd = {
+    "SessionSave",
     "SessionRestore",
   },
   -- event = "VeryLazy",
