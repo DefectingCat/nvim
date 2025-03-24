@@ -84,11 +84,11 @@ local ensure_installed = {
   },
   -- Formatters
   formatters = {
-    "prettier", -- prettier formatter
+    "prettierd", -- prettier formatter
     "stylua", -- lua formatter
     "isort", -- python formatter
     -- "black", -- python formatter
-    "shfmt",
+    -- "shfmt",
     "goimports",
     "gofumpt",
     "golines",
