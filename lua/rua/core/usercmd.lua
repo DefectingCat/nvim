@@ -116,8 +116,20 @@ for _, group in pairs(ensure_installed) do
 end
 
 -- Create user command to synchronously install all Mason tools in `opts.ensure_installed`.
-user_command("MasonInstallAll", function()
+vim.api.nvim_create_user_command("MasonInstallAll", function()
+  -- 使用 pcall 引入 mason-registry
+  local success, registry = pcall(require, "mason-registry")
+  if not success then
+    vim.notify("Failed to load mason-registry: " .. registry, vim.log.levels.ERROR)
+    return
+  end
+
   for _, tool in ipairs(flattened_ensure_installed) do
-    vim.cmd("MasonInstall " .. tool)
+    local pkg = registry.get_package(tool)
+    if not pkg:is_installed() then
+      vim.cmd("MasonInstall " .. tool)
+    else
+      vim.notify(tool .. " is already installed", vim.log.levels.INFO)
+    end
   end
 end, {})
