@@ -77,6 +77,30 @@ return {
             capabilities = capabilities,
           })
         end,
+        ["biome"] = function()
+          lspconfig["biome"].setup({
+            capabilities = capabilities,
+            settings = {
+              cmd = { "biome", "lsp-proxy" },
+              filetypes = {
+                "astro",
+                "css",
+                "graphql",
+                "javascript",
+                "javascriptreact",
+                "json",
+                "jsonc",
+                "svelte",
+                "typescript",
+                "typescript.tsx",
+                "typescriptreact",
+                "vue",
+                "markdown",
+              },
+              single_file_support = true,
+            },
+          })
+        end,
         ["dockerls"] = function()
           lspconfig["dockerls"].setup({
             settings = {

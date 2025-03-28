@@ -59,7 +59,6 @@ end, {
 
 -- mason install command
 -- create install all command
--- 优化点：将需要安装的工具列表按照语言或类型分组，提高可读性
 local ensure_installed = {
   -- LSP servers
   lsp_servers = {
@@ -81,6 +80,7 @@ local ensure_installed = {
     "clangd",
     "lemminx", -- xml svg
     "deno",
+    "biome", -- formatter
   },
   -- Formatters
   formatters = {
