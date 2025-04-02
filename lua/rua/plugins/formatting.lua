@@ -25,11 +25,15 @@ return {
         python = { "isort", "black" },
         php = { "intelephense" },
         c = { "clang-format" },
+        rust = { "rustfmt", lsp_format = "fallback" },
         -- Use the "*" filetype to run formatters on all filetypes.
-        ["*"] = { "codespell" },
+        -- ["*"] = { "codespell" },
         -- Use the "_" filetype to run formatters on filetypes that don't
         -- have other formatters configured.
         ["_"] = { "trim_whitespace" },
+      },
+      default_format_opts = {
+        lsp_format = "fallback",
       },
       format_on_save = function(bufnr)
         -- Disable with a global or buffer-local variable
