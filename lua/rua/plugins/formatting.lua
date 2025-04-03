@@ -16,6 +16,8 @@ return {
         typescriptreact = { "prettier" },
         svelte = { "prettier" },
         css = { "prettier" },
+        less = { "prettier" },
+        scss = { "prettier" },
         html = { "prettier" },
         json = { "prettier" },
         yaml = { "prettier" },
@@ -53,6 +55,43 @@ return {
         return { lsp_fallback = true }
       end,
       notify_on_error = true,
+      lang_to_ext = {
+        bash = "sh",
+        sql = "sql",
+        c_sharp = "cs",
+        elixir = "exs",
+        latex = "tex",
+        markdown = "md",
+        python = "py",
+        ruby = "rb",
+        teal = "tl",
+      },
+      options = {
+        -- Use a specific prettier parser for a filetype
+        -- Otherwise, prettier will try to infer the parser from the file name
+        ft_parsers = {
+          --     javascript = "babel",
+          --     javascriptreact = "babel",
+          --     typescript = "typescript",
+          --     typescriptreact = "typescript",
+          --     vue = "vue",
+          --     css = "css",
+          --     scss = "scss",
+          --     less = "less",
+          --     html = "html",
+          --     json = "json",
+          --     jsonc = "json",
+          --     yaml = "yaml",
+          --     markdown = "markdown",
+          --     ["markdown.mdx"] = "mdx",
+          --     graphql = "graphql",
+          --     handlebars = "glimmer",
+        },
+        -- Use a specific prettier parser for a file extension
+        ext_parsers = {
+          -- qmd = "markdown",
+        },
+      },
       formatters = {
         injected = {
           options = {
@@ -64,17 +103,6 @@ return {
               sql = "sql",
             },
           },
-        },
-        lang_to_ext = {
-          bash = "sh",
-          sql = "sql",
-          c_sharp = "cs",
-          elixir = "exs",
-          latex = "tex",
-          markdown = "md",
-          python = "py",
-          ruby = "rb",
-          teal = "tl",
         },
         sqlfluff = {
           command = "sqlfluff",
@@ -93,32 +121,6 @@ return {
           options = {
             -- The default edition of Rust to use when no Cargo.toml file is found
             default_edition = "2021",
-          },
-        },
-        options = {
-          -- Use a specific prettier parser for a filetype
-          -- Otherwise, prettier will try to infer the parser from the file name
-          ft_parsers = {
-            --     javascript = "babel",
-            --     javascriptreact = "babel",
-            --     typescript = "typescript",
-            --     typescriptreact = "typescript",
-            --     vue = "vue",
-            --     css = "css",
-            --     scss = "scss",
-            --     less = "less",
-            --     html = "html",
-            --     json = "json",
-            --     jsonc = "json",
-            --     yaml = "yaml",
-            --     markdown = "markdown",
-            --     ["markdown.mdx"] = "mdx",
-            --     graphql = "graphql",
-            --     handlebars = "glimmer",
-          },
-          -- Use a specific prettier parser for a file extension
-          ext_parsers = {
-            -- qmd = "markdown",
           },
         },
         -- # Example of using dprint only when a dprint.json file is present
