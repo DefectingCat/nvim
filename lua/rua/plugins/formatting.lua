@@ -10,24 +10,25 @@ return {
         lua = { "stylua" },
         go = { "goimports", "gofumpt" },
         sh = { "shfmt" },
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
-        svelte = { "prettier" },
-        css = { "prettier" },
-        less = { "prettier" },
-        scss = { "prettier" },
-        html = { "prettier" },
-        json = { "prettier" },
-        yaml = { "prettier" },
-        ["markdown"] = { "prettier" },
-        ["markdown.mdx"] = { "prettier" },
-        graphql = { "prettier" },
+        javascript = { "prettierd" },
+        typescript = { "prettierd" },
+        javascriptreact = { "prettierd" },
+        typescriptreact = { "prettierd" },
+        svelte = { "prettierd" },
+        css = { "prettierd" },
+        less = { "prettierd" },
+        scss = { "prettierd" },
+        html = { "prettierd" },
+        json = { "prettierd" },
+        yaml = { "prettierd" },
+        ["markdown"] = { "prettierd" },
+        ["markdown.mdx"] = { "prettierd" },
+        graphql = { "prettierd" },
         python = { "isort", "black" },
         php = { "intelephense" },
         c = { "clang-format" },
         rust = { "rustfmt", lsp_format = "fallback" },
+        toml = { "taplo" },
         -- Use the "*" filetype to run formatters on all filetypes.
         -- ["*"] = { "codespell" },
         -- Use the "_" filetype to run formatters on filetypes that don't
@@ -67,8 +68,8 @@ return {
         teal = "tl",
       },
       options = {
-        -- Use a specific prettier parser for a filetype
-        -- Otherwise, prettier will try to infer the parser from the file name
+        -- Use a specific prettierd parser for a filetype
+        -- Otherwise, prettierd will try to infer the parser from the file name
         ft_parsers = {
           --     javascript = "babel",
           --     javascriptreact = "babel",
@@ -87,7 +88,7 @@ return {
           --     graphql = "graphql",
           --     handlebars = "glimmer",
         },
-        -- Use a specific prettier parser for a file extension
+        -- Use a specific prettierd parser for a file extension
         ext_parsers = {
           -- qmd = "markdown",
         },
