@@ -33,6 +33,20 @@ return {
         model = "deepseek-coder",
         max_tokens = 8192,
       },
+      bbt_ds = {
+        __inherited_from = "openai",
+        api_key_name = "BBT_API_KEY",
+        endpoint = "https://babeltower.pro/v1",
+        model = "deepseek-v3:bbt",
+        max_tokens = 8192,
+      },
+      bbt_claude = {
+        __inherited_from = "openai",
+        api_key_name = "BBT_API_KEY",
+        endpoint = "https://babeltower.pro/v1",
+        model = "claude-3-7-sonnet:claude",
+        max_tokens = 8192,
+      },
     },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
