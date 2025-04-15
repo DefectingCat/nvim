@@ -22,6 +22,13 @@ return {
         start_in_insert = true,
         display_name = "RUA",
       })
+      local vertical = Terminal:new({
+        direction = "vertical",
+        persist_mode = false,
+        auto_scroll = true,
+        start_in_insert = true,
+        display_name = "RUA",
+      })
       local lazygit = Terminal:new({
         direction = "float",
         auto_scroll = true,
@@ -41,6 +48,9 @@ return {
       map({ "n", "t" }, "<A-u>", function()
         horizontal:toggle()
       end, { noremap = true, silent = true })
+      map({ "n", "t" }, "<A-o>", function()
+        vertical:toggle()
+      end, { noremap = true, silent = true })
       map({ "n", "t" }, "<C-/>", function()
         horizontal:toggle()
       end)
@@ -48,6 +58,6 @@ return {
         lazygit:toggle()
       end, { noremap = true, silent = true })
     end,
-    keys = { "<A-i>", "<A-u>", "<C-/>", "<leader>gl" },
+    keys = { "<A-i>", "<A-u>", "<A-o>", "<C-/>", "<leader>gl" },
   },
 }
