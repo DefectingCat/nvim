@@ -10,12 +10,10 @@ local M = {
   settings = {
     ["rust-analyzer"] = {
       standalone = true,
-      checkOnSave = {
-        command = "clippy",
-      },
-      rustfmt = {
-        overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
-      },
+      checkOnSave = true,
+      -- rustfmt = {
+      --   overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
+      -- },
       cargo = {
         allFeatures = true,
         loadOutDirsFromCheck = true,
