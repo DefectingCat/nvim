@@ -11,12 +11,13 @@ local function organize_imports()
 end
 
 local mason_registry = require("mason-registry")
-local has_volar, volar = pcall(mason_registry.get_package, "vue-language-server")
+local has_volar, _ = pcall(mason_registry.get_package, "vue-language-server")
 
 -- npm i -g @vue/typescript-plugin
 local vue_language_server_path
 if has_volar then
-  vue_language_server_path = volar:get_install_path() .. "/node_modules/@vue/language-server"
+  -- vue_language_server_path = volar:get_install_path() .. "/node_modules/@vue/language-server"
+  vue_language_server_path = vim.fn.expand("$MASON/packages/vue-language-server/node_modules/@vue/language-server")
 end
 
 local M = {
