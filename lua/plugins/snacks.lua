@@ -99,7 +99,7 @@ local logs = {
 }
 
 return {
-  "snacks.nvim",
+  "folke/snacks.nvim",
   keys = {
     { "<leader><leader>", mode = { "n", "x", "o" }, false },
     { "<leader>ff", mode = { "n", "x", "o" }, false },
