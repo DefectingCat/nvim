@@ -8,7 +8,7 @@ return {
       component_separators = { left = "", right = "" },
       section_separators = { left = "", right = "" },
     },
-    extensions = { "quickfix", "trouble", "mason", "lazy", "nvim-tree" },
+    extensions = { "quickfix", "trouble", "mason", "lazy" },
     sections = {
       lualine_x = {
         { "encoding" },
