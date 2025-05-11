@@ -1,6 +1,7 @@
 return {
   "snacks.nvim",
   opts = {
+    scroll = { enabled = false },
     -- https://github.com/folke/snacks.nvim/discussions/860#discussioncomment-12027395
     picker = {
       sources = {
