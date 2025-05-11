@@ -8,6 +8,7 @@ return {
     { "<leader>bd", mode = { "n", "x", "o" }, false },
     { "<leader>bD", mode = { "n", "x", "o" }, false },
     { "<leader>bo", mode = { "n", "x", "o" }, false },
+    { "<leader>/", mode = { "n", "x", "o" }, false },
   },
   opts = {
     scroll = { enabled = false },

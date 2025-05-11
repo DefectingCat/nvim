@@ -4,15 +4,15 @@
 local map = LazyVim.safe_keymap_set
 
 -- terminal
-map("t", "<C-x>", "<c-\\><c-n>")
+map("t", "<C-x>", "<c-\\><c-n>", { desc = "Escape termainl" })
 -- map("n", "<leader>tt", ":term<CR>", { desc = "Open new terminal" })
 
 -- buffers
 -- map("n", "<S-l>", "<CMD>bn<CR>")
 -- map("n", "<S-h>", "<CMD>bp<CR>")
-map("n", "<leader>x", "<CMD>bd<CR>")
+map("n", "<leader>x", "<CMD>bd<CR>", { desc = "Close current buffer" })
 -- map("n", "<C-s>", "<CMD>w<CR>")
-map("n", "<leader>la", "<CMD>%bd|e#|bd#<CR>")
+map("n", "<leader>la", "<CMD>%bd|e#|bd#<CR>", { desc = "Close all other buffers" })
 
 -- tabs
 map("n", "<leader>tc", ":tabclose<CR>", { desc = "Close current tab" })
@@ -25,13 +25,13 @@ map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selecti
 -- map({ "n", "v" }, "y", '"+y', { desc = "Copy to system clipboard" })
 
 -- lsp
-map("n", "gh", "<CMD>lua vim.lsp.buf.hover()<CR>")
+map("n", "gh", "<CMD>lua vim.lsp.buf.hover()<CR>", { desc = "Hover" })
 
 -- trouble
-map("n", "<leader>tx", "<CMD>Trouble diagnostics toggle<CR>")
-map("n", "<leader>tX", "<CMD>Trouble diagnostics toggle filter.buf=0<CR>")
-map("n", "<leader>tL", "<CMD>Trouble loclist toggle<CR>")
-map("n", "<leader>tQ", "<CMD>Trouble qflist toggle<CR>")
+map("n", "<leader>tx", "<CMD>Trouble diagnostics toggle<CR>", { desc = "Diagnostics" })
+map("n", "<leader>tX", "<CMD>Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Diagnostics" })
+map("n", "<leader>tL", "<CMD>Trouble loclist toggle<CR>", { desc = "Location List" })
+map("n", "<leader>tQ", "<CMD>Trouble qflist toggle<CR>", { desc = "Quickfix List" })
 
 -- snacks picker
 map("n", "<leader>b", function()
@@ -55,7 +55,7 @@ map("n", "<leader>b", function()
       list = { keys = { ["d"] = "bufdelete" } },
     },
   })
-end)
+end, { desc = "Buffers" })
 map("n", "<leader>ff", function()
   Snacks.picker.files({
     finder = "files",
@@ -69,6 +69,23 @@ map("n", "<leader>ff", function()
       preview = "main",
       preset = "ivy",
     },
-  }
-)
-end)
+  })
+end, {
+  desc = "Find Files",
+})
+map("n", "<leader>fw", function()
+  Snacks.picker.grep({
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+  })
+end, { desc = "Grep" })
+map("n", "<leader>fb", function()
+  Snacks.picker.grep({
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+  })
+end, { desc = "Grep Open Buffers" })
