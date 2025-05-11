@@ -5,7 +5,7 @@ local map = LazyVim.safe_keymap_set
 
 -- terminal
 map("t", "<C-x>", "<c-\\><c-n>", { desc = "Escape termainl" })
--- map("n", "<leader>tt", ":term<CR>", { desc = "Open new terminal" })
+map("n", "<leader>tt", ":term<CR>", { desc = "Open new terminal" })
 
 -- buffers
 -- map("n", "<S-l>", "<CMD>bn<CR>")
