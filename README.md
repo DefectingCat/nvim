@@ -1,4 +1,12 @@
-# 💤 LazyVim
+# Neovim
 
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+Custom configuration with 💤 [LazyVim](https://github.com/LazyVim/LazyVim)
+
+## Screenshots
+
+![Dashboard](./screenshots/QQ_1746989563707.png)
+![Code](./screenshots/QQ_1746989598678.png)
+
+## Custom
+
+- Theme: slugbyte/lackluster.nvim with aileot/ex-colors.nvim
