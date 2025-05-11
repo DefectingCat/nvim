@@ -26,3 +26,49 @@ map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selecti
 
 -- lsp
 map("n", "gh", "<CMD>lua vim.lsp.buf.hover()<CR>")
+
+-- trouble
+map("n", "<leader>tx", "<CMD>Trouble diagnostics toggle<CR>")
+map("n", "<leader>tX", "<CMD>Trouble diagnostics toggle filter.buf=0<CR>")
+map("n", "<leader>tL", "<CMD>Trouble loclist toggle<CR>")
+map("n", "<leader>tQ", "<CMD>Trouble qflist toggle<CR>")
+
+-- snacks picker
+map("n", "<leader>b", function()
+  Snacks.picker.buffers({
+    finder = "buffers",
+    format = "buffer",
+    hidden = false,
+    unloaded = true,
+    current = true,
+    sort_lastused = true,
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+    win = {
+      input = {
+        keys = {
+          ["d"] = { "bufdelete", mode = { "n", "i" } },
+        },
+      },
+      list = { keys = { ["d"] = "bufdelete" } },
+    },
+  })
+end)
+map("n", "<leader>ff", function()
+  Snacks.picker.files({
+    finder = "files",
+    format = "file",
+    show_empty = true,
+    hidden = false,
+    ignored = false,
+    follow = false,
+    supports_live = true,
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+  }
+)
+end)
