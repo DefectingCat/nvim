@@ -73,30 +73,30 @@ local function matches_gitignore(file_path, rules)
   return false
 end
 -- 自动更新磁盘上更改的文件，可跳过某些目录
-local skip_dirs = { "" } -- 手动指定要跳过检测的目录列表
-local gitignore_rules = parse_gitignore()
-autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
-  callback = function()
-    if vim.fn.mode() == "c" or vim.fn.bufexists("[Command Line]") then
-      return
-    end
-    local bufname = vim.api.nvim_buf_get_name(0)
-    for _, dir in ipairs(skip_dirs) do
-      if string.find(bufname, dir, 1, true) then
-        return -- 如果文件在手动跳过的目录中，不进行检测
-      end
-    end
-    if matches_gitignore(bufname, gitignore_rules) then
-      return -- 如果文件匹配 .gitignore 规则，不进行检测
-    end
-    vim.cmd("checktime")
-  end,
-})
-
+-- local skip_dirs = { "" } -- 手动指定要跳过检测的目录列表
+-- local gitignore_rules = parse_gitignore()
+-- autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+--   callback = function()
+--     if vim.fn.mode() == "c" or vim.fn.bufexists("[Command Line]") then
+--       return
+--     end
+--     local bufname = vim.api.nvim_buf_get_name(0)
+--     for _, dir in ipairs(skip_dirs) do
+--       if string.find(bufname, dir, 1, true) then
+--         return -- 如果文件在手动跳过的目录中，不进行检测
+--       end
+--     end
+--     if matches_gitignore(bufname, gitignore_rules) then
+--       return -- 如果文件匹配 .gitignore 规则，不进行检测
+--     end
+--     vim.cmd("checktime")
+--   end,
+-- })
+--
 -- 文件更改后的通知
-autocmd("FileChangedShellPost", {
-  command = [[echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None]],
-})
+-- autocmd("FileChangedShellPost", {
+--   command = [[echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None]],
+-- })
 
 -- 用 o 换行不要延续注释
 local myAutoGroup = vim.api.nvim_create_augroup("myAutoGroup", {
@@ -222,8 +222,3 @@ autocmd({ "BufReadPre" }, {
   group = aug,
   pattern = "*",
 })
-
--- 在 Vim 退出前保存会话
--- autocmd("VimLeavePre", {
---   command = ":SessionSave",
--- })
