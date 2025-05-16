@@ -6,9 +6,9 @@ return {
         ["rust-analyzer"] = {
           standalone = true,
           checkOnSave = true,
-          rustfmt = {
-            overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
-          },
+          -- rustfmt = {
+          --   overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
+          -- },
           cargo = {
             allFeatures = true,
             loadOutDirsFromCheck = true,
