@@ -14,7 +14,8 @@ local function set_filetype(patterns, filetype)
     pattern = patterns,
     callback = function()
       local buf = vim.api.nvim_get_current_buf()
-      vim.api.nvim_buf_set_option(buf, "filetype", filetype)
+      -- vim.api.nvim_buf_set_option(buf, "filetype", filetype)
+      vim.bo[buf].filetype = filetype
     end,
   })
 end
@@ -25,12 +26,17 @@ set_filetype({ "*.mdx" }, "markdown")
 -- 设置 env 文件为 sh 类型
 set_filetype({ ".env.example", ".env.local", ".env.development", ".env.production" }, "sh")
 
+-- 设置 json 文件夹为 jsonc 类型
+set_filetype({ "*.json" }, "jsonc")
+
 -- 设置终端相关选项
 local autocmd = vim.api.nvim_create_autocmd
 autocmd({ "TermOpen" }, {
   callback = function()
     local buf = vim.api.nvim_get_current_buf()
+    -- vim.bo[buf].relativenumber = false
     vim.api.nvim_buf_set_option(buf, "relativenumber", false)
+    -- vim.bo[buf].number = false
     vim.api.nvim_buf_set_option(buf, "number", false)
   end,
 })
@@ -180,6 +186,7 @@ local function update_winbar(bufnr)
   -- vim.opt.winbar = winbar
   -- 检查缓冲区是否支持设置 winbar
   if vim.api.nvim_buf_is_valid(bufnr) then
+    -- vim.bo[bufnr].winbar = winbar
     vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
   end
   -- 检查 old_buf 是否有效

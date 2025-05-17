@@ -89,3 +89,12 @@ map("n", "<leader>fb", function()
     },
   })
 end, { desc = "Grep Open Buffers" })
+map("n", "<leader>ct", function()
+  Snacks.picker.pick({
+    source = "filetypes",
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+  })
+end, { desc = "Change file type" })

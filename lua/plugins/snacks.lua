@@ -179,6 +179,7 @@ return {
     -- https://github.com/folke/snacks.nvim/discussions/860#discussioncomment-12027395
     picker = {
       sources = {
+        -- change explorer to right
         explorer = {
           include = { "ignored", "hidden" },
           layout = {
@@ -186,6 +187,34 @@ return {
               position = "right",
             },
           },
+        },
+        -- add filetypes source
+        filetypes = {
+          name = "filetypes",
+          format = "text",
+          preview = "none",
+          layout = {
+            preview = "main",
+            preset = "ivy",
+          },
+          confirm = function(picker, item)
+            picker:close()
+            if item then
+              vim.schedule(function()
+                vim.cmd("setfiletype " .. item.text)
+              end)
+            end
+          end,
+          finder = function()
+            local items = {}
+            local filetypes = vim.fn.getcompletion("", "filetype")
+            for _, type in ipairs(filetypes) do
+              items[#items + 1] = {
+                text = type,
+              }
+            end
+            return items
+          end,
         },
       },
     },
