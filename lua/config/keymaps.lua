@@ -98,3 +98,8 @@ map("n", "<leader>ct", function()
     },
   })
 end, { desc = "Change file type" })
+
+-- crates
+map("n", "<leader>cu", function()
+  require("crates").upgrade_all_crates()
+end, { desc = "Upgrade all crates" })
