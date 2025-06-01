@@ -34,7 +34,7 @@ map("n", "<leader>tL", "<CMD>Trouble loclist toggle<CR>", { desc = "Location Lis
 map("n", "<leader>tQ", "<CMD>Trouble qflist toggle<CR>", { desc = "Quickfix List" })
 
 -- snacks picker
-map("n", "<leader>b", function()
+map("n", "<leader><leader>", function()
   Snacks.picker.buffers({
     finder = "buffers",
     format = "buffer",
