@@ -8,6 +8,7 @@ return {
     "<leader>at",
     "<leader>ar",
     "<leader>af",
+    "<leader>an",
   },
   cmd = {
     "AvanteAsk",
@@ -24,7 +25,7 @@ return {
     "AvanteModels",
   },
   opts = {
-    provider = "deepseek",
+    provider = "doubao",
     providers = {
       deepseek = {
         __inherited_from = "openai",
@@ -32,6 +33,14 @@ return {
         endpoint = "https://api.deepseek.com",
         model = "deepseek-coder",
         max_tokens = 256000,
+      },
+      doubao = {
+        __inherited_from = "openai",
+        api_key_name = "DOUBAO_API_KEY",
+        endpoint = "https://ark.cn-beijing.volces.com/api/v3",
+        model = "doubao-seed-1-6-250615",
+        max_tokens = 8192,
+        max_completion_tokens = 12288,
       },
     },
   },
