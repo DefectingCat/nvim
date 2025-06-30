@@ -33,6 +33,12 @@ map("n", "<leader>tX", "<CMD>Trouble diagnostics toggle filter.buf=0<CR>", { des
 map("n", "<leader>tL", "<CMD>Trouble loclist toggle<CR>", { desc = "Location List" })
 map("n", "<leader>tQ", "<CMD>Trouble qflist toggle<CR>", { desc = "Quickfix List" })
 
+-- general
+map("n", "$", "g_")
+map("v", "$", "g_")
+map("v", ">", ">gv")
+map("v", "<", "<gv")
+
 -- snacks picker
 map("n", "<leader><leader>", function()
   Snacks.picker.buffers({
