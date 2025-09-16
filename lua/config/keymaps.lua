@@ -52,10 +52,13 @@ map("n", "<leader><leader>", function()
       preview = "main",
       preset = "ivy",
     },
+    on_show = function()
+      vim.cmd.stopinsert()
+    end,
     win = {
       input = {
         keys = {
-          ["d"] = { "bufdelete", mode = { "n", "i" } },
+          ["d"] = { "bufdelete", mode = { "n" } },
         },
       },
       list = { keys = { ["d"] = "bufdelete" } },
