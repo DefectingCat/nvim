@@ -47,7 +47,7 @@ map("n", "<leader><leader>", function()
     hidden = false,
     unloaded = true,
     current = true,
-    sort_lastused = true,
+    sort_lastused = false,
     layout = {
       preview = "main",
       preset = "ivy",
