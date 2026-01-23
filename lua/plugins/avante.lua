@@ -1,7 +1,7 @@
 return {
   "yetone/avante.nvim",
   opts = {
-    provider = "openrouter",
+    provider = "ark",
     providers = {
       ark = {
         __inherited_from = "openai",
