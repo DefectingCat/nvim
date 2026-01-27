@@ -35,11 +35,11 @@ set_filetype({ "*.json" }, "jsonc")
 local autocmd = vim.api.nvim_create_autocmd
 
 -- 用 o 换行不要延续注释
-local myAutoGroup = vim.api.nvim_create_augroup("myAutoGroup", {
+local ruaGroup = vim.api.nvim_create_augroup("myAutoGroup", {
   clear = true,
 })
 autocmd("BufEnter", {
-  group = myAutoGroup,
+  group = ruaGroup,
   pattern = "*",
   callback = function()
     vim.opt.formatoptions = vim.opt.formatoptions
@@ -158,4 +158,21 @@ autocmd({ "BufReadPre" }, {
   end,
   group = aug,
   pattern = "*",
+})
+
+-- 拼写检查导致的问题
+vim.api.nvim_create_autocmd("FileType", {
+  group = ruaGroup,
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt.spell = false
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = ruaGroup,
+  pattern = { "text", "plaintex", "typst", "gitcommit" },
+  callback = function()
+    vim.opt.spelllang = { "en", "cjk" }
+  end,
 })
