@@ -1,8 +1,19 @@
 return {
   "yetone/avante.nvim",
   opts = {
-    provider = "ark",
+    mode = "agentic",
+    -- provider = "claude-code",
+    provider = "volc-anthropic",
     providers = {
+      ["volc-anthropic"] = {
+        __inherited_from = "claude",
+        endpoint = "https://ark.cn-beijing.volces.com/api/coding",
+        model = "ark-code-latest",
+        api_key_name = "ARK_API_KEY",
+        extra_request_body = {
+          max_tokens = 32768,
+        },
+      },
       ark = {
         __inherited_from = "openai",
         api_key_name = "ARK_API_KEY",
