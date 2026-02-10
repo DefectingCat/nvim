@@ -4,3 +4,4 @@
 vim.g.lazyvim_rust_diagnostics = "rust-analyzer"
 vim.g.ai_cmp = false
 vim.opt.clipboard = "unnamedplus"
+vim.o.autoread = true -- 全局启用自动读取
