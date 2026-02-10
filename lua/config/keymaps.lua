@@ -2,6 +2,7 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 local map = LazyVim.safe_keymap_set
+local usercmd = require("config.usercmd")
 
 -- terminal
 map("t", "<C-x>", "<c-\\><c-n>", { desc = "Escape termainl" })
@@ -110,6 +111,10 @@ map("n", "<leader>ct", function()
     },
   })
 end, { desc = "Change file type" })
+map("n", "<leader>fi", usercmd.select_image, { desc = "Select image with snacks" })
+
+-- File path
+map("n", "<leader>tf", usercmd.copy_relative_path, { desc = "Copy relative path to clipboard" })
 
 -- crates
 map("n", "<leader>cu", function()

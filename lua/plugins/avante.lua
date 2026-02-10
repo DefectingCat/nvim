@@ -2,8 +2,8 @@ return {
   "yetone/avante.nvim",
   opts = {
     -- mode = "agentic",
-    -- provider = "volc-anthropic",
-    provider = "ark",
+    provider = "volc-anthropic",
+    -- provider = "ark",
     providers = {
       ["volc-anthropic"] = {
         __inherited_from = "claude",
