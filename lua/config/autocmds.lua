@@ -140,6 +140,45 @@ for _, buf in ipairs(all_buffers) do
   end
 end
 
+-- 终端配置自动命令组
+local terminal_group = vim.api.nvim_create_augroup("TerminalConfig", { clear = true })
+
+-- 进入终端时隐藏行号和左侧空白（包括打开和切换到终端buffer）
+vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
+  group = terminal_group,
+  pattern = "term://*",
+  callback = function(args)
+    -- 同时设置缓冲区选项和窗口选项，因为 snacks.nvim 使用窗口选项
+    local win = vim.api.nvim_get_current_win()
+    -- vim.opt_local.number = false          -- 关闭绝对行号
+    -- vim.opt_local.relativenumber = false  -- 关闭相对行号
+    -- vim.opt_local.signcolumn = "no"       -- 关闭标记列
+    -- vim.opt_local.foldcolumn = "0"        -- 关闭折叠列
+    vim.wo[win].number = false
+    vim.wo[win].relativenumber = false
+    vim.wo[win].signcolumn = "no"
+    vim.wo[win].foldcolumn = "0"
+  end,
+})
+
+-- 离开终端时恢复设置
+vim.api.nvim_create_autocmd({ "TermClose", "BufLeave" }, {
+  group = terminal_group,
+  pattern = "term://*",
+  callback = function(args)
+    -- 同时设置缓冲区选项和窗口选项
+    local win = vim.api.nvim_get_current_win()
+    -- vim.opt_local.number = true           -- 开启绝对行号
+    -- vim.opt_local.relativenumber = true   -- 开启相对行号
+    -- vim.opt_local.signcolumn = "yes"      -- 开启标记列
+    -- vim.opt_local.foldcolumn = "0"        -- 折叠列保持关闭（默认）
+    vim.wo[win].number = true
+    vim.wo[win].relativenumber = true
+    vim.wo[win].signcolumn = "yes"
+    vim.wo[win].foldcolumn = "0"
+  end,
+})
+
 -- 大文件检测
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 autocmd({ "BufReadPre" }, {
