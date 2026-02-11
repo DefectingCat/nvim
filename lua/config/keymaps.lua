@@ -32,7 +32,7 @@ map("n", "gh", "<CMD>lua vim.lsp.buf.hover()<CR>", { desc = "Hover" })
 
 -- trouble
 map("n", "<leader>tx", "<CMD>Trouble diagnostics toggle<CR>", { desc = "Diagnostics" })
-map("n", "<leader>tX", "<CMD>Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Diagnostics" })
+-- map("n", "<leader>tX", "<CMD>Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Diagnostics" })
 map("n", "<leader>tL", "<CMD>Trouble loclist toggle<CR>", { desc = "Location List" })
 map("n", "<leader>tQ", "<CMD>Trouble qflist toggle<CR>", { desc = "Quickfix List" })
 
