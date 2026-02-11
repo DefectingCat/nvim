@@ -9,4 +9,4 @@ Custom configuration with 💤 [LazyVim](https://github.com/LazyVim/LazyVim)
 
 ## Custom
 
-- Theme: slugbyte/lackluster.nvim with aileot/ex-colors.nvim
+- Theme: catppuccin with aileot/ex-colors.nvim

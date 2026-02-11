@@ -140,42 +140,122 @@ for _, buf in ipairs(all_buffers) do
   end
 end
 
+-- 判断窗口是否是终端窗口
+local function is_terminal_window(win)
+  win = win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return false
+  end
+  local buf_type = vim.bo[buf].buftype
+  local buf_name = vim.api.nvim_buf_get_name(buf)
+  return buf_type == "terminal" or buf_name:match("^term://")
+end
+
+-- 设置终端窗口选项（隐藏行号）
+local function set_terminal_window_options(win)
+  if not vim.api.nvim_win_is_valid(win) then
+    return
+  end
+  vim.wo[win].number = false
+  vim.wo[win].relativenumber = false
+  vim.wo[win].signcolumn = "no"
+  vim.wo[win].foldcolumn = "0"
+end
+
+-- 设置普通窗口选项（显示行号）
+local function set_normal_window_options(win)
+  if not vim.api.nvim_win_is_valid(win) then
+    return
+  end
+  vim.wo[win].number = true
+  vim.wo[win].relativenumber = true
+  vim.wo[win].signcolumn = "yes"
+  vim.wo[win].foldcolumn = "0"
+end
+
+-- 检查并设置所有可见窗口的状态
+local function check_all_visible_windows()
+  local wins = vim.api.nvim_list_wins()
+  for _, win in ipairs(wins) do
+    if vim.api.nvim_win_is_valid(win) then
+      if is_terminal_window(win) then
+        set_terminal_window_options(win)
+      else
+        set_normal_window_options(win)
+      end
+    end
+  end
+end
+
+-- 使用异步执行防止闪烁（可选）
+local function check_all_visible_windows_async()
+  vim.schedule(function()
+    check_all_visible_windows()
+  end)
+end
+
 -- 终端配置自动命令组
 local terminal_group = vim.api.nvim_create_augroup("TerminalConfig", { clear = true })
 
--- 进入终端时隐藏行号和左侧空白（包括打开和切换到终端buffer）
+-- 进入终端时设置终端选项（隐藏行号）
 vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   group = terminal_group,
   pattern = "term://*",
-  callback = function(args)
-    -- 同时设置缓冲区选项和窗口选项，因为 snacks.nvim 使用窗口选项
+  callback = function()
     local win = vim.api.nvim_get_current_win()
-    -- vim.opt_local.number = false          -- 关闭绝对行号
-    -- vim.opt_local.relativenumber = false  -- 关闭相对行号
-    -- vim.opt_local.signcolumn = "no"       -- 关闭标记列
-    -- vim.opt_local.foldcolumn = "0"        -- 关闭折叠列
-    vim.wo[win].number = false
-    vim.wo[win].relativenumber = false
-    vim.wo[win].signcolumn = "no"
-    vim.wo[win].foldcolumn = "0"
+    set_terminal_window_options(win)
+    -- 同时设置缓冲区的本地选项作为默认值
+    local buf = vim.api.nvim_get_current_buf()
+    vim.bo[buf].buftype = "terminal"
   end,
 })
 
--- 离开终端时恢复设置
-vim.api.nvim_create_autocmd({ "TermClose", "BufLeave" }, {
+-- 当终端关闭时，检查所有可见窗口的状态
+vim.api.nvim_create_autocmd("TermClose", {
   group = terminal_group,
   pattern = "term://*",
-  callback = function(args)
-    -- 同时设置缓冲区选项和窗口选项
+  callback = function()
+    check_all_visible_windows()
+  end,
+})
+
+-- 当窗口进入时，根据显示的内容设置对应的选项
+vim.api.nvim_create_autocmd("WinEnter", {
+  group = terminal_group,
+  pattern = "*",
+  callback = function()
     local win = vim.api.nvim_get_current_win()
-    -- vim.opt_local.number = true           -- 开启绝对行号
-    -- vim.opt_local.relativenumber = true   -- 开启相对行号
-    -- vim.opt_local.signcolumn = "yes"      -- 开启标记列
-    -- vim.opt_local.foldcolumn = "0"        -- 折叠列保持关闭（默认）
-    vim.wo[win].number = true
-    vim.wo[win].relativenumber = true
-    vim.wo[win].signcolumn = "yes"
-    vim.wo[win].foldcolumn = "0"
+    if is_terminal_window(win) then
+      set_terminal_window_options(win)
+    else
+      set_normal_window_options(win)
+    end
+  end,
+})
+
+-- 当切换 buffer 时，检查所有可见窗口的状态
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = terminal_group,
+  pattern = "*",
+  callback = function()
+    -- 如果进入的不是终端 buffer，则检查所有可见窗口的状态
+    local win = vim.api.nvim_get_current_win()
+    if not is_terminal_window(win) then
+      check_all_visible_windows()
+    end
+  end,
+})
+
+-- 窗口调整大小时，确保所有终端窗口的状态正确
+vim.api.nvim_create_autocmd("VimResized", {
+  group = terminal_group,
+  pattern = "*",
+  callback = function()
+    check_all_visible_windows()
   end,
 })
 
