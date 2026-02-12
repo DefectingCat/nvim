@@ -155,6 +155,20 @@ local function is_terminal_window(win)
   return buf_type == "terminal" or buf_name:match("^term://")
 end
 
+-- 判断窗口是否是 Snacks 窗口
+local function is_snacks_window(win)
+  win = win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return false
+  end
+  local filetype = vim.bo[buf].filetype
+  return filetype:match("^snacks_") ~= nil
+end
+
 -- 设置终端窗口选项（隐藏行号）
 local function set_terminal_window_options(win)
   if not vim.api.nvim_win_is_valid(win) then
@@ -182,7 +196,7 @@ local function check_all_visible_windows()
   local wins = vim.api.nvim_list_wins()
   for _, win in ipairs(wins) do
     if vim.api.nvim_win_is_valid(win) then
-      if is_terminal_window(win) then
+      if is_terminal_window(win) or is_snacks_window(win) then
         set_terminal_window_options(win)
       else
         set_normal_window_options(win)
@@ -229,7 +243,7 @@ vim.api.nvim_create_autocmd("WinEnter", {
   pattern = "*",
   callback = function()
     local win = vim.api.nvim_get_current_win()
-    if is_terminal_window(win) then
+    if is_terminal_window(win) or is_snacks_window(win) then
       set_terminal_window_options(win)
     else
       set_normal_window_options(win)
@@ -256,6 +270,19 @@ vim.api.nvim_create_autocmd("VimResized", {
   pattern = "*",
   callback = function()
     check_all_visible_windows()
+  end,
+})
+
+-- Snacks 配置自动命令组
+local snacks_group = vim.api.nvim_create_augroup("SnacksConfig", { clear = true })
+
+-- 为 Snacks 相关窗口隐藏行号
+vim.api.nvim_create_autocmd("FileType", {
+  group = snacks_group,
+  pattern = { "snacks_*" },
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    set_terminal_window_options(win)
   end,
 })
 
