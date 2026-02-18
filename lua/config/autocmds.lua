@@ -75,70 +75,70 @@ autocmd("BufReadPost", {
   end,
 })
 
--- 函数：获取窗口栏路径
-local function get_winbar_path()
-  return vim.fn.expand("%:.")
-end
+-- -- 函数：获取窗口栏路径
+-- local function get_winbar_path()
+--   return vim.fn.expand("%:.")
+-- end
+--
+-- -- 函数：获取主机名，添加错误日志
+-- local function get_hostname()
+--   local hostname = vim.fn.systemlist("hostname")
+--   if #hostname > 0 then
+--     return hostname[1]
+--   else
+--     vim.notify("Failed to get hostname", vim.log.levels.ERROR)
+--     return "unknown"
+--   end
+-- end
+--
+-- -- 函数：更新指定缓冲区的窗口栏
+-- local function update_winbar(bufnr)
+--   bufnr = bufnr or vim.api.nvim_get_current_buf()
+--   local old_buf = vim.api.nvim_get_current_buf()
+--   vim.api.nvim_set_current_buf(bufnr)
+--   local home_replaced = get_winbar_path()
+--   if home_replaced == "" then
+--     return
+--   end
+--   -- local buffer_count = get_buffer_count()
+--   local ft = vim.bo.filetype
+--   local hostname = get_hostname()
+--   local winbar
+--
+--   if ft == "NvimTree" then
+--     winbar = "RUA"
+--   else
+--     local winbar_prefix = "%#WinBar1#%m "
+--     local winbar_suffix = "%*%=%#WinBar2#" .. hostname
+--     winbar = winbar_prefix .. "%#WinBar1#" .. home_replaced .. winbar_suffix
+--   end
+--
+--   -- vim.opt.winbar = winbar
+--   -- 检查缓冲区是否支持设置 winbar
+--   if vim.api.nvim_buf_is_valid(bufnr) then
+--     -- vim.bo[bufnr].winbar = winbar
+--     vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
+--   end
+--   -- 检查 old_buf 是否有效
+--   if vim.api.nvim_buf_is_valid(old_buf) then
+--     vim.api.nvim_set_current_buf(old_buf)
+--   end
+-- end
+--
+-- -- 自动命令：在 BufEnter 和 WinEnter 事件时更新窗口栏
+-- autocmd({ "BufEnter", "WinEnter" }, {
+--   callback = function(args)
+--     update_winbar(args.buf)
+--   end,
+-- })
 
--- 函数：获取主机名，添加错误日志
-local function get_hostname()
-  local hostname = vim.fn.systemlist("hostname")
-  if #hostname > 0 then
-    return hostname[1]
-  else
-    vim.notify("Failed to get hostname", vim.log.levels.ERROR)
-    return "unknown"
-  end
-end
-
--- 函数：更新指定缓冲区的窗口栏
-local function update_winbar(bufnr)
-  bufnr = bufnr or vim.api.nvim_get_current_buf()
-  local old_buf = vim.api.nvim_get_current_buf()
-  vim.api.nvim_set_current_buf(bufnr)
-  local home_replaced = get_winbar_path()
-  if home_replaced == "" then
-    return
-  end
-  -- local buffer_count = get_buffer_count()
-  local ft = vim.bo.filetype
-  local hostname = get_hostname()
-  local winbar
-
-  if ft == "NvimTree" then
-    winbar = "RUA"
-  else
-    local winbar_prefix = "%#WinBar1#%m "
-    local winbar_suffix = "%*%=%#WinBar2#" .. hostname
-    winbar = winbar_prefix .. "%#WinBar1#" .. home_replaced .. winbar_suffix
-  end
-
-  -- vim.opt.winbar = winbar
-  -- 检查缓冲区是否支持设置 winbar
-  if vim.api.nvim_buf_is_valid(bufnr) then
-    -- vim.bo[bufnr].winbar = winbar
-    vim.api.nvim_buf_set_option(bufnr, "winbar", winbar)
-  end
-  -- 检查 old_buf 是否有效
-  if vim.api.nvim_buf_is_valid(old_buf) then
-    vim.api.nvim_set_current_buf(old_buf)
-  end
-end
-
--- 自动命令：在 BufEnter 和 WinEnter 事件时更新窗口栏
-autocmd({ "BufEnter", "WinEnter" }, {
-  callback = function(args)
-    update_winbar(args.buf)
-  end,
-})
-
--- 启动时更新所有现有缓冲区的窗口栏
-local all_buffers = vim.api.nvim_list_bufs()
-for _, buf in ipairs(all_buffers) do
-  if vim.api.nvim_buf_is_valid(buf) then
-    update_winbar(buf)
-  end
-end
+-- -- 启动时更新所有现有缓冲区的窗口栏
+-- local all_buffers = vim.api.nvim_list_bufs()
+-- for _, buf in ipairs(all_buffers) do
+--   if vim.api.nvim_buf_is_valid(buf) then
+--     update_winbar(buf)
+--   end
+-- end
 
 -- 判断窗口是否是终端窗口
 local function is_terminal_window(win)
