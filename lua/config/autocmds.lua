@@ -169,6 +169,20 @@ local function is_snacks_window(win)
   return filetype:match("^snacks_") ~= nil
 end
 
+-- 判断窗口是否是 Avante 窗口
+local function is_avante_window(win)
+  win = win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return false
+  end
+  local filetype = vim.bo[buf].filetype
+  return filetype:match("^Avante") ~= nil
+end
+
 -- 设置终端窗口选项（隐藏行号）
 local function set_terminal_window_options(win)
   if not vim.api.nvim_win_is_valid(win) then
@@ -196,7 +210,7 @@ local function check_all_visible_windows()
   local wins = vim.api.nvim_list_wins()
   for _, win in ipairs(wins) do
     if vim.api.nvim_win_is_valid(win) then
-      if is_terminal_window(win) or is_snacks_window(win) then
+      if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) then
         set_terminal_window_options(win)
       else
         set_normal_window_options(win)
@@ -206,11 +220,11 @@ local function check_all_visible_windows()
 end
 
 -- 使用异步执行防止闪烁（可选）
-local function check_all_visible_windows_async()
-  vim.schedule(function()
-    check_all_visible_windows()
-  end)
-end
+-- local function check_all_visible_windows_async()
+--   vim.schedule(function()
+--     check_all_visible_windows()
+--   end)
+-- end
 
 -- 终端配置自动命令组
 local terminal_group = vim.api.nvim_create_augroup("TerminalConfig", { clear = true })
@@ -243,7 +257,7 @@ vim.api.nvim_create_autocmd("WinEnter", {
   pattern = "*",
   callback = function()
     local win = vim.api.nvim_get_current_win()
-    if is_terminal_window(win) or is_snacks_window(win) then
+    if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) then
       set_terminal_window_options(win)
     else
       set_normal_window_options(win)
@@ -280,6 +294,19 @@ local snacks_group = vim.api.nvim_create_augroup("SnacksConfig", { clear = true 
 vim.api.nvim_create_autocmd("FileType", {
   group = snacks_group,
   pattern = { "snacks_*" },
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    set_terminal_window_options(win)
+  end,
+})
+
+-- Avante 配置自动命令组
+local avante_group = vim.api.nvim_create_augroup("AvanteConfig", { clear = true })
+
+-- 为 Avante 相关窗口隐藏行号
+vim.api.nvim_create_autocmd("FileType", {
+  group = avante_group,
+  pattern = { "Avante*" },
   callback = function()
     local win = vim.api.nvim_get_current_win()
     set_terminal_window_options(win)
