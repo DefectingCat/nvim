@@ -49,7 +49,7 @@ map("n", "<leader><leader>", function()
     format = "buffer",
     hidden = false,
     unloaded = true,
-    current = false,
+    current = true,
     sort_lastused = true,
     layout = {
       preview = "main",
