@@ -16,4 +16,11 @@ return {
       { "<leader>xX", mode = { "n" }, false },
     },
   },
+  {
+    "folke/snacks.nvim",
+    keys = {
+      { "<leader>fr", mode = { "n" }, false },
+      { "<leader>fR", mode = { "n" }, false },
+    },
+  },
 }

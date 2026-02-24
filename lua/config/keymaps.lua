@@ -94,6 +94,25 @@ map("n", "<leader>fw", function()
     },
   })
 end, { desc = "Grep" })
+map("n", "<leader>fr", function()
+  Snacks.picker.recent({
+    hidden = true,
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+  })
+end, { desc = "Recent (cwd)" })
+map("n", "<leader>fR", function()
+  Snacks.picker.recent({
+    filter = { cwd = true },
+    hidden = true,
+    layout = {
+      preview = "main",
+      preset = "ivy",
+    },
+  })
+end, { desc = "Recent (cwd)" })
 map("n", "<leader>fb", function()
   Snacks.picker.grep({
     layout = {
