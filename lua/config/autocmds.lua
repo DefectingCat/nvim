@@ -7,10 +7,22 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+-- ============================================
+-- 用户自定义自动命令配置
+-- ============================================
+
 -- 加载用户命令
 require("config.usercmd")
 
--- 封装设置文件类型的函数
+-- ============================================
+-- 文件类型检测与关联
+-- ============================================
+
+-- 封装设置文件类型的通用函数
+-- 功能: 为指定模式的文件设置文件类型
+-- 参数:
+--   patterns - 文件名匹配模式 (字符串或字符串数组)
+--   filetype - 要设置的文件类型
 local function set_filetype(patterns, filetype)
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     pattern = patterns,
@@ -20,21 +32,39 @@ local function set_filetype(patterns, filetype)
   })
 end
 
--- 设置文件类型关联
+-- 定义文件类型关联
+-- MDX 文件使用 Markdown 高亮
 set_filetype({ "*.mdx" }, "markdown")
+-- 环境变量文件使用 Shell 高亮
 set_filetype({ ".env.example", ".env.local", ".env.development", ".env.production" }, "sh")
+-- JSON 文件默认使用 JSONC (支持注释)
 set_filetype({ "*.json" }, "jsonc")
 
--- 创建自动命令组
+-- ============================================
+-- 自动命令组定义
+-- ============================================
+
+-- 主要自动命令组
 local my_group = vim.api.nvim_create_augroup("MyAutoGroup", { clear = true })
+-- 终端窗口配置组
 local terminal_group = vim.api.nvim_create_augroup("TerminalConfig", { clear = true })
+-- Snacks.nvim 插件窗口配置组
 local snacks_group = vim.api.nvim_create_augroup("SnacksConfig", { clear = true })
+-- Avante 插件窗口配置组
 local avante_group = vim.api.nvim_create_augroup("AvanteConfig", { clear = true })
+-- Grug Far 搜索工具窗口配置组
 local grugfar_group = vim.api.nvim_create_augroup("GrugFarConfig", { clear = true })
+-- Oil.nvim 文件浏览器窗口配置组
 local oil_group = vim.api.nvim_create_augroup("OilConfig", { clear = true })
+-- 大文件检测配置组
 local large_buf_group = vim.api.nvim_create_augroup("LargeBufferConfig", { clear = true })
 
--- 用 o 换行不要延续注释
+-- ============================================
+-- 通用编辑器行为配置
+-- ============================================
+
+-- 配置换行行为
+-- 功能: 用 o 换行时不延续注释，但保留 r (回车键延续注释)
 vim.api.nvim_create_autocmd("BufEnter", {
   group = my_group,
   pattern = "*",
@@ -43,7 +73,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
 })
 
--- 复制文本后高亮显示
+-- 配置复制高亮
+-- 功能: 复制文本后高亮显示选中的区域，提高可视性
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = my_group,
   pattern = "*",
@@ -52,7 +83,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
--- 恢复光标位置
+-- 配置光标位置恢复
+-- 功能: 打开文件时恢复到上次编辑的位置
+-- 排除: commit 信息文件、xxd 二进制查看、gitrebase 编辑
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = my_group,
   pattern = "*",
@@ -65,72 +98,74 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
--- 窗口类型检测函数
+-- ============================================
+-- 窗口类型检测系统
+-- ============================================
+
+-- 通用窗口信息获取函数
+-- 功能: 获取窗口和对应的缓冲区信息，处理有效性检查
+-- 参数: win - 窗口 ID (可选，默认当前窗口)
+-- 返回: 包含 buf, buftype, filetype, buf_name 的表，或 nil
+local function get_window_buffer_info(win)
+  win = win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return nil
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return nil
+  end
+  return {
+    buf = buf,
+    buftype = vim.bo[buf].buftype,
+    filetype = vim.bo[buf].filetype,
+    buf_name = vim.api.nvim_buf_get_name(buf)
+  }
+end
+
+-- 窗口类型检测函数集合
+
+-- 判断是否是终端窗口
+-- 通过缓冲区类型或名称前缀检测
 local function is_terminal_window(win)
-  win = win or vim.api.nvim_get_current_win()
-  if not vim.api.nvim_win_is_valid(win) then
-    return false
-  end
-  local buf = vim.api.nvim_win_get_buf(win)
-  if not vim.api.nvim_buf_is_valid(buf) then
-    return false
-  end
-  return vim.bo[buf].buftype == "terminal" or vim.api.nvim_buf_get_name(buf):match("^term://")
+  local info = get_window_buffer_info(win)
+  return info and (info.buftype == "terminal" or info.buf_name:match("^term://"))
 end
 
+-- 判断是否是 Snacks.nvim 插件窗口
+-- 通过文件类型前缀检测
 local function is_snacks_window(win)
-  win = win or vim.api.nvim_get_current_win()
-  if not vim.api.nvim_win_is_valid(win) then
-    return false
-  end
-  local buf = vim.api.nvim_win_get_buf(win)
-  if not vim.api.nvim_buf_is_valid(buf) then
-    return false
-  end
-  return vim.bo[buf].filetype:match("^snacks_") ~= nil
+  local info = get_window_buffer_info(win)
+  return info and info.filetype:match("^snacks_") ~= nil
 end
 
+-- 判断是否是 Avante 插件窗口
+-- 通过文件类型前缀检测
 local function is_avante_window(win)
-  win = win or vim.api.nvim_get_current_win()
-  if not vim.api.nvim_win_is_valid(win) then
-    return false
-  end
-  local buf = vim.api.nvim_win_get_buf(win)
-  if not vim.api.nvim_buf_is_valid(buf) then
-    return false
-  end
-  return vim.bo[buf].filetype:match("^Avante") ~= nil
+  local info = get_window_buffer_info(win)
+  return info and info.filetype:match("^Avante") ~= nil
 end
 
+-- 判断是否是 Grug Far 搜索工具窗口
+-- 通过文件名或文件类型匹配检测
 local function is_grugfar_window(win)
-  win = win or vim.api.nvim_get_current_win()
-  if not vim.api.nvim_win_is_valid(win) then
-    return false
-  end
-  local buf = vim.api.nvim_win_get_buf(win)
-  if not vim.api.nvim_buf_is_valid(buf) then
-    return false
-  end
-  local buf_name = vim.api.nvim_buf_get_name(buf)
-  local filetype = vim.bo[buf].filetype
-  return buf_name:match("grug%-far") ~= nil or filetype:match("grug%-far") ~= nil
+  local info = get_window_buffer_info(win)
+  return info and (info.buf_name:match("grug%-far") ~= nil or info.filetype:match("grug%-far") ~= nil)
 end
 
+-- 判断是否是 Oil.nvim 文件浏览器窗口
+-- 通过文件类型或缓冲区名称前缀检测
 local function is_oil_window(win)
-  win = win or vim.api.nvim_get_current_win()
-  if not vim.api.nvim_win_is_valid(win) then
-    return false
-  end
-  local buf = vim.api.nvim_win_get_buf(win)
-  if not vim.api.nvim_buf_is_valid(buf) then
-    return false
-  end
-  local filetype = vim.bo[buf].filetype
-  local buf_name = vim.api.nvim_buf_get_name(buf)
-  return filetype == "oil" or buf_name:match("^oil://") ~= nil
+  local info = get_window_buffer_info(win)
+  return info and (info.filetype == "oil" or info.buf_name:match("^oil://"))
 end
 
--- 窗口选项设置函数
+-- ============================================
+-- 窗口选项管理
+-- ============================================
+
+-- 终端窗口选项配置
+-- 功能: 为终端窗口设置特定选项 (隐藏行号、折叠栏等)
 local function set_terminal_window_options(win)
   if not vim.api.nvim_win_is_valid(win) then
     return
@@ -146,6 +181,8 @@ local function set_terminal_window_options(win)
   end
 end
 
+-- 普通窗口选项配置
+-- 功能: 为普通编辑器窗口设置默认选项 (显示行号、折叠栏等)
 local function set_normal_window_options(win)
   if not vim.api.nvim_win_is_valid(win) then
     return
@@ -161,7 +198,12 @@ local function set_normal_window_options(win)
   end
 end
 
--- 检查并设置所有可见窗口的状态
+-- ============================================
+-- 窗口状态管理
+-- ============================================
+
+-- 检查并更新所有可见窗口状态
+-- 功能: 遍历所有有效窗口，根据窗口类型设置对应的选项
 local function check_all_visible_windows()
   local wins = vim.api.nvim_list_wins()
   for _, win in ipairs(wins) do
@@ -176,11 +218,16 @@ local function check_all_visible_windows()
 end
 
 -- 异步检查窗口状态
+-- 功能: 使用 vim.schedule 异步执行窗口检查，避免阻塞
 local function check_all_visible_windows_async()
   vim.schedule(check_all_visible_windows)
 end
 
--- 终端配置自动命令
+-- ============================================
+-- 终端窗口自动命令
+-- ============================================
+
+-- 终端窗口创建和进入
 vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   group = terminal_group,
   pattern = "term://*",
@@ -190,12 +237,14 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   end,
 })
 
+-- 终端窗口关闭
 vim.api.nvim_create_autocmd("TermClose", {
   group = terminal_group,
   pattern = "term://*",
   callback = check_all_visible_windows_async,
 })
 
+-- 窗口进入时设置选项
 vim.api.nvim_create_autocmd("WinEnter", {
   group = terminal_group,
   pattern = "*",
@@ -209,6 +258,7 @@ vim.api.nvim_create_autocmd("WinEnter", {
   end,
 })
 
+-- Buffer 进入时检查窗口状态
 vim.api.nvim_create_autocmd("BufEnter", {
   group = terminal_group,
   pattern = "*",
@@ -220,13 +270,18 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
 })
 
+-- 窗口调整大小时更新
 vim.api.nvim_create_autocmd("VimResized", {
   group = terminal_group,
   pattern = "*",
   callback = check_all_visible_windows_async,
 })
 
--- 其他插件窗口配置
+-- ============================================
+-- 插件窗口配置
+-- ============================================
+
+-- Snacks.nvim 插件窗口配置
 vim.api.nvim_create_autocmd("FileType", {
   group = snacks_group,
   pattern = { "snacks_*" },
@@ -235,6 +290,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Avante 插件窗口配置
 vim.api.nvim_create_autocmd("FileType", {
   group = avante_group,
   pattern = { "Avante*" },
@@ -243,6 +299,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Grug Far 搜索工具窗口配置
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
   group = grugfar_group,
   pattern = { "*grug*-*far*" },
@@ -251,6 +308,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
   end,
 })
 
+-- Oil.nvim 文件浏览器窗口配置
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
   group = oil_group,
   pattern = { "oil" },
@@ -259,7 +317,12 @@ vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
   end,
 })
 
--- 大文件检测
+-- ============================================
+-- 文件处理优化
+-- ============================================
+
+-- 大文件检测和优化
+-- 功能: 检测大于 100KB 的文件，禁用自动折叠和拼写检查
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
   group = large_buf_group,
   pattern = "*",
@@ -278,7 +341,11 @@ vim.api.nvim_create_autocmd({ "BufReadPre" }, {
   end,
 })
 
+-- ============================================
 -- 拼写检查配置
+-- ============================================
+
+-- 禁用 Markdown 文件拼写检查
 vim.api.nvim_create_autocmd("FileType", {
   group = my_group,
   pattern = { "markdown" },
@@ -287,6 +354,8 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- 配置特定文件类型的拼写语言
+-- 支持: 英语、中日韩语
 vim.api.nvim_create_autocmd("FileType", {
   group = my_group,
   pattern = { "text", "plaintex", "typst", "gitcommit" },
