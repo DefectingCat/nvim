@@ -183,6 +183,38 @@ local function is_avante_window(win)
   return filetype:match("^Avante") ~= nil
 end
 
+-- 判断窗口是否是 Grug Far 窗口
+local function is_grugfar_window(win)
+  win = win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return false
+  end
+  local buf_name = vim.api.nvim_buf_get_name(buf)
+  local filetype = vim.bo[buf].filetype
+  -- 判断是否是 grug-far 相关的窗口，通过文件名或文件类型识别
+  return buf_name:match("grug%-far") ~= nil or filetype:match("grug%-far") ~= nil
+end
+
+-- 判断窗口是否是 Oil 窗口
+local function is_oil_window(win)
+  win = win or vim.api.nvim_get_current_win()
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+  local buf = vim.api.nvim_win_get_buf(win)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return false
+  end
+  local filetype = vim.bo[buf].filetype
+  local buf_name = vim.api.nvim_buf_get_name(buf)
+  -- 判断是否是 oil 相关的窗口，通过文件类型或缓冲区名称识别
+  return filetype == "oil" or buf_name:match("^oil://") ~= nil
+end
+
 -- 设置终端窗口选项（隐藏行号）
 local function set_terminal_window_options(win)
   if not vim.api.nvim_win_is_valid(win) then
@@ -210,7 +242,7 @@ local function check_all_visible_windows()
   local wins = vim.api.nvim_list_wins()
   for _, win in ipairs(wins) do
     if vim.api.nvim_win_is_valid(win) then
-      if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) then
+      if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) then
         set_terminal_window_options(win)
       else
         set_normal_window_options(win)
@@ -220,11 +252,11 @@ local function check_all_visible_windows()
 end
 
 -- 使用异步执行防止闪烁（可选）
--- local function check_all_visible_windows_async()
---   vim.schedule(function()
---     check_all_visible_windows()
---   end)
--- end
+local function check_all_visible_windows_async()
+  vim.schedule(function()
+    check_all_visible_windows()
+  end)
+end
 
 -- 终端配置自动命令组
 local terminal_group = vim.api.nvim_create_augroup("TerminalConfig", { clear = true })
@@ -247,7 +279,7 @@ vim.api.nvim_create_autocmd("TermClose", {
   group = terminal_group,
   pattern = "term://*",
   callback = function()
-    check_all_visible_windows()
+    check_all_visible_windows_async()
   end,
 })
 
@@ -257,7 +289,7 @@ vim.api.nvim_create_autocmd("WinEnter", {
   pattern = "*",
   callback = function()
     local win = vim.api.nvim_get_current_win()
-    if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) then
+    if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) then
       set_terminal_window_options(win)
     else
       set_normal_window_options(win)
@@ -273,7 +305,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
     -- 如果进入的不是终端 buffer，则检查所有可见窗口的状态
     local win = vim.api.nvim_get_current_win()
     if not is_terminal_window(win) then
-      check_all_visible_windows()
+      check_all_visible_windows_async()
     end
   end,
 })
@@ -283,7 +315,7 @@ vim.api.nvim_create_autocmd("VimResized", {
   group = terminal_group,
   pattern = "*",
   callback = function()
-    check_all_visible_windows()
+    check_all_visible_windows_async()
   end,
 })
 
@@ -307,6 +339,32 @@ local avante_group = vim.api.nvim_create_augroup("AvanteConfig", { clear = true 
 vim.api.nvim_create_autocmd("FileType", {
   group = avante_group,
   pattern = { "Avante*" },
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    set_terminal_window_options(win)
+  end,
+})
+
+-- Grug Far 配置自动命令组
+local grugfar_group = vim.api.nvim_create_augroup("GrugFarConfig", { clear = true })
+
+-- 为 Grug Far 相关窗口隐藏行号
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+  group = grugfar_group,
+  pattern = { "*grug*-*far*" },
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    set_terminal_window_options(win)
+  end,
+})
+
+-- Oil 配置自动命令组
+local oil_group = vim.api.nvim_create_augroup("OilConfig", { clear = true })
+
+-- 为 Oil 相关窗口隐藏行号
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+  group = oil_group,
+  pattern = { "oil" },
   callback = function()
     local win = vim.api.nvim_get_current_win()
     set_terminal_window_options(win)
