@@ -56,6 +56,10 @@ local avante_group = vim.api.nvim_create_augroup("AvanteConfig", { clear = true 
 local grugfar_group = vim.api.nvim_create_augroup("GrugFarConfig", { clear = true })
 -- Oil.nvim 文件浏览器窗口配置组
 local oil_group = vim.api.nvim_create_augroup("OilConfig", { clear = true })
+-- Lazy.nvim 插件管理器窗口配置组
+local lazy_group = vim.api.nvim_create_augroup("LazyConfig", { clear = true })
+-- Mason 插件管理器窗口配置组
+local mason_group = vim.api.nvim_create_augroup("MasonConfig", { clear = true })
 -- 大文件检测配置组
 local large_buf_group = vim.api.nvim_create_augroup("LargeBufferConfig", { clear = true })
 
@@ -160,6 +164,20 @@ local function is_oil_window(win)
   return info and (info.filetype == "oil" or info.buf_name:match("^oil://"))
 end
 
+-- 判断是否是 Lazy.nvim 插件管理器窗口
+-- 通过文件类型或缓冲区名称匹配检测
+local function is_lazy_window(win)
+  local info = get_window_buffer_info(win)
+  return info and (info.filetype == "lazy" or info.buf_name:match("lazy") ~= nil)
+end
+
+-- 判断是否是 Mason 插件管理器窗口
+-- 通过文件类型或缓冲区名称匹配检测
+local function is_mason_window(win)
+  local info = get_window_buffer_info(win)
+  return info and (info.filetype == "mason" or info.buf_name:match("mason") ~= nil)
+end
+
 -- ============================================
 -- 窗口选项管理
 -- ============================================
@@ -222,7 +240,7 @@ local function check_all_visible_windows()
         for opt, value in pairs(opts) do
           vim.wo[win][opt] = value
         end
-      elseif is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) then
+      elseif is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) or is_lazy_window(win) or is_mason_window(win) then
         set_terminal_window_options(win)
       else
         set_normal_window_options(win)
@@ -264,7 +282,7 @@ vim.api.nvim_create_autocmd("WinEnter", {
   pattern = "*",
   callback = function()
     local win = vim.api.nvim_get_current_win()
-    if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) then
+    if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) or is_lazy_window(win) or is_mason_window(win) then
       set_terminal_window_options(win)
     else
       set_normal_window_options(win)
@@ -344,6 +362,24 @@ vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
   group = oil_group,
   pattern = { "oil" },
+  callback = function()
+    set_terminal_window_options(vim.api.nvim_get_current_win())
+  end,
+})
+
+-- Lazy.nvim 插件管理器窗口配置
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+  group = lazy_group,
+  pattern = { "lazy" },
+  callback = function()
+    set_terminal_window_options(vim.api.nvim_get_current_win())
+  end,
+})
+
+-- Mason 插件管理器窗口配置
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+  group = mason_group,
+  pattern = { "mason" },
   callback = function()
     set_terminal_window_options(vim.api.nvim_get_current_win())
   end,
