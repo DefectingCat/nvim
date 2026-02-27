@@ -59,6 +59,30 @@ user_command("Simg", select_image, {
   desc = "Select image with snacks",
 })
 
+-- 定义按百分比调整垂直宽度的命令
+user_command("Varp", function(opts)
+  local percentage = tonumber(opts.args)
+  if percentage and percentage > 0 and percentage <= 100 then
+    local columns = vim.o.columns
+    local target_width = math.floor(columns * (percentage / 100))
+    vim.cmd("vertical resize " .. target_width)
+  else
+    vim.notify("请输入有效的百分比 (1-100)", vim.log.levels.ERROR)
+  end
+end, { nargs = 1, desc = "Resize vertical window to percentage of screen width" })
+
+-- 定义按百分比调整水平高度的命令
+user_command("Harp", function(opts)
+  local percentage = tonumber(opts.args)
+  if percentage and percentage > 0 and percentage <= 100 then
+    local lines = vim.o.lines
+    local target_height = math.floor(lines * (percentage / 100))
+    vim.cmd("horizontal resize " .. target_height)
+  else
+    vim.notify("请输入有效的百分比 (1-100)", vim.log.levels.ERROR)
+  end
+end, { nargs = 1, desc = "Resize horizontal window to percentage of screen height" })
+
 -- 导出函数供其他文件使用
 return {
   copy_relative_path = copy_relative_path,
