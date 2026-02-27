@@ -139,3 +139,12 @@ map("n", "<leader>tf", usercmd.copy_relative_path, { desc = "Copy relative path 
 map("n", "<leader>cu", function()
   require("crates").upgrade_all_crates()
 end, { desc = "Upgrade all crates" })
+
+-- RustLsp flyCheck
+map("n", "<leader>cy", function()
+  if vim.bo.filetype == "rust" then
+    vim.cmd("RustLsp flyCheck")
+  else
+    vim.notify("This buffer is not a Rust file", vim.log.levels.INFO)
+  end
+end, { desc = "Run RustLsp flyCheck (Rust files only)" })
