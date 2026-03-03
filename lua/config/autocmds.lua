@@ -96,7 +96,13 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
     local line = vim.fn.line("'\"")
     local filetype = vim.bo.filetype
-    if line > 1 and line <= vim.fn.line("$") and filetype ~= "commit" and not filetype:match("xxd") and not filetype:match("gitrebase") then
+    if
+      line > 1
+      and line <= vim.fn.line("$")
+      and filetype ~= "commit"
+      and not filetype:match("xxd")
+      and not filetype:match("gitrebase")
+    then
       vim.cmd('normal! g`"')
     end
   end,
@@ -123,7 +129,7 @@ local function get_window_buffer_info(win)
     buf = buf,
     buftype = vim.bo[buf].buftype,
     filetype = vim.bo[buf].filetype,
-    buf_name = vim.api.nvim_buf_get_name(buf)
+    buf_name = vim.api.nvim_buf_get_name(buf),
   }
 end
 
@@ -228,7 +234,7 @@ local function check_all_visible_windows()
     if vim.api.nvim_win_is_valid(win) then
       local info = get_window_buffer_info(win)
       local is_preview = info and info.filetype == "snacks_picker_preview"
-      
+
       if is_preview then
         -- 预览窗口应该显示行号
         local opts = {
@@ -240,7 +246,15 @@ local function check_all_visible_windows()
         for opt, value in pairs(opts) do
           vim.wo[win][opt] = value
         end
-      elseif is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) or is_lazy_window(win) or is_mason_window(win) then
+      elseif
+        is_terminal_window(win)
+        or is_snacks_window(win)
+        or is_avante_window(win)
+        or is_grugfar_window(win)
+        or is_oil_window(win)
+        or is_lazy_window(win)
+        or is_mason_window(win)
+      then
         set_terminal_window_options(win)
       else
         set_normal_window_options(win)
@@ -266,9 +280,6 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   callback = function()
     set_terminal_window_options(vim.api.nvim_get_current_win())
     vim.bo.buftype = "terminal"
-    -- 防止从其他浮窗（如 lazygit）返回时自动进入插入模式
-    -- 强制保持普通模式
-    vim.cmd.stopinsert()
   end,
 })
 
@@ -285,7 +296,15 @@ vim.api.nvim_create_autocmd("WinEnter", {
   pattern = "*",
   callback = function()
     local win = vim.api.nvim_get_current_win()
-    if is_terminal_window(win) or is_snacks_window(win) or is_avante_window(win) or is_grugfar_window(win) or is_oil_window(win) or is_lazy_window(win) or is_mason_window(win) then
+    if
+      is_terminal_window(win)
+      or is_snacks_window(win)
+      or is_avante_window(win)
+      or is_grugfar_window(win)
+      or is_oil_window(win)
+      or is_lazy_window(win)
+      or is_mason_window(win)
+    then
       set_terminal_window_options(win)
     else
       set_normal_window_options(win)
@@ -323,12 +342,12 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     local win = vim.api.nvim_get_current_win()
     local info = get_window_buffer_info(win)
-    
+
     -- 对于预览窗口，保持行号显示；其他 snacks 窗口隐藏行号
     if info and info.filetype == "snacks_picker_preview" then
       -- 预览窗口应该显示行号，所以不设置终端选项
       local opts = {
-        number = true,          -- 显示行号
+        number = true, -- 显示行号
         relativenumber = false, -- 不显示相对行号
         signcolumn = "yes",
         foldcolumn = "0",
@@ -434,3 +453,4 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt.spelllang = { "en", "cjk" }
   end,
 })
+
