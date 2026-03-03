@@ -165,17 +165,17 @@ local function is_oil_window(win)
 end
 
 -- 判断是否是 Lazy.nvim 插件管理器窗口
--- 通过文件类型或缓冲区名称匹配检测
+-- 只通过文件类型检测，避免匹配文件名包含 lazy 的普通文件（如 lazy.lua）
 local function is_lazy_window(win)
   local info = get_window_buffer_info(win)
-  return info and (info.filetype == "lazy" or info.buf_name:match("lazy") ~= nil)
+  return info and info.filetype == "lazy"
 end
 
 -- 判断是否是 Mason 插件管理器窗口
--- 通过文件类型或缓冲区名称匹配检测
+-- 只通过文件类型检测，避免匹配文件名包含 mason 的普通文件（如 mason.lua）
 local function is_mason_window(win)
   local info = get_window_buffer_info(win)
-  return info and (info.filetype == "mason" or info.buf_name:match("mason") ~= nil)
+  return info and info.filetype == "mason"
 end
 
 -- ============================================
