@@ -112,10 +112,6 @@ return {
   },
   opts = {
     scroll = { enabled = false },
-    terminal = {
-      -- 禁用自动插入模式，防止从 lazygit 等浮窗返回时自动进入插入模式
-      auto_insert = false,
-    },
     dashboard = {
       width = 40,
       row = nil, -- dashboard position. nil for center
