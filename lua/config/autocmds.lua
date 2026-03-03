@@ -266,6 +266,9 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   callback = function()
     set_terminal_window_options(vim.api.nvim_get_current_win())
     vim.bo.buftype = "terminal"
+    -- 防止从其他浮窗（如 lazygit）返回时自动进入插入模式
+    -- 强制保持普通模式
+    vim.cmd.stopinsert()
   end,
 })
 
