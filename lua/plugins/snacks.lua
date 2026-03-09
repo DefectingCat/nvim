@@ -109,6 +109,18 @@ return {
     { "<leader>bD", mode = { "n", "x", "o" }, false },
     { "<leader>bo", mode = { "n", "x", "o" }, false },
     { "<leader>/", mode = { "n", "x", "o" }, false },
+    {
+      "<leader>gs",
+      function()
+        Snacks.picker.git_status({
+          layout = {
+            preview = "main",
+            preset = "ivy",
+          },
+        })
+      end,
+      desc = "Git Status",
+    },
   },
   opts = {
     scroll = { enabled = false },

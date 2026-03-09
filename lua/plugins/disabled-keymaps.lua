@@ -21,6 +21,7 @@ return {
     keys = {
       { "<leader>fr", mode = { "n" }, false },
       { "<leader>fR", mode = { "n" }, false },
+      { "<leader>gs", mode = { "n" }, false },
     },
   },
 }
