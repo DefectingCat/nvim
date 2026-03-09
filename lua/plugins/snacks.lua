@@ -181,7 +181,7 @@ return {
       sources = {
         -- change explorer to right
         explorer = {
-          ignored = true,
+          ignored = false,
           hidden = true,
           layout = {
             layout = {
