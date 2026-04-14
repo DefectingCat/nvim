@@ -17,6 +17,26 @@ return {
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
 
+  -- nvim-tree
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {
+      filters = {
+        dotfiles = false,
+        git_ignored = false,
+        custom = {},
+        exclude = {},
+      },
+      git = {
+        enable = true,
+        ignore = false,
+        show_on_dirs = true,
+        show_on_open_dirs = true,
+      },
+    },
+  },
+
   -- oil
   {
     "stevearc/oil.nvim",
