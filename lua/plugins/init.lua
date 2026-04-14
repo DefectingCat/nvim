@@ -51,12 +51,9 @@ return {
       },
     },
     cmd = { "Oil" },
-    -- lazy = false,
-    -- event = "VimEnter",
-    -- dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("oil").setup({
-        default_file_explorer = true,
+        default_file_explorer = false,
         delete_to_trash = false,
         view_options = {
           show_hidden = true,
@@ -71,7 +68,6 @@ return {
           ["g?"] = "actions.show_help",
           ["<CR>"] = "actions.select",
           ["<C-s>"] = false,
-          --[[ ["<C-h>"] = { "actions.select", opts = { horizontal = true } }, ]]
           ["<C-h>"] = false,
           ["<C-t>"] = { "actions.select", opts = { tab = true } },
           ["<C-p>"] = "actions.preview",
@@ -87,14 +83,6 @@ return {
           ["gx"] = "actions.open_external",
           ["g."] = "actions.toggle_hidden",
           ["g\\"] = "actions.toggle_trash",
-          -- Mappings can be a string
-          -- ["~"] = "<cmd>edit $HOME<CR>",
-          -- Mappings can be a function
-          -- ["gd"] = function()
-          --   require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
-          -- end,
-          -- You can pass additional opts to vim.keymap.set by using
-          -- a table with the mapping as the first element.
           ["<leader>ff"] = {
             function()
               require("telescope.builtin").find_files({
@@ -122,14 +110,4 @@ return {
       })
     end,
   },
-
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
 }
