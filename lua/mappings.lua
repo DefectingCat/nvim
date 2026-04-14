@@ -25,3 +25,25 @@ map("n", "$", "g_")
 map("v", "$", "g_")
 map("v", ">", ">gv")
 map("v", "<", "<gv")
+
+-- telescope
+map("n", "<leader>ft", function()
+  local filetypes = vim.fn.getcompletion("", "filetype")
+  require("telescope.pickers").new({}, {
+    prompt_title = "Filetypes",
+    finder = require("telescope.finders").new_table {
+      results = filetypes,
+    },
+    sorter = require("telescope.config").values.generic_sorter {},
+    attach_mappings = function(prompt_bufnr, map)
+      require("telescope.actions").select_default:replace(function()
+        local selection = require("telescope.actions.state").get_selected_entry()
+        require("telescope.actions").close(prompt_bufnr)
+        if selection then
+          vim.bo.filetype = selection[1]
+        end
+      end)
+      return true
+    end,
+  }):find()
+end, { desc = "Telescope change filetype" })
