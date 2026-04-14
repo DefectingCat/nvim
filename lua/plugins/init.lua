@@ -8,6 +8,7 @@ return {
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("configs.lspconfig")
     end,
@@ -76,35 +77,24 @@ return {
           -- a table with the mapping as the first element.
           ["<leader>ff"] = {
             function()
-              require("snacks").dashboard.pick("files", {
-                supports_live = true,
-                layout = {
-                  preview = "main",
-                  preset = "ivy",
-                },
+              require("telescope.builtin").find_files({
                 hidden = true,
                 cwd = require("oil").get_current_dir(),
               })
             end,
             mode = "n",
             nowait = true,
-            desc = "Find files in the current directory",
+            desc = "Find files in current directory",
           },
           ["<leader>fw"] = {
             function()
-              require("snacks").dashboard.pick("live_grep", {
-                supports_live = true,
-                layout = {
-                  preview = "main",
-                  preset = "ivy",
-                },
-                hidden = true,
+              require("telescope.builtin").live_grep({
                 cwd = require("oil").get_current_dir(),
               })
             end,
             mode = "n",
             nowait = true,
-            desc = "Find files in the current directory",
+            desc = "Live grep in current directory",
           },
         },
         skip_confirm_for_simple_edits = true,
