@@ -1,7 +1,7 @@
 local options = {
   formatters_by_ft = {
     lua = { "stylua" },
-    go = { "gofmt", "goimports" },
+    go = { "gofumpt", "goimports" },
     -- biome/prettier 智能选择
     javascript = function()
       if vim.fs.find({ ".prettierrc", ".prettierrc.json", ".prettierrc.yml", ".prettierrc.yaml", "prettier.config.js", "prettier.config.cjs", "prettier.config.mjs" }, { upward = true, stop = vim.uv.os_homedir() })[1] then
