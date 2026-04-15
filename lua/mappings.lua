@@ -47,3 +47,7 @@ map("n", "<leader>ft", function()
     end,
   }):find()
 end, { desc = "Telescope change filetype" })
+
+map("n", "<leader>fr", function()
+  require("telescope.builtin").resume()
+end, { desc = "Telescope resume last search" })
