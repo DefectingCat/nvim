@@ -5,7 +5,6 @@ return {
     opts = require("configs.conform"),
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -108,6 +107,63 @@ return {
         skip_confirm_for_simple_edits = true,
         watch_for_changes = true,
       })
+    end,
+  },
+
+  -- gitsigns
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = function()
+      local gs = require("gitsigns")
+
+      -- Global navigation keymaps
+      local function map(mode, l, r, desc)
+        vim.keymap.set(mode, l, r, { silent = true, desc = desc })
+      end
+
+      -- stylua: ignore start
+      map("n", "]h", function()
+        if vim.wo.diff then
+          vim.cmd.normal({ "]c", bang = true })
+        else
+          gs.nav_hunk("next")
+        end
+      end, "Next Hunk")
+      map("n", "[h", function()
+        if vim.wo.diff then
+          vim.cmd.normal({ "[c", bang = true })
+        else
+          gs.nav_hunk("prev")
+        end
+      end, "Prev Hunk")
+      map("n", "]H", function() gs.nav_hunk("last") end, "Last Hunk")
+      map("n", "[H", function() gs.nav_hunk("first") end, "First Hunk")
+      -- stylua: ignore end
+
+      return {
+        signs = {
+          delete = { text = "󰍵" },
+          changedelete = { text = "󱕖" },
+        },
+        on_attach = function(bufnr)
+          local function bufmap(mode, l, r, desc)
+            vim.keymap.set(mode, l, r, { buffer = bufnr, silent = true, desc = desc })
+          end
+          -- stylua: ignore start
+          bufmap({ "n", "x" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
+          bufmap({ "n", "x" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
+          bufmap("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
+          bufmap("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
+          bufmap("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
+          bufmap("n", "<leader>ghp", gs.preview_hunk, "Preview Hunk")
+          bufmap("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame Line")
+          bufmap("n", "<leader>ghB", function() gs.blame() end, "Blame Buffer")
+          bufmap("n", "<leader>ghd", gs.diffthis, "Diff This")
+          bufmap("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
+          bufmap({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
+          -- stylua: ignore end
+        end,
+      }
     end,
   },
 }
