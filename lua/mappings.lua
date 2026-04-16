@@ -16,6 +16,7 @@ map("n", "<leader>[", ":tabprevious<CR>", { desc = "Previous tab" })
 
 -- lsp
 map("n", "gh", "<CMD>lua vim.lsp.buf.hover()<CR>", { desc = "Hover" })
+map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
 
 -- search
 map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
