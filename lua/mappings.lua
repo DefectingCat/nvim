@@ -69,3 +69,13 @@ map("n", "<leader>uF", function()
   end
   vim.notify("Buffer autoformat " .. (status and "enabled" or "disabled"), vim.log.levels.INFO)
 end, { desc = "Toggle auto format (buffer)" })
+
+-- buffer
+map("n", "<leader>bo", function()
+  local current = vim.api.nvim_get_current_buf()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if buf ~= current and vim.api.nvim_buf_is_loaded(buf) then
+      vim.api.nvim_buf_delete(buf, { force = true })
+    end
+  end
+end, { desc = "Close other buffers" })
