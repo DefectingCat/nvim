@@ -1,1 +1,1 @@
-require "nvchad.autocmds"
+require("nvchad.autocmds")
