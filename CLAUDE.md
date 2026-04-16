@@ -8,17 +8,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 常用命令
 
-| 命令 | 用途 |
-|------|------|
-| `:Lazy` | 打开插件管理器界面 |
-| `:Lazy sync` | 同步插件（安装/更新/清理） |
-| `:Lazy install` | 安装新插件 |
-| `:Lazy update` | 更新所有插件 |
-| `:Lazy clean` | 清理未使用的插件 |
-| `:Mason` | 打开 LSP/linter/formatter 管理器 |
-| `:Cheatsheet` | 查看 NvChad 快捷键速查表 |
-| `:Nvdash` | 打开启动页 |
-| `:GrugFar` | 打开搜索替换界面 |
+| 命令            | 用途                             |
+| --------------- | -------------------------------- |
+| `:Lazy`         | 打开插件管理器界面               |
+| `:Lazy sync`    | 同步插件（安装/更新/清理）       |
+| `:Lazy install` | 安装新插件                       |
+| `:Lazy update`  | 更新所有插件                     |
+| `:Lazy clean`   | 清理未使用的插件                 |
+| `:Mason`        | 打开 LSP/linter/formatter 管理器 |
+| `:Cheatsheet`   | 查看 NvChad 快捷键速查表         |
+| `:Nvdash`       | 打开启动页                       |
+| `:GrugFar`      | 打开搜索替换界面                 |
 
 ## 架构结构
 
@@ -29,63 +29,68 @@ lua/options.lua       - Vim 选项（cursorline、clipboard、tabstop 等）
 lua/mappings.lua      - 自定义快捷键映射
 lua/plugins/init.lua  - 用户插件列表
 lua/configs/          - 插件配置目录（lazy.lua、lspconfig.lua、conform.lua）
-NvChad/               - NvChad 核心模块（v2.5）
 ```
 
 ## 关键配置说明
 
 ### 插件管理
+
 使用 lazy.nvim，配置在 `lua/configs/lazy.lua`。默认所有插件懒加载（`lazy = true`）。添加新插件时在 `lua/plugins/init.lua` 中定义。
 
 ### LSP 配置
+
 LSP 服务器通过 `vim.lsp.enable()` 启用（Neovim 0.11+ 新 API）。当前启用的服务器：`html`、`cssls`。配置文件：`lua/configs/lspconfig.lua`。
 
 ### 格式化
+
 使用 conform.nvim，配置在 `lua/configs/conform.lua`。当前仅配置 Lua 使用 stylua。
 
 ### 文件浏览器
+
 使用 oil.nvim 替代 netrw（已在 lazy.lua 中禁用 netrw 相关插件）。快捷键：
+
 - `-` 打开父目录
 - `_` 打开当前工作目录
 
 ## 自定义快捷键
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `;` | n | 进入命令模式 |
-| `<C-x>` | t | 退出终端 |
-| `<leader>tt` | n | 打开终端 |
-| `<leader>tc` | n | 关闭标签页 |
-| `<leader>tn` | n | 新建标签页 |
-| `<leader>]` / `[` | n | 下/上一个标签页 |
-| `<leader>ss` | v | 可视选择内搜索替换 |
-| `<leader>sr` | n/v | GrugFar 搜索替换（自动过滤当前文件类型） |
-| `<leader>ft` | n | Telescope 切换文件类型 |
-| `<leader>fr` | n | Telescope 恢复上次搜索 |
-| `gh` | n | LSP hover 显示文档 |
-| `$` | n/v | 移动到行尾非空白字符（`g_`） |
-| `>` / `<` | v | 缩进并保持可视模式 |
-| `]h` / `[h` | n | 跳转到下/上一个 Git hunk |
-| `-` | n | Oil 打开父目录 |
-| `_` | n | Oil 打开当前工作目录 |
+| 快捷键            | 模式 | 功能                                     |
+| ----------------- | ---- | ---------------------------------------- |
+| `;`               | n    | 进入命令模式                             |
+| `<C-x>`           | t    | 退出终端                                 |
+| `<leader>tt`      | n    | 打开终端                                 |
+| `<leader>tc`      | n    | 关闭标签页                               |
+| `<leader>tn`      | n    | 新建标签页                               |
+| `<leader>]` / `[` | n    | 下/上一个标签页                          |
+| `<leader>ss`      | v    | 可视选择内搜索替换                       |
+| `<leader>sr`      | n/v  | GrugFar 搜索替换（自动过滤当前文件类型） |
+| `<leader>ft`      | n    | Telescope 切换文件类型                   |
+| `<leader>fr`      | n    | Telescope 恢复上次搜索                   |
+| `gh`              | n    | LSP hover 显示文档                       |
+| `$`               | n/v  | 移动到行尾非空白字符（`g_`）             |
+| `>` / `<`         | v    | 缩进并保持可视模式                       |
+| `]h` / `[h`       | n    | 跳转到下/上一个 Git hunk                 |
+| `-`               | n    | Oil 打开父目录                           |
+| `_`               | n    | Oil 打开当前工作目录                     |
 
 ### Git 快捷键（gitsigns，`<leader>gh` 前缀）
 
-| 快捷键 | 功能 |
-|--------|------|
-| `<leader>ghs` | Stage hunk |
-| `<leader>ghr` | Reset hunk |
-| `<leader>ghS` | Stage buffer |
+| 快捷键        | 功能            |
+| ------------- | --------------- |
+| `<leader>ghs` | Stage hunk      |
+| `<leader>ghr` | Reset hunk      |
+| `<leader>ghS` | Stage buffer    |
 | `<leader>ghu` | Undo stage hunk |
-| `<leader>ghp` | Preview hunk |
-| `<leader>ghb` | Blame line |
-| `<leader>ghd` | Diff this |
+| `<leader>ghp` | Preview hunk    |
+| `<leader>ghb` | Blame line      |
+| `<leader>ghd` | Diff this       |
 
 ## NvChad 配置要点
 
 `lua/chadrc.lua` 的结构需与 [nvconfig.lua](https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua) 保持一致。
 
 当前设置：
+
 - 主题：catppuccin
 - 启动页：nvdash（启动时加载）
 - 状态栏分隔符：round 风格
@@ -108,3 +113,4 @@ LSP 服务器通过 `vim.lsp.enable()` 启用（Neovim 0.11+ 新 API）。当前
 ## Neovim 版本要求
 
 需要 Neovim 0.11+（NvChad v2.5 要求）。
+
