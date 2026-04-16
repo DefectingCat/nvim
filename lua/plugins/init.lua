@@ -1,4 +1,13 @@
 return {
+  -- disable cmp-nvim-lua (neovim lua api completion)
+  { "hrsh7th/cmp-nvim-lua", enabled = false },
+
+  -- disable friendly-snippets (preset snippet library)
+  { "rafamadriz/friendly-snippets", enabled = false },
+
+  -- disable nvchad menu (right-click context menu)
+  { "nvchad/menu", enabled = false },
+
   {
     "stevearc/conform.nvim",
     event = "BufWritePre", -- for format on save
