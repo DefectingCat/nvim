@@ -38,10 +38,17 @@ local options = {
     markdown = { "prettier" },
   },
 
-  format_on_save = {
-    timeout_ms = 500,
-    lsp_fallback = true,
-  },
+  format_on_save = function(bufnr)
+    -- 检查格式化开关：buffer 局部优先，然后是全局
+    local buf_autoformat = vim.b[bufnr].autoformat
+    if buf_autoformat == false then
+      return nil -- buffer 局部禁用
+    end
+    if vim.g.autoformat == false then
+      return nil -- 全局禁用
+    end
+    return { timeout_ms = 500, lsp_fallback = true }
+  end,
 }
 
 return options

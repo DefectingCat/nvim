@@ -51,3 +51,18 @@ end, { desc = "Telescope change filetype" })
 map("n", "<leader>fr", function()
   require("telescope.builtin").resume()
 end, { desc = "Telescope resume last search" })
+
+-- format toggle
+map("n", "<leader>uf", function()
+  vim.g.autoformat = not vim.g.autoformat
+  vim.notify("Autoformat " .. (vim.g.autoformat and "enabled" or "disabled"), vim.log.levels.INFO)
+end, { desc = "Toggle auto format (global)" })
+
+map("n", "<leader>uF", function()
+  vim.b.autoformat = not vim.b.autoformat
+  local status = vim.b.autoformat
+  if status == nil then
+    status = vim.g.autoformat
+  end
+  vim.notify("Buffer autoformat " .. (status and "enabled" or "disabled"), vim.log.levels.INFO)
+end, { desc = "Toggle auto format (buffer)" })
