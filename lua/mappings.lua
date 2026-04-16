@@ -73,9 +73,13 @@ end, { desc = "Toggle auto format (buffer)" })
 -- buffer
 map("n", "<leader>bo", function()
   local current = vim.api.nvim_get_current_buf()
+  local skipped_ft = { "NvimTree", "oil", "aerial" }
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if buf ~= current and vim.api.nvim_buf_is_loaded(buf) then
-      vim.api.nvim_buf_delete(buf, { force = true })
+      local ft = vim.bo[buf].filetype
+      if not vim.tbl_contains(skipped_ft, ft) then
+        vim.api.nvim_buf_delete(buf, { force = true })
+      end
     end
   end
 end, { desc = "Close other buffers" })
