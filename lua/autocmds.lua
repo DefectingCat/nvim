@@ -28,14 +28,27 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- winbar 显示相对路径
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "TermOpen", "TextChanged", "BufWritePost" }, {
   group = group,
   callback = function()
-    local path = vim.fn.expand("%:~:.")
-    if path == "" then
-      path = "[No Name]"
+    -- 浮动窗口、nofile 类型不显示 winbar
+    local win_config = vim.api.nvim_win_get_config(0)
+    if (win_config.relative and win_config.relative ~= "") or vim.bo.buftype == "nofile" then
+      vim.opt_local.winbar = ""
+      return
     end
-    local modified = vim.bo.modified and " [+]" or ""
-    vim.opt_local.winbar = path .. modified
+
+    -- 特殊 filetype 不显示 winbar
+    if vim.tbl_contains({ "NvimTree", "oil", "aerial", "TelescopePrompt", "qf" }, vim.bo.filetype) then
+      vim.opt_local.winbar = ""
+      return
+    end
+
+    -- 设置 winbar
+    local path = vim.fn.expand("%:~:.") or "[No Name]"
+    if path == "" and vim.bo.buftype == "terminal" then
+      path = vim.b.term_title or "[Terminal]"
+    end
+    vim.opt_local.winbar = path .. (vim.bo.modified and " [+]" or "")
   end,
 })
