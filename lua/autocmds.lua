@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- winbar 显示相对路径
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "TermOpen", "TextChanged", "BufWritePost" }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "TermOpen", "TextChanged", "TextChangedI", "BufWritePost" }, {
   group = group,
   callback = function()
     -- 浮动窗口、nofile 类型不显示 winbar
