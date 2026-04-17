@@ -202,4 +202,70 @@ return {
       },
     },
   },
+
+  -- treesitter
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {},
+      auto_install = false,
+      highlight = { enable = true },
+      indent = { enable = true },
+    },
+    init = function()
+      local parsers = {
+        "lua",
+        "vim",
+        "vimdoc",
+        -- Web
+        "javascript",
+        "typescript",
+        "tsx",
+        "jsdoc",
+        "json",
+        "jsonc",
+        "html",
+        "css",
+        "yaml",
+        -- Backend
+        "c",
+        "rust",
+        "toml",
+        "go",
+        "gomod",
+        "gosum",
+        "gowork",
+        -- Infra
+        "dockerfile",
+        "make",
+      }
+
+      vim.api.nvim_create_user_command("TSInstallAll", function()
+        local ok, parser_list = pcall(require, "nvim-treesitter.parsers")
+        if not ok then
+          vim.notify("nvim-treesitter not loaded yet", vim.log.levels.WARN)
+          return
+        end
+
+        local installed = parser_list.get_parser_configs()
+        local to_install = {}
+
+        for _, lang in ipairs(parsers) do
+          if not installed[lang] then
+            to_install[#to_install + 1] = lang
+          end
+        end
+
+        if #to_install > 0 then
+          vim.cmd("TSInstall " .. table.concat(to_install, " "))
+        else
+          vim.notify("All parsers are installed, use :TSUpdateAll to update", vim.log.levels.INFO)
+        end
+      end, { desc = "Install missing Treesitter parsers" })
+
+      vim.api.nvim_create_user_command("TSUpdateAll", function()
+        vim.cmd("TSUpdate " .. table.concat(parsers, " "))
+      end, { desc = "Update all listed Treesitter parsers" })
+    end,
+  },
 }
