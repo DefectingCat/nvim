@@ -81,19 +81,13 @@ end, { desc = "Toggle auto format (buffer)" })
 map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
 map("n", "<leader><leader>", function()
   require("telescope.builtin").buffers({
+    initial_mode = "normal",
     show_all_buffers = true,
     ignore_current_buffer = false,
     sort_lastused = true,
     attach_mappings = function(prompt_bufnr, map_inner)
       local actions = require("telescope.actions")
-      local action_state = require("telescope.actions.state")
-      map_inner("n", "d", function()
-        local selection = action_state.get_selected_entry()
-        if selection then
-          vim.api.nvim_buf_delete(selection.bufnr, { force = true })
-          actions.move_selection_next(prompt_bufnr)
-        end
-      end)
+      map_inner("n", "d", actions.delete_buffer)
       return true
     end,
   })
