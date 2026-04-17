@@ -268,4 +268,60 @@ return {
       end, { desc = "Update all listed Treesitter parsers" })
     end,
   },
+
+  -- user command to install/update Mason packages
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+
+      local packages = {
+        -- LSP
+        "lua-language-server",
+        "gopls",
+        "vtsls",
+        "css-lsp",
+        "yaml-language-server",
+        "html-lsp",
+        -- Linter
+        "golangci-lint",
+        "biome",
+        -- Formatter
+        "stylua",
+        "prettier",
+        "gofumpt",
+        "goimports",
+      }
+
+      vim.api.nvim_create_user_command("MasonInstallAll", function()
+        local registry = require("mason-registry")
+        local to_install = {}
+        local to_update = {}
+
+        for _, name in ipairs(packages) do
+          local pkg = registry.get_package(name)
+          if pkg:is_installed() then
+            -- check if update available
+            if pkg:is_newer_version_available() then
+              to_update[#to_update + 1] = name
+            end
+          else
+            to_install[#to_install + 1] = name
+          end
+        end
+
+        if #to_install > 0 then
+          vim.cmd("MasonInstall " .. table.concat(to_install, " "))
+        end
+
+        if #to_update > 0 then
+          vim.cmd("MasonUpdate " .. table.concat(to_update, " "))
+        end
+
+        if #to_install == 0 and #to_update == 0 then
+          vim.notify("All packages are up-to-date", vim.log.levels.INFO)
+        end
+      end, { desc = "Install/Update Mason packages (skip installed)" })
+    end,
+  },
 }
