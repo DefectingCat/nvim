@@ -1,5 +1,12 @@
 require("nvchad.mappings")
 
+-- disable default mappings
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    vim.keymap.del("n", "<leader>b")
+  end,
+})
+
 -- add yours here
 
 local map = vim.keymap.set
@@ -37,7 +44,7 @@ map("n", "<leader>ft", function()
         results = filetypes,
       }),
       sorter = require("telescope.config").values.generic_sorter({}),
-      attach_mappings = function(prompt_bufnr, map)
+      attach_mappings = function(prompt_bufnr)
         require("telescope.actions").select_default:replace(function()
           local selection = require("telescope.actions.state").get_selected_entry()
           require("telescope.actions").close(prompt_bufnr)
@@ -71,6 +78,27 @@ map("n", "<leader>uF", function()
 end, { desc = "Toggle auto format (buffer)" })
 
 -- buffer
+map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
+map("n", "<leader><leader>", function()
+  require("telescope.builtin").buffers({
+    show_all_buffers = true,
+    ignore_current_buffer = false,
+    sort_lastused = true,
+    attach_mappings = function(prompt_bufnr, map_inner)
+      local actions = require("telescope.actions")
+      local action_state = require("telescope.actions.state")
+      map_inner("n", "d", function()
+        local selection = action_state.get_selected_entry()
+        if selection then
+          vim.api.nvim_buf_delete(selection.bufnr, { force = true })
+          actions.move_selection_next(prompt_bufnr)
+        end
+      end)
+      return true
+    end,
+  })
+end, { desc = "Buffers" })
+
 map("n", "<leader>bo", function()
   local current = vim.api.nvim_get_current_buf()
   local skipped_ft = { "NvimTree", "oil", "aerial" }
