@@ -72,6 +72,9 @@ M.ui = {
   statusline = {
     separator_style = "round",
   },
+  tabufline = {
+    enabled = false,
+  },
 }
 
 return M
