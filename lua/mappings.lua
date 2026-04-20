@@ -39,6 +39,11 @@ map("n", "<C-n>", "<Nop>", { desc = "disabled" })
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 
 -- telescope
+-- telescope git status (override NvChad default with normal mode)
+map("n", "<leader>gt", function()
+  require("telescope.builtin").git_status({ initial_mode = "normal" })
+end, { desc = "Telescope git status" })
+
 map("n", "<leader>ft", function()
   local filetypes = vim.fn.getcompletion("", "filetype")
   require("telescope.pickers")
