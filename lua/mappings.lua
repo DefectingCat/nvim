@@ -34,6 +34,10 @@ map("v", "$", "g_")
 map("v", ">", ">gv")
 map("v", "<", "<gv")
 
+-- nvimtree: override NvChad defaults (remove <C-n>, <leader>e becomes toggle)
+map("n", "<C-n>", "<Nop>", { desc = "disabled" })
+map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
+
 -- telescope
 map("n", "<leader>ft", function()
   local filetypes = vim.fn.getcompletion("", "filetype")
