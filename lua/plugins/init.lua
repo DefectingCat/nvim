@@ -212,42 +212,6 @@ return {
       highlight = { enable = true },
       indent = { enable = true },
     },
-    init = function()
-      local parsers = {
-        "lua",
-        "vim",
-        "vimdoc",
-        -- Web
-        "javascript",
-        "typescript",
-        "tsx",
-        "jsdoc",
-        "json",
-        "jsonc",
-        "html",
-        "css",
-        "yaml",
-        -- Backend
-        "c",
-        "rust",
-        "toml",
-        "go",
-        "gomod",
-        "gosum",
-        "gowork",
-        -- Infra
-        "dockerfile",
-        "make",
-      }
-
-      vim.api.nvim_create_user_command("TSInstallAll", function()
-        vim.cmd("TSInstall " .. table.concat(parsers, " "))
-      end, { desc = "Install listed Treesitter parsers" })
-
-      vim.api.nvim_create_user_command("TSUpdateAll", function()
-        vim.cmd("TSUpdate " .. table.concat(parsers, " "))
-      end, { desc = "Update listed Treesitter parsers" })
-    end,
   },
 
   -- user command to install/update Mason packages
