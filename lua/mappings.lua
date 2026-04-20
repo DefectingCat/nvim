@@ -94,7 +94,7 @@ map("n", "<leader><leader>", function()
     show_all_buffers = true,
     ignore_current_buffer = false,
     sort_lastused = true,
-    attach_mappings = function(prompt_bufnr, map_inner)
+    attach_mappings = function(_, map_inner)
       local actions = require("telescope.actions")
       map_inner("n", "d", actions.delete_buffer)
       return true
