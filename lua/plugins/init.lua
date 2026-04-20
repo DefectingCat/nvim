@@ -217,6 +217,7 @@ return {
   -- user command to install/update Mason packages
   {
     "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonInstallAll" },
     config = function()
       require("mason").setup()
 
@@ -246,8 +247,9 @@ return {
         for _, name in ipairs(packages) do
           local pkg = registry.get_package(name)
           if pkg:is_installed() then
-            -- check if update available
-            if pkg:is_newer_version_available() then
+            local installed = pkg:get_installed_version()
+            local latest = pkg:get_latest_version()
+            if installed ~= latest then
               to_update[#to_update + 1] = name
             end
           else
@@ -260,7 +262,7 @@ return {
         end
 
         if #to_update > 0 then
-          vim.cmd("MasonUpdate " .. table.concat(to_update, " "))
+          vim.cmd("MasonInstall " .. table.concat(to_update, " ")) -- MasonInstall handles updates too
         end
 
         if #to_install == 0 and #to_update == 0 then
