@@ -203,14 +203,12 @@ return {
     },
   },
 
-  -- {
-  --   dir = "/home/xfy/Developer/vim-visual-multi",
-  --   lazy = false,
-  --   keys = { "<C-n>" },
-  --   config = function()
-  --     -- 先删除 NvChad 的 <C-n> 映射，避免冲突
-  --     pcall(vim.keymap.del, "n", "<C-n>")
-  --     require("visual-multi").setup({})
-  --   end,
-  -- },
+  {
+    dir = "/home/xfy/Developer/vim-visual-multi",
+    lazy = false,
+    keys = { "<C-n>" },
+    config = function()
+      require("visual-multi").setup({})
+    end,
+  },
 }
