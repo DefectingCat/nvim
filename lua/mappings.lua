@@ -4,6 +4,7 @@ require("nvchad.mappings")
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.keymap.del("n", "<leader>b")
+    vim.keymap.del("n", "<C-n>")
   end,
 })
 
@@ -34,8 +35,7 @@ map("v", "$", "g_")
 map("v", ">", ">gv")
 map("v", "<", "<gv")
 
--- nvimtree: override NvChad defaults (remove <C-n>, <leader>e becomes toggle)
-map("n", "<C-n>", "<Nop>", { desc = "disabled" })
+-- nvimtree: override NvChad defaults (use <leader>e for toggle)
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 
 -- telescope
@@ -87,6 +87,7 @@ map("n", "<leader>uF", function()
 end, { desc = "Toggle auto format (buffer)" })
 
 -- buffer
+map("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close current buffer" })
 map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
 map("n", "<leader><leader>", function()
   require("telescope.builtin").buffers({
