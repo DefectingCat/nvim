@@ -1,10 +1,20 @@
+-- Temporarily intercept vim.keymap.set to skip NvChad's <C-n> binding
+local original_keymap_set = vim.keymap.set
+vim.keymap.set = function(mode, lhs, rhs, opts)
+  if lhs == "<C-n>" then
+    return
+  end
+  return original_keymap_set(mode, lhs, rhs, opts)
+end
 require("nvchad.mappings")
+vim.keymap.set = original_keymap_set
 
 -- disable default mappings
-vim.api.nvim_create_autocmd("VimEnter", {
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyLoad",
+  once = true,
   callback = function()
-    vim.keymap.del("n", "<leader>b")
-    vim.keymap.del("n", "<C-n>")
+    pcall(vim.keymap.del, "n", "<leader>b")
   end,
 })
 
@@ -43,6 +53,12 @@ map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle windo
 map("n", "<leader>gt", function()
   require("telescope.builtin").git_status({ initial_mode = "normal" })
 end, { desc = "Telescope git status" })
+map("n", "<leader>gl", function()
+  require("telescope.builtin").git_commits({ initial_mode = "normal" })
+end, { desc = "Git log" })
+map("n", "<leader>gf", function()
+  require("telescope.builtin").git_bcommits({ initial_mode = "normal" })
+end, { desc = "Git file history" })
 
 map("n", "<leader>ft", function()
   local filetypes = vim.fn.getcompletion("", "filetype")
