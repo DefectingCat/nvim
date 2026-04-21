@@ -202,13 +202,4 @@ return {
       },
     },
   },
-
-  {
-    dir = "/home/xfy/Developer/vim-visual-multi",
-    lazy = false,
-    keys = { "<C-n>" },
-    config = function()
-      require("visual-multi").setup({})
-    end,
-  },
 }
