@@ -3,3 +3,4 @@ lazy-lock.json
 NvChad/
 LazyVim/
 ui/
+lua/plugins/local.lua
