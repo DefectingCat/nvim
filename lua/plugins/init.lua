@@ -202,4 +202,17 @@ return {
       },
     },
   },
+
+  -- nvim-surround
+  {
+    "kylechui/nvim-surround",
+    version = "^4.0.0",
+    keys = {
+      { "ys", desc = "Add Surrounding", mode = "n" },
+      { "yS", desc = "Add Surrounding on Line", mode = "n" },
+      { "ds", desc = "Delete Surrounding", mode = "n" },
+      { "cs", desc = "Change Surrounding", mode = "n" },
+      { "S", desc = "Add Surrounding (Visual)", mode = "x" },
+    },
+  },
 }
