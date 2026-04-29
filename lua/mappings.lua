@@ -103,7 +103,23 @@ map("n", "<leader>uF", function()
 end, { desc = "Toggle auto format (buffer)" })
 
 -- buffer
-map("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close current buffer" })
+map("n", "<leader>x", function()
+  local buf = vim.api.nvim_get_current_buf()
+  if vim.bo[buf].modified then
+    vim.ui.select({ "Yes", "No" }, {
+      prompt = "Buffer has unsaved changes. Close without saving?",
+      format_item = function(item)
+        return item
+      end,
+    }, function(choice)
+      if choice == "Yes" then
+        vim.api.nvim_buf_delete(buf, { force = true })
+      end
+    end)
+  else
+    vim.cmd.bdelete()
+  end
+end, { desc = "Close current buffer" })
 map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
 map("n", "<leader><leader>", function()
   require("telescope.builtin").buffers({
