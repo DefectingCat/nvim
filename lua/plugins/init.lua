@@ -227,4 +227,53 @@ return {
       { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" },
     },
   },
+
+  -- markdown-preview: browser preview
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = function()
+      require("lazy").load({ plugins = { "markdown-preview.nvim" } })
+      vim.fn["mkdp#util#install"]()
+    end,
+    keys = {
+      {
+        "<leader>cp",
+        ft = "markdown",
+        "<cmd>MarkdownPreviewToggle<cr>",
+        desc = "Markdown Preview",
+      },
+    },
+    config = function()
+      vim.cmd([[do FileType]])
+    end,
+  },
+
+  -- render-markdown: in-editor rendering
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      code = {
+        sign = false,
+        width = "block",
+        right_pad = 1,
+      },
+      heading = {
+        sign = false,
+        icons = {},
+      },
+      checkbox = {
+        enabled = false,
+      },
+    },
+    ft = { "markdown", "norg", "rmd", "org", "codecompanion" },
+    config = function(_, opts)
+      require("render-markdown").setup(opts)
+      vim.keymap.set("n", "<leader>um", function()
+        local rm = require("render-markdown")
+        rm.toggle()
+        vim.notify("Render Markdown " .. (rm.is_enabled() and "enabled" or "disabled"), vim.log.levels.INFO)
+      end, { desc = "Toggle Render Markdown" })
+    end,
+  },
 }
