@@ -43,9 +43,7 @@ local mason_packages = {
   "gopls",
   "vtsls",
   "css-lsp",
-  "yaml-language-server",
   "html-lsp",
-  "json-lsp",
   "rust-analyzer",
   "taplo",
   -- Linter
