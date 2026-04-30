@@ -45,6 +45,9 @@ local mason_packages = {
   "css-lsp",
   "yaml-language-server",
   "html-lsp",
+  "json-lsp",
+  "rust-analyzer",
+  "taplo",
   -- Linter
   "golangci-lint",
   "biome",

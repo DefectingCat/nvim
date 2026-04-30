@@ -17,6 +17,7 @@ local options = {
     css = { "prettier" },
     html = { "prettier" },
     markdown = { "prettier" },
+    toml = { "taplo" },
   },
 
   format_on_save = function(bufnr)
