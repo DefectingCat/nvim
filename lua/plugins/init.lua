@@ -36,7 +36,6 @@ return {
       filters = {
         dotfiles = false,
         git_ignored = false,
-        custom = {},
         exclude = {},
       },
       git = {
@@ -44,6 +43,9 @@ return {
         ignore = false,
         show_on_dirs = true,
         show_on_open_dirs = true,
+      },
+      filesystem_watchers = {
+        enable = false,
       },
     },
   },
