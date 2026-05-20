@@ -119,6 +119,19 @@ map("n", "<leader>uF", function()
   vim.notify("Buffer autoformat " .. (status and "enabled" or "disabled"), vim.log.levels.INFO)
 end, { desc = "Toggle auto format (buffer)" })
 
+-- yank path
+map("n", "<leader>yp", function()
+  local path = vim.fn.expand("%")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied relative path: " .. path, vim.log.levels.INFO)
+end, { desc = "Yank relative file path" })
+
+map("n", "<leader>yP", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied absolute path: " .. path, vim.log.levels.INFO)
+end, { desc = "Yank absolute file path" })
+
 -- buffer
 map("n", "<leader>x", function()
   local buf = vim.api.nvim_get_current_buf()
