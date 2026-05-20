@@ -276,6 +276,67 @@ return {
     },
   },
 
+  -- codediff: side-by-side diff viewer
+  {
+    "esmuellert/codediff.nvim",
+    lazy = true,
+    cmd = "CodeDiff",
+    keys = {
+      {
+        "<leader>gd",
+        function()
+          vim.cmd("CodeDiff")
+        end,
+        desc = "CodeDiff git status",
+      },
+      {
+        "<leader>gD",
+        function()
+          vim.cmd("CodeDiff history")
+        end,
+        desc = "CodeDiff file history",
+      },
+    },
+    opts = {
+      diff = {
+        layout = "side-by-side",
+        disable_inlay_hints = true,
+        jump_to_first_change = true,
+        cycle_next_hunk = true,
+        cycle_next_file = true,
+      },
+      -- highlights = {
+      --   line_insert = "DiffAdd",
+      --   line_delete = "DiffDelete",
+      -- },
+      explorer = {
+        width = 35,
+      },
+      keymaps = {
+        view = {
+          quit = "q",
+          -- toggle_explorer = "<leader>e",
+          -- focus_explorer = "<leader>ce",
+          next_hunk = "]c",
+          prev_hunk = "[c",
+          next_file = "]f",
+          prev_file = "[f",
+          diff_get = "do",
+          diff_put = "dp",
+          open_in_prev_tab = "gf",
+          toggle_stage = "<leader>cs",
+          stage_hunk = "<leader>hs",
+          unstage_hunk = "<leader>hu",
+          discard_hunk = "<leader>hr",
+          hunk_textobject = "ih",
+          show_help = "g?",
+          align_move = "gm",
+          toggle_layout = "t",
+        },
+      },
+    },
+  },
+
   -- markdown-preview: browser preview
   {
     "iamcco/markdown-preview.nvim",
