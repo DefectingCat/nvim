@@ -63,9 +63,20 @@ return {
     },
     cmd = { "Oil" },
     config = function()
+      _G.get_oil_winbar = function()
+        local dir = require("oil").get_current_dir()
+        if dir then
+          return vim.fn.fnamemodify(dir, ":.")
+        end
+        return ""
+      end
+
       require("oil").setup({
         default_file_explorer = false,
         delete_to_trash = false,
+        win_options = {
+          winbar = "%!v:lua.get_oil_winbar()",
+        },
         view_options = {
           show_hidden = true,
         },
