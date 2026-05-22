@@ -65,9 +65,20 @@ return {
     },
     cmd = { "Oil" },
     config = function()
+      _G.get_oil_winbar = function()
+        local dir = require("oil").get_current_dir()
+        if dir then
+          return vim.fn.fnamemodify(dir, ":.")
+        end
+        return ""
+      end
+
       require("oil").setup({
         default_file_explorer = false,
         delete_to_trash = false,
+        win_options = {
+          winbar = "%!v:lua.get_oil_winbar()",
+        },
         view_options = {
           show_hidden = true,
         },
@@ -205,6 +216,43 @@ return {
     },
   },
 
+  -- persistence: session management
+  {
+    "folke/persistence.nvim",
+    lazy = true,
+    opts = {},
+    keys = {
+      {
+        "<leader>qs",
+        function()
+          require("persistence").load()
+        end,
+        desc = "Restore Session",
+      },
+      {
+        "<leader>qS",
+        function()
+          require("persistence").select()
+        end,
+        desc = "Select Session",
+      },
+      {
+        "<leader>ql",
+        function()
+          require("persistence").load({ last = true })
+        end,
+        desc = "Restore Last Session",
+      },
+      {
+        "<leader>qd",
+        function()
+          require("persistence").stop()
+        end,
+        desc = "Don't Save Current Session",
+      },
+    },
+  },
+
   -- nvim-surround
   {
     "kylechui/nvim-surround",
@@ -227,6 +275,67 @@ return {
     cmd = "Neogit",
     keys = {
       { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" },
+    },
+  },
+
+  -- codediff: side-by-side diff viewer
+  {
+    "esmuellert/codediff.nvim",
+    lazy = true,
+    cmd = "CodeDiff",
+    keys = {
+      {
+        "<leader>gd",
+        function()
+          vim.cmd("CodeDiff")
+        end,
+        desc = "CodeDiff git status",
+      },
+      {
+        "<leader>gD",
+        function()
+          vim.cmd("CodeDiff history")
+        end,
+        desc = "CodeDiff file history",
+      },
+    },
+    opts = {
+      diff = {
+        layout = "side-by-side",
+        disable_inlay_hints = true,
+        jump_to_first_change = true,
+        cycle_next_hunk = true,
+        cycle_next_file = true,
+      },
+      -- highlights = {
+      --   line_insert = "DiffAdd",
+      --   line_delete = "DiffDelete",
+      -- },
+      explorer = {
+        width = 35,
+      },
+      keymaps = {
+        view = {
+          quit = "q",
+          -- toggle_explorer = "<leader>e",
+          -- focus_explorer = "<leader>ce",
+          next_hunk = "]c",
+          prev_hunk = "[c",
+          next_file = "]f",
+          prev_file = "[f",
+          diff_get = "do",
+          diff_put = "dp",
+          open_in_prev_tab = "gf",
+          toggle_stage = "<leader>cs",
+          stage_hunk = "<leader>hs",
+          unstage_hunk = "<leader>hu",
+          discard_hunk = "<leader>hr",
+          hunk_textobject = "ih",
+          show_help = "g?",
+          align_move = "gm",
+          toggle_layout = "t",
+        },
+      },
     },
   },
 

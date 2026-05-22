@@ -36,6 +36,23 @@ map("n", "<leader>[", ":tabprevious<CR>", { desc = "Previous tab" })
 map("n", "gh", "<CMD>lua vim.lsp.buf.hover()<CR>", { desc = "Hover" })
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
 
+local diagnostic_goto = function(next, severity)
+  return function()
+    vim.diagnostic.jump({
+      count = (next and 1 or -1) * vim.v.count1,
+      severity = severity and vim.diagnostic.severity[severity] or nil,
+      float = true,
+    })
+  end
+end
+
+map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
+map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
+map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
+map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
+map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
+
 -- search
 map("v", "<leader>ss", ":s/\\%V", { desc = "Search and replace in visual selection" })
 
@@ -101,6 +118,19 @@ map("n", "<leader>uF", function()
   end
   vim.notify("Buffer autoformat " .. (status and "enabled" or "disabled"), vim.log.levels.INFO)
 end, { desc = "Toggle auto format (buffer)" })
+
+-- yank path
+map("n", "<leader>yp", function()
+  local path = vim.fn.expand("%")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied relative path: " .. path, vim.log.levels.INFO)
+end, { desc = "Yank relative file path" })
+
+map("n", "<leader>yP", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied absolute path: " .. path, vim.log.levels.INFO)
+end, { desc = "Yank absolute file path" })
 
 -- buffer
 map("n", "<leader>x", function()

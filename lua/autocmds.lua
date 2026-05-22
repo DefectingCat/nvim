@@ -38,8 +38,13 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "TermOpen", "BufModifie
       return
     end
 
+    -- oil 保留自身的 winbar
+    if vim.bo.filetype == "oil" then
+      return
+    end
+
     -- 特殊 filetype 不显示 winbar
-    if vim.tbl_contains({ "NvimTree", "oil", "aerial", "TelescopePrompt", "qf" }, vim.bo.filetype) then
+    if vim.tbl_contains({ "NvimTree", "aerial", "TelescopePrompt", "qf" }, vim.bo.filetype) then
       vim.opt_local.winbar = ""
       return
     end
