@@ -27,6 +27,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- 延迟设置 Treesitter 折叠（避免启动时加载 treesitter 模块）
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = group,
+  once = true,
+  callback = function()
+    vim.o.foldmethod = "expr"
+    vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  end,
+})
+
 -- winbar 显示相对路径
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", "TermOpen", "BufModifiedSet", "BufWritePost", "BufFilePost" }, {
   group = group,
