@@ -331,7 +331,7 @@ end, { desc = "诊断位置列表" })
 -- <leader>ff ：文件查找
 lazy.on_keys("pick", "<leader>ff", "n", pick.load_pick, function()
 	require("mini.pick").builtin.cli({
-		command = { "rg", "--files", "--hidden", "--color=never" },
+		command = { "rg", "--files", "--hidden", "--glob", "!.git/", "--color=never" },
 	})
 end, { desc = "文件查找" })
 
@@ -348,7 +348,7 @@ end, { desc = "搜索键位映射" })
 -- <leader>fa ：查找所有文件（含隐藏和忽略的文件）
 lazy.on_keys("pick", "<leader>fa", "n", pick.load_pick, function()
 	require("mini.pick").builtin.cli({
-		command = { "rg", "--files", "--hidden", "--no-ignore", "--color=never" },
+		command = { "rg", "--files", "--hidden", "--no-ignore", "--glob", "!.git/", "--color=never" },
 	})
 end, { desc = "查找所有文件（含隐藏/忽略）" })
 
