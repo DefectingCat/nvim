@@ -1,5 +1,3 @@
-local treesitter = require("nvim-treesitter")
-
 local ensure_installed = {
     "lua",
     "vim",
@@ -26,27 +24,35 @@ local ensure_installed = {
     "make",
 }
 
--- 延迟安装 parser，避免启动时阻塞
-vim.defer_fn(function()
-    treesitter.install(ensure_installed)
-end, 100)
+vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = function()
+        vim.cmd.packadd("nvim-treesitter")
+        local treesitter = require("nvim-treesitter")
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "*",
-    callback = function(args)
-        local buf = args.buf
-        local ft = vim.bo[buf].filetype
+        -- 延迟安装 parser，避免阻塞
+        vim.defer_fn(function()
+            treesitter.install(ensure_installed)
+        end, 100)
 
-        local lang = vim.treesitter.language.get_lang(ft)
-        if not lang then
-            return
-        end
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "*",
+            callback = function(args)
+                local buf = args.buf
+                local ft = vim.bo[buf].filetype
 
-        local ok_add = pcall(vim.treesitter.language.add, lang)
-        if not ok_add then
-            return
-        end
+                local lang = vim.treesitter.language.get_lang(ft)
+                if not lang then
+                    return
+                end
 
-        pcall(vim.treesitter.start, buf, lang)
+                local ok_add = pcall(vim.treesitter.language.add, lang)
+                if not ok_add then
+                    return
+                end
+
+                pcall(vim.treesitter.start, buf, lang)
+            end,
+        })
     end,
 })

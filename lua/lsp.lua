@@ -2,6 +2,7 @@ local lazy = require("lazy")
 
 -- conform.nvim - BufWritePre 懒加载
 local function setup_conform()
+	vim.cmd.packadd("conform.nvim")
 	local function biome_or_prettier()
 		if vim.fs.find({ "biome.json", "biome.jsonc" }, { upward = true, stop = vim.uv.os_homedir() })[1] then
 			return { "biome-check", "biome", stop_after_first = true }
@@ -44,6 +45,7 @@ end)
 
 -- mason + LSP 配置延迟到 VimEnter，避免启动时加载
 lazy.on_event("lsp", "VimEnter", "*", function()
+	vim.cmd.packadd("nvim-lspconfig")
 	require("mason").setup()
 
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -73,15 +75,15 @@ lazy.on_event("lsp", "VimEnter", "*", function()
 	})
 end)
 
--- LSP keymaps
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-vim.keymap.set("n", "gh", vim.lsp.buf.hover, { desc = "Hover" })
+-- LSP keymaps（用 function 包装延迟 vim.lsp/vim.diagnostic 模块加载）
+vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, { desc = "Go to definition" })
+vim.keymap.set("n", "gh", function() vim.lsp.buf.hover() end, { desc = "Hover" })
 vim.keymap.set("n", "<leader>fm", function()
 	lazy.load("conform", setup_conform)
 	require("conform").format({ lsp_fallback = true })
 end, { desc = "Format buffer" })
-vim.keymap.set("n", "df", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
-vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
+vim.keymap.set("n", "df", function() vim.diagnostic.open_float() end, { desc = "Show line diagnostics" })
+vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, { desc = "Code action" })
 
 local diagnostic_goto = function(next, severity)
 	return function()
@@ -100,4 +102,9 @@ vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error"
 vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
-vim.diagnostic.config({ virtual_text = true })
+vim.api.nvim_create_autocmd("VimEnter", {
+	once = true,
+	callback = function()
+		vim.diagnostic.config({ virtual_text = true })
+	end,
+})

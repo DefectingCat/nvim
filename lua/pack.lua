@@ -8,7 +8,7 @@ vim.pack.add({
 	"https://github.com/mason-org/mason.nvim",
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/tpope/vim-fugitive",
-})
+}, { load = false })
 
 -- mini.starter 启动页
 local starter = require("mini.starter")
@@ -90,10 +90,14 @@ end, function()
 	MiniFiles.reveal_cwd()
 end, { desc = "Toggle into currently opened file" })
 
--- mini.icons - 启动时加载
-lazy.load("icons", function()
-	require("mini.icons").setup()
-end)
+-- mini.icons - 首次需要时加载（VimEnter 后延迟）
+vim.api.nvim_create_autocmd("VimEnter", {
+	once = true,
+	callback = function()
+		require("mini.icons").setup()
+		lazy._loaded["icons"] = true
+	end,
+})
 
 -- mini.notify - 首次 vim.notify 调用时加载
 vim.notify = function(msg, level, opts)
@@ -140,7 +144,7 @@ lazy.on_keys("pick", "<leader>fw", "n", load_pick, function()
 	require("mini.pick").builtin.grep_live()
 end, { desc = "Live grep in project" })
 
-vim.keymap.set("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
+vim.keymap.set("n", "<leader>ds", function() vim.diagnostic.setloclist() end, { desc = "LSP diagnostic loclist" })
 
 lazy.on_keys("pick", "<leader>sk", "n", load_pick, function()
 	require("mini.extra").pickers.keymaps()
@@ -312,11 +316,15 @@ vim.keymap.set("n", "<leader>gD", function()
 end, { desc = "Git file history" })
 
 -- vim-fugitive - 按键触发
-lazy.on_keys("fugitive", "<leader>gg", "n", nil, function()
+local function load_fugitive()
+	vim.cmd.packadd("vim-fugitive")
+end
+
+lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
 	vim.cmd("tabnew | Git | only")
 end, { desc = "Fugitive Full Page New Tab" })
 
-lazy.on_keys("fugitive", "<leader>gd", "n", nil, function()
+lazy.on_keys("fugitive", "<leader>gd", "n", load_fugitive, function()
 	vim.cmd("Gvdiffsplit")
 end, { desc = "Git diff split" })
 

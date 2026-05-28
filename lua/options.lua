@@ -28,7 +28,10 @@ vim.opt.undofile = true
 
 vim.opt.completeopt = "menuone,noselect,fuzzy,nosort"
 vim.opt.shortmess:append("c")
-vim.opt.clipboard:append("unnamedplus")
+-- 延迟初始化 clipboard，避免启动时 provider 检测阻塞（SSH 环境尤其明显）
+vim.schedule(function()
+	vim.opt.clipboard:append("unnamedplus")
+end)
 vim.opt.isfname:append("@-@")
 vim.opt.scrolloff = 8
 
