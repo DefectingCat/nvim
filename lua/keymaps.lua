@@ -48,12 +48,7 @@ map("n", "J", "mzJ`z", { desc = "合并行且不移动光标" })
 -- 快速替换当前光标下的单词（全局替换）。
 -- <C-r><C-w> 在命令行插入光标下的单词。
 -- 映射展开后形如 :%s/oldword/oldword/gI，光标停在末尾，可修改替换内容。
-map(
-	"n",
-	"<leader>ss",
-	[[:%s/<<C-r><C-w>>/<<C-r><C-w>>/gI<Left><Left><Left>]],
-	{ desc = "全局替换光标下的单词" }
-)
+map("n", "<leader>ss", [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "全局替换光标下的单词" })
 
 -- Visual 模式下在选区范围内搜索替换
 -- \%V 是 Vim 正则中的可视区域限定符，确保替换只在选区内生效
