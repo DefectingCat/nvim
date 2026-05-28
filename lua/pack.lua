@@ -10,6 +10,47 @@ vim.pack.add({
 	"https://github.com/tpope/vim-fugitive",
 })
 
+-- mini.starter 启动页
+local starter = require("mini.starter")
+
+local function get_total_plugins()
+	local pack_dir = vim.fn.stdpath("data") .. "/site/pack/core/opt"
+	local paths = vim.fn.glob(pack_dir .. "/*", false, true)
+	local count = 0
+	for _, path in ipairs(paths) do
+		if vim.fn.isdirectory(path) == 1 then
+			count = count + 1
+		end
+	end
+	return count
+end
+
+starter.setup({
+	autoopen = true,
+	evaluate_single = false,
+	items = { { name = " ", action = "", section = "" } },
+	header = table.concat({
+		"",
+		"    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
+		"    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
+		"    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
+		"    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
+		"    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
+		"    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
+		"",
+	}, "\n"),
+	footer = function()
+		local uv = vim.uv or vim.loop
+		local ms = (uv:hrtime() - _G.nvim_start_time) / 1e6
+		local loaded = vim.tbl_count(require("lazy")._loaded)
+		local total = get_total_plugins()
+		return string.format("  Loaded %d/%d plugins in %.0f ms", loaded, total, ms)
+	end,
+	content_hooks = {
+		starter.gen_hook.aligning("center", "center"),
+	},
+})
+
 -- mini.files - 按键触发
 lazy.on_keys("files", "<leader>-", "n", function()
 	require("mini.files").setup({
@@ -39,8 +80,13 @@ end, function()
 	MiniFiles.reveal_cwd()
 end, { desc = "Toggle into currently opened file" })
 
--- mini.notify - 启动时加载
-lazy.load("notify", function()
+-- mini.icons - 启动时加载
+lazy.load("icons", function()
+	require("mini.icons").setup()
+end)
+
+-- mini.notify - 首次 vim.notify 调用时加载
+vim.notify = function(msg, level, opts)
 	require("mini.notify").setup({
 		content = {
 			format = function(notif)
@@ -48,14 +94,18 @@ lazy.load("notify", function()
 			end,
 		},
 	})
-end)
+	vim.notify = require("mini.notify").make_notify()
+	return vim.notify(msg, level, opts)
+end
 
--- mini.cmdline - 启动时加载
-lazy.load("cmdline", function()
+-- mini.cmdline - 首次按 : 时加载
+vim.keymap.set("n", ":", function()
+	vim.keymap.del("n", ":")
 	require("mini.cmdline").setup({
 		autocorrect = { enable = false },
 	})
-end)
+	return ":"
+end, { expr = true, noremap = true })
 
 -- mini.surround - BufReadPost
 lazy.on_event("surround", "BufReadPost", "*", function()

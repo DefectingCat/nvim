@@ -2,7 +2,6 @@ vim.g.mapleader = " "
 
 local map = vim.keymap.set
 
-map("x", "p", [[_dP]], { desc = "Paste over selection without losing yanked text" })
 map("n", "<Esc>", ":nohl<CR>", { desc = "Clear search highlighting", silent = true })
 map("v", "<", "<gv", { desc = "Unindent and keep selection" })
 map("v", ">", ">gv", { desc = "Indent and keep selection" })
