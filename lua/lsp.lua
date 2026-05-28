@@ -83,7 +83,10 @@ end)
 -- nvim-lspconfig 提供常见 LSP 服务器的预设配置。
 
 vim.cmd.packadd("nvim-lspconfig")
+lazy.track("lspconfig")
+
 require("mason").setup()
+lazy.track("mason")
 
 -- 构建 LSP 客户端 capabilities（能力声明），告知服务器客户端支持的功能。
 -- 先获取 Neovim 默认 capabilities，再与 mini.completion 的 LSP 补全能力合并。

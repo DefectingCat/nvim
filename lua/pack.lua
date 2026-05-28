@@ -57,19 +57,18 @@ vim.pack.add({
 
 local starter = require("mini.starter")
 
--- 统计已安装插件数量（用于页脚显示 "Loaded X/Y plugins"）
--- 遍历 stdpath("data")/site/pack/core/opt/ 目录下的所有子目录
-local function get_total_plugins()
-    local pack_dir = vim.fn.stdpath("data") .. "/site/pack/core/opt"
-    local paths = vim.fn.glob(pack_dir .. "/*", false, true)
-    local count = 0
-    for _, path in ipairs(paths) do
-        if vim.fn.isdirectory(path) == 1 then
-            count = count + 1
-        end
-    end
-    return count
-end
+-- 所有功能模块列表（用于页脚 "X/Y modules" 统计）。
+-- 口径与 lazy._loaded 一致：每个独立初始化的功能模块算一个，
+-- 不再按 vim.pack 的插件包统计（如 mini.nvim 包含多个模块）。
+local all_modules = {
+    "starter", "notify", "cmdline", "icons",
+    "pick", "files",
+    "diff", "surround",
+    "completion", "snippets",
+    "treesitter", "lsp",
+    "conform", "lspconfig", "mason",
+    "fugitive", "grugfar",
+}
 
 -- Neovim ASCII Art Logo（使用 Unicode 方块字符绘制）
 local header_lines = {
@@ -95,13 +94,13 @@ starter.setup({
     items = { { name = " ", action = "", section = "" } },  -- 空选项（仅展示页眉页脚）
     header = table.concat(header_lines, "\n"),  -- Logo 文本
 
-    -- 页脚函数：显示启动耗时和插件加载统计
+    -- 页脚函数：显示启动耗时和模块加载统计
     footer = function()
-        -- 已加载的懒加载模块数（动态统计）
+        -- 已加载的模块数（动态统计，包含直接加载和懒加载）
         local loaded = vim.tbl_count(require("lazy")._loaded)
-        local total = get_total_plugins()
+        local total = #all_modules
         -- startup_ms 在 pack.lua 加载时一次性计算，避免后续渲染时数值变化
-        local text = string.format("  Loaded %d/%d plugins in %.0f ms", loaded, total, startup_ms)
+        local text = string.format("  %d/%d modules | %.0f ms", loaded, total, startup_ms)
         local text_width = vim.fn.strdisplaywidth(text)
         -- 计算左填充空格数以实现居中
         local pad = math.floor((max_header_width - text_width) / 2)
@@ -113,6 +112,8 @@ starter.setup({
         starter.gen_hook.aligning("center", "center"),
     },
 })
+
+lazy.track("starter")
 
 -- ---------------------------------------------------------------------------
 -- mini.files — 文件浏览器（按键触发懒加载）
@@ -193,6 +194,7 @@ require("mini.notify").setup({
 })
 -- 将 vim.notify 重定向到 mini.notify
 vim.notify = require("mini.notify").make_notify()
+lazy.track("notify")
 
 -- ---------------------------------------------------------------------------
 -- mini.cmdline — 增强命令行
@@ -206,6 +208,7 @@ vim.keymap.set("n", ":", function()
     require("mini.cmdline").setup({
         autocorrect = { enable = false },  -- 禁用自动纠正
     })
+    lazy.track("cmdline")
     return ":"
 end, { expr = true, noremap = true })
 
