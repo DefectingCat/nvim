@@ -27,16 +27,6 @@ local lazy = require("lazy")
 local pick = require("plugins.pick")
 require("plugins.git")
 
--- 在 VimEnter 时记录完整启动时间（此时 runtime 插件、ShaDa 等已加载完毕），
--- 使启动页显示的耗时更接近 --startuptime 的口径。
--- starter 的 autoopen 在 VimEnter 之后渲染，footer 可以安全读取此值。
-vim.api.nvim_create_autocmd("VimEnter", {
-	once = true,
-	callback = function()
-		_G.nvim_vimenter_done = (vim.uv or vim.loop).hrtime()
-	end,
-})
-
 -- ---------------------------------------------------------------------------
 -- 插件安装声明
 -- ---------------------------------------------------------------------------
@@ -203,9 +193,8 @@ starter.setup({
 		-- 已加载的模块数（动态统计，包含直接加载和懒加载）
 		local loaded = vim.tbl_count(require("lazy")._loaded)
 		local total = #all_modules
-		-- 优先使用 VimEnter 时间（runtime 插件、ShaDa 等已加载，最接近 --startuptime），
-		-- 回退到 init.lua 完成时间，最后回退到当前时间（理论上不会走到）
-		local end_time = _G.nvim_vimenter_done or _G.nvim_init_done or (vim.uv or vim.loop).hrtime()
+		-- 使用 init.lua 执行完成时间，不等待 VimEnter（后者包含 runtime 插件加载耗时）
+		local end_time = _G.nvim_init_done or (vim.uv or vim.loop).hrtime()
 		local ms = (end_time - _G.nvim_start_time) / 1e6
 		local text = string.format("  %d/%d modules | %.0f ms", loaded, total, ms)
 		local text_width = vim.fn.strdisplaywidth(text)
