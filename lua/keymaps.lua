@@ -3,12 +3,9 @@ vim.g.mapleader = " "
 local map = vim.keymap.set
 
 map("x", "p", [[_dP]], { desc = "Paste over selection without losing yanked text" })
-
 map("n", "<Esc>", ":nohl<CR>", { desc = "Clear search highlighting", silent = true })
-
 map("v", "<", "<gv", { desc = "Unindent and keep selection" })
 map("v", ">", ">gv", { desc = "Indent and keep selection" })
-
 map("n", "J", "mzJ`z", { desc = "Join lines without moving cursor" })
 
 map(
@@ -37,6 +34,12 @@ map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "Copy whole file" })
 map("t", "<C-x>", "<c-\\><c-n>", { desc = "Escape termainl" })
 map("n", "<leader>tt", ":term<CR>", { desc = "Open new terminal" })
 
+-- window navigation
+map("n", "<C-h>", "<C-w>h", { desc = "Switch to left window" })
+map("n", "<C-j>", "<C-w>j", { desc = "Switch to down window" })
+map("n", "<C-k>", "<C-w>k", { desc = "Switch to up window" })
+map("n", "<C-l>", "<C-w>l", { desc = "Switch to right window" })
+
 -- tabs
 map("n", "<leader>tc", ":tabclose<CR>", { desc = "Close current tab" })
 map("n", "<leader>tn", ":tabnew<CR>", { desc = "New tab" })
@@ -49,14 +52,13 @@ map("n", "<leader>yp", function()
 	vim.fn.setreg("+", path)
 	vim.notify("Copied relative path: " .. path, vim.log.levels.INFO)
 end, { desc = "Yank relative file path" })
-
 map("n", "<leader>yP", function()
 	local path = vim.fn.expand("%:p")
 	vim.fn.setreg("+", path)
 	vim.notify("Copied absolute path: " .. path, vim.log.levels.INFO)
 end, { desc = "Yank absolute file path" })
 
--- buffer
+-- buffers
 map("n", "<leader>x", function()
 	local buf = vim.api.nvim_get_current_buf()
 	if vim.bo[buf].modified then
@@ -75,7 +77,6 @@ map("n", "<leader>x", function()
 	end
 end, { desc = "Close current buffer" })
 map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
-
 map("n", "<leader>bo", function()
 	local current = vim.api.nvim_get_current_buf()
 	local skipped_ft = { "NvimTree", "oil", "aerial" }

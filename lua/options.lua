@@ -30,12 +30,15 @@ vim.opt.completeopt = "menuone,noselect,fuzzy,nosort"
 vim.opt.shortmess:append("c")
 vim.opt.clipboard:append("unnamedplus")
 vim.opt.isfname:append("@-@")
-vim.opt.guicursor = ""
 vim.opt.scrolloff = 8
 
 vim.opt.colorcolumn = "0"
 vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true
+
+vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "DiffAdd" })
+vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" })
+vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
