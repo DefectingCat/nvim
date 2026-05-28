@@ -34,18 +34,18 @@ M._loaded = {}
 -- 使用场景：
 --   在按键回调中手动触发加载，或在 on_event 回调中延迟初始化。
 M.load = function(name, fn)
-    if M._loaded[name] then
-        return
-    end
-    M._loaded[name] = true
-    if fn then
-        fn()
-    end
+	if M._loaded[name] then
+		return
+	end
+	M._loaded[name] = true
+	if fn then
+		fn()
+	end
 end
 
 -- 仅标记模块为已加载，不执行 setup（用于直接加载的插件）。
 M.track = function(name)
-    M._loaded[name] = true
+	M._loaded[name] = true
 end
 
 -- ---------------------------------------------------------------------------
@@ -67,13 +67,13 @@ end
 --       require("mini.completion").setup({ ... })
 --   end)
 M.on_event = function(name, event, pattern, fn)
-    vim.api.nvim_create_autocmd(event, {
-        pattern = pattern or "*",
-        once = true,
-        callback = function()
-            M.load(name, fn)
-        end,
-    })
+	vim.api.nvim_create_autocmd(event, {
+		pattern = pattern or "*",
+		once = true,
+		callback = function()
+			M.load(name, fn)
+		end,
+	})
 end
 
 -- ---------------------------------------------------------------------------
@@ -97,14 +97,14 @@ end
 --   此设计使得首次按键稍慢（需要 setup），后续按键与直接映射无异。
 --   适合重型插件如 mini.pick、vim-fugitive。
 M.on_keys = function(name, keys, mode, fn, action, opts)
-    mode = mode or "n"
-    opts = opts or {}
-    vim.keymap.set(mode, keys, function()
-        M.load(name, fn)
-        if action then
-            action()
-        end
-    end, { desc = opts.desc, buffer = opts.buffer })
+	mode = mode or "n"
+	opts = opts or {}
+	vim.keymap.set(mode, keys, function()
+		M.load(name, fn)
+		if action then
+			action()
+		end
+	end, { desc = opts.desc, buffer = opts.buffer })
 end
 
 return M

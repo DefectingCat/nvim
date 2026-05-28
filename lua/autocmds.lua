@@ -23,23 +23,22 @@ local group = vim.api.nvim_create_augroup("UserAutocmds", { clear = true })
 --   - commit / gitcommit：Git 提交消息文件，总是从头开始编辑
 --   - xxd：十六进制编辑模式
 --   - gitrebase：Git rebase 交互式编辑
-
 vim.api.nvim_create_autocmd("BufReadPost", {
-    group = group,
-    callback = function()
-        -- 获取 `"` 标记的位置（行, 列）
-        local mark = vim.api.nvim_buf_get_mark(0, '"')
-        local row = mark[1]  -- 行号（1-based）
-        local ft = vim.bo.filetype
+	group = group,
+	callback = function()
+		-- 获取 `"` 标记的位置（行, 列）
+		local mark = vim.api.nvim_buf_get_mark(0, '"')
+		local row = mark[1] -- 行号（1-based）
+		local ft = vim.bo.filetype
 
-        -- 仅当标记有效（行号 > 1 且在文件范围内）时恢复光标
-        if row > 1 and row <= vim.fn.line("$") then
-            -- 排除特定文件类型
-            if ft ~= "commit" and ft ~= "gitcommit" and not ft:match("xxd") and not ft:match("gitrebase") then
-                vim.api.nvim_win_set_cursor(0, mark)
-            end
-        end
-    end,
+		-- 仅当标记有效（行号 > 1 且在文件范围内）时恢复光标
+		if row > 1 and row <= vim.fn.line("$") then
+			-- 排除特定文件类型
+			if ft ~= "commit" and ft ~= "gitcommit" and not ft:match("xxd") and not ft:match("gitrebase") then
+				vim.api.nvim_win_set_cursor(0, mark)
+			end
+		end
+	end,
 })
 
 -- ---------------------------------------------------------------------------
@@ -52,15 +51,14 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 --   r  - 按回车时延续注释（保留，insert 模式下回车延续注释符）
 --
 -- 注意：此设置对自动格式化（conform.nvim）的行为也有影响。
-
 vim.api.nvim_create_autocmd("FileType", {
-    group = group,
-    callback = function()
-        -- 移除 'o'：按 o/O 时不自动插入注释符号
-        vim.opt_local.formatoptions:remove("o")
-        -- 追加 'r'：按回车时自动插入注释符号
-        vim.opt_local.formatoptions:append("r")
-    end,
+	group = group,
+	callback = function()
+		-- 移除 'o'：按 o/O 时不自动插入注释符号
+		vim.opt_local.formatoptions:remove("o")
+		-- 追加 'r'：按回车时自动插入注释符号
+		vim.opt_local.formatoptions:append("r")
+	end,
 })
 
 -- ---------------------------------------------------------------------------
@@ -73,12 +71,11 @@ vim.api.nvim_create_autocmd("FileType", {
 -- foldmethod = "expr" 表示使用表达式（foldexpr）计算折叠范围。
 -- foldexpr = "v:lua.vim.treesitter.foldexpr()" 是 Neovim 0.10+ 的内置函数，
 --   基于 treesitter 语法树计算折叠边界。
-
 vim.api.nvim_create_autocmd("BufEnter", {
-    group = group,
-    once = true,
-    callback = function()
-        vim.o.foldmethod = "expr"
-        vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-    end,
+	group = group,
+	once = true,
+	callback = function()
+		vim.o.foldmethod = "expr"
+		vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+	end,
 })

@@ -1,5 +1,7 @@
 vim.o.termguicolors = true
-if vim.g.colors_name then vim.cmd("hi clear") end
+if vim.g.colors_name then
+	vim.cmd("hi clear")
+end
 vim.g.colors_name = "mytheme-latte"
 local h = vim.api.nvim_set_hl
 h(0, "DashboardFooter", { fg = "#df8e1d", italic = true })
@@ -346,7 +348,7 @@ h(0, "MiniPickPreviewRegion", { link = "IncSearch" })
 h(0, "MiniPickPrompt", { fg = "#4c4f69", bg = "#e6e9ef" })
 h(0, "MiniPickPromptCaret", { fg = "#dd7878", bg = "#e6e9ef" })
 h(0, "MiniPickPromptPrefix", { fg = "#dd7878", bg = "#e6e9ef" })
-h(0, "MiniStarterCurrent", {  })
+h(0, "MiniStarterCurrent", {})
 h(0, "MiniStarterFooter", { fg = "#df8e1d", italic = true })
 h(0, "MiniStarterHeader", { fg = "#1e66f5" })
 h(0, "MiniStarterInactive", { fg = "#acb0be", italic = true })
@@ -366,7 +368,11 @@ h(0, "MiniStatuslineModeOther", { fg = "#eff1f5", bold = true, bg = "#179299" })
 h(0, "MiniStatuslineModeReplace", { fg = "#eff1f5", bold = true, bg = "#d20f39" })
 h(0, "MiniStatuslineModeVisual", { fg = "#eff1f5", bold = true, bg = "#8839ef" })
 h(0, "MiniSurround", { fg = "#bcc0cc", bg = "#ea76cb" })
-h(0, "MiniTablineCurrent", { italic = true, sp = "#d20f39", fg = "#4c4f69", bold = true, underline = true, bg = "#eff1f5" })
+h(
+	0,
+	"MiniTablineCurrent",
+	{ italic = true, sp = "#d20f39", fg = "#4c4f69", bold = true, underline = true, bg = "#eff1f5" }
+)
 h(0, "MiniTablineFill", { bg = "NONE" })
 h(0, "MiniTablineHidden", { fg = "#4c4f69", bg = "NONE" })
 h(0, "MiniTablineModifiedCurrent", { italic = true, bg = "NONE", fg = "#d20f39", bold = true })
@@ -800,7 +806,7 @@ h(0, "@markup.heading", { fg = "#1e66f5" })
 h(0, "@markup.underline", { link = "Underlined" })
 h(0, "@function.builtin", { fg = "#fe640b" })
 h(0, "@lsp.typemod.function.defaultLibrary", { link = "@function.builtin" })
-h(0, "@lsp.type.variable", {  })
+h(0, "@lsp.type.variable", {})
 h(0, "@lsp.type.enumMember", { fg = "#179299" })
 h(0, "diffIndexLine", { fg = "#179299" })
 h(0, "diffLine", { fg = "#9ca0b0" })

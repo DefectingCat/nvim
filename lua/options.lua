@@ -19,64 +19,57 @@ vim.g.netrw_banner = 0
 -- ---------------------------------------------------------------------------
 -- 1. 界面显示
 -- ---------------------------------------------------------------------------
-
-vim.opt.nu = true                    -- 显示绝对行号
-vim.opt.relativenumber = true        -- 显示相对行号（便于配合数字 + j/k 跳转）
-vim.opt.cursorline = true            -- 高亮当前行
-vim.opt.cursorlineopt = "both"       -- 高亮当前行的行号和文本行（number + line）
-vim.opt.autoread = true              -- 当文件被外部修改时自动重新读取
+vim.opt.nu = true -- 显示绝对行号
+vim.opt.relativenumber = true -- 显示相对行号（便于配合数字 + j/k 跳转）
+vim.opt.cursorline = true -- 高亮当前行
+vim.opt.cursorlineopt = "both" -- 高亮当前行的行号和文本行（number + line）
+vim.opt.autoread = true -- 当文件被外部修改时自动重新读取
 
 -- ---------------------------------------------------------------------------
 -- 2. 缩进与格式化
 -- ---------------------------------------------------------------------------
 -- 使用 4 空格缩进，适用于大多数语言。
 -- 特定语言的缩进设置（如 JS/TS 的 2 空格）应在 ftplugin 中覆盖。
+vim.opt.tabstop = 4 -- Tab 键显示的宽度（字符数）
+vim.opt.softtabstop = 4 -- 插入模式下 Tab/BS 的行为宽度
+vim.opt.shiftwidth = 4 -- 自动缩进和 >/< 操作的宽度
+vim.opt.expandtab = true -- 将 Tab 键转换为空格
 
-vim.opt.tabstop = 4                  -- Tab 键显示的宽度（字符数）
-vim.opt.softtabstop = 4              -- 插入模式下 Tab/BS 的行为宽度
-vim.opt.shiftwidth = 4               -- 自动缩进和 >/< 操作的宽度
-vim.opt.expandtab = true             -- 将 Tab 键转换为空格
-
-vim.opt.smartindent = true           -- 基于语法的智能缩进（C-style 语言效果最佳）
-vim.opt.inccommand = "split"         -- 实时预览替换效果（:s 命令在分屏中显示预览）
+vim.opt.smartindent = true -- 基于语法的智能缩进（C-style 语言效果最佳）
+vim.opt.inccommand = "split" -- 实时预览替换效果（:s 命令在分屏中显示预览）
 
 -- ---------------------------------------------------------------------------
 -- 3. 窗口与分割
 -- ---------------------------------------------------------------------------
-
-vim.opt.splitbelow = true            -- 水平分割时新窗口在下方
-vim.opt.splitright = true            -- 垂直分割时新窗口在右侧
+vim.opt.splitbelow = true -- 水平分割时新窗口在下方
+vim.opt.splitright = true -- 垂直分割时新窗口在右侧
 
 -- ---------------------------------------------------------------------------
 -- 4. 搜索行为
 -- ---------------------------------------------------------------------------
-
-vim.opt.ignorecase = true            -- 搜索时忽略大小写
-vim.opt.smartcase = true             -- 如果搜索包含大写字母，则区分大小写
-                                     -- 与 ignorecase 配合：全小写时忽略大小写，
-                                     -- 包含大写时精确匹配
+vim.opt.ignorecase = true -- 搜索时忽略大小写
+vim.opt.smartcase = true -- 如果搜索包含大写字母，则区分大小写
+-- 与 ignorecase 配合：全小写时忽略大小写，
+-- 包含大写时精确匹配
 
 -- ---------------------------------------------------------------------------
 -- 5. 状态栏
 -- ---------------------------------------------------------------------------
-
-vim.opt.laststatus = 3               -- 全局状态栏（所有窗口共享一个状态栏）
-                                     -- 值为 2 时每个窗口有独立状态栏
+vim.opt.laststatus = 3 -- 全局状态栏（所有窗口共享一个状态栏）
+-- 值为 2 时每个窗口有独立状态栏
 
 -- ---------------------------------------------------------------------------
 -- 6. 文件持久化
 -- ---------------------------------------------------------------------------
 -- 禁用 swap 和 backup 文件，使用 undofile 实现跨会话的撤销历史。
-
-vim.opt.swapfile = false             -- 禁用交换文件（.swp）
-vim.opt.backup = false               -- 禁用备份文件（~ 后缀）
-vim.opt.undodir = vim.fn.stdpath("data") .. "/undodir"  -- 撤销历史存放目录
-vim.opt.undofile = true              -- 启用持久化撤销（关闭文件后仍能撤销）
+vim.opt.swapfile = false -- 禁用交换文件（.swp）
+vim.opt.backup = false -- 禁用备份文件（~ 后缀）
+vim.opt.undodir = vim.fn.stdpath("data") .. "/undodir" -- 撤销历史存放目录
+vim.opt.undofile = true -- 启用持久化撤销（关闭文件后仍能撤销）
 
 -- ---------------------------------------------------------------------------
 -- 7. 补全与消息
 -- ---------------------------------------------------------------------------
-
 -- 补全选项：
 --   menuone  - 即使只有一个匹配项也显示菜单
 --   noselect - 不自动选择第一项（需手动选择）
@@ -96,13 +89,12 @@ vim.opt.shortmess:append("c")
 -- 通过 vim.schedule() 将剪贴板设置推迟到启动事件循环之后，
 -- 避免阻塞 startup 的关键路径。
 vim.schedule(function()
-    vim.opt.clipboard:append("unnamedplus")
+	vim.opt.clipboard:append("unnamedplus")
 end)
 
 -- ---------------------------------------------------------------------------
 -- 9. 其他杂项
 -- ---------------------------------------------------------------------------
-
 -- 将 @ 和 - 视为文件名的一部分（用于 gf/gx 等命令）
 vim.opt.isfname:append("@-@")
 
@@ -123,8 +115,7 @@ vim.opt.termguicolors = true
 -- ---------------------------------------------------------------------------
 -- 将 mini.diff 的符号高亮组链接到标准 diff 高亮组，
 -- 使 git diff 的添加/修改/删除标记使用 colorscheme 定义的配色。
-
-vim.api.nvim_set_hl(0, "MiniDiffSignAdd",    { link = "DiffAdd" })    -- 添加的行
+vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "DiffAdd" }) -- 添加的行
 vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" }) -- 修改的行
 vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" }) -- 删除的行
 
@@ -134,12 +125,11 @@ vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" }) -- 删除�
 -- 复制文本时短暂高亮被复制的区域，提供视觉反馈。
 -- vim.hl.on_yank() 是 Neovim 0.11+ 的内置函数，
 -- 旧版使用 vim.highlight.on_yank()。
-
 vim.api.nvim_create_autocmd("TextYankPost", {
-    desc = "复制文本时高亮被复制的区域",
-    callback = function()
-        vim.hl.on_yank()
-    end,
+	desc = "复制文本时高亮被复制的区域",
+	callback = function()
+		vim.hl.on_yank()
+	end,
 })
 
 -- ---------------------------------------------------------------------------

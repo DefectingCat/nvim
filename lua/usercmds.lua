@@ -23,9 +23,8 @@
 --   vim.pack 会从 GitHub 下载插件到 stdpath("data")/site/pack/core/opt/。
 --
 -- nargs = "+" 表示至少需要 1 个参数。
-
 vim.api.nvim_create_user_command("PackAdd", function(opts)
-    vim.pack.add(opts.fargs)
+	vim.pack.add(opts.fargs)
 end, { nargs = "+", desc = "添加插件 (:PackAdd user/repo1 user/repo2)" })
 
 -- ---------------------------------------------------------------------------
@@ -39,9 +38,8 @@ end, { nargs = "+", desc = "添加插件 (:PackAdd user/repo1 user/repo2)" })
 --   Neovim 0.13 Nightly 已内置此命令，这里为 0.12 提供兼容。
 --
 -- nargs = "+" 表示至少需要 1 个参数。
-
 vim.api.nvim_create_user_command("PackDel", function(opts)
-    vim.pack.del(opts.fargs)
+	vim.pack.del(opts.fargs)
 end, { nargs = "+", desc = "删除插件 (:PackDel plugin1 plugin2)" })
 
 -- ---------------------------------------------------------------------------
@@ -57,16 +55,15 @@ end, { nargs = "+", desc = "删除插件 (:PackDel plugin1 plugin2)" })
 --   如果无参数，调用无参版本更新所有插件。
 --
 -- nargs = "*" 表示接受 0 个或多个参数。
-
 vim.api.nvim_create_user_command("PackUpdate", function(opts)
-    -- 检查是否有传入任何参数（包含非空白字符）
-    if opts.args:match("%S") then
-        -- 按空白字符分割参数，trimempty 去除空字符串
-        local plugins = vim.split(opts.args, "%s+", { trimempty = true })
-        -- 仅更新指定的插件
-        vim.pack.update(plugins)
-    else
-        -- 无参数，更新所有插件
-        vim.pack.update()
-    end
+	-- 检查是否有传入任何参数（包含非空白字符）
+	if opts.args:match("%S") then
+		-- 按空白字符分割参数，trimempty 去除空字符串
+		local plugins = vim.split(opts.args, "%s+", { trimempty = true })
+		-- 仅更新指定的插件
+		vim.pack.update(plugins)
+	else
+		-- 无参数，更新所有插件
+		vim.pack.update()
+	end
 end, { nargs = "*", desc = "更新所有插件或指定插件" })
