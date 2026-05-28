@@ -40,12 +40,3 @@ require("pack")
 
 vim.g.moonflyTransparent = true
 vim.cmd("colorscheme catppuccin-mocha")
-
--- 延迟加载 heavy 模块，避免阻塞启动
-vim.api.nvim_create_autocmd("VimEnter", {
-	once = true,
-	callback = function()
-		require("treesitter")
-		require("lsp")
-	end,
-})

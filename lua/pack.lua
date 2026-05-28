@@ -29,12 +29,12 @@ end
 
 local header_lines = {
 	"",
-	"    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
-	"    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
-	"    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
-	"    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
-	"    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
-	"    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
+	"███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
+	"████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
+	"██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
+	"██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
+	"██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
+	"╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
 	"",
 }
 
@@ -123,41 +123,43 @@ vim.keymap.set("n", ":", function()
 	return ":"
 end, { expr = true, noremap = true })
 
--- mini.surround - BufReadPost
-lazy.on_event("surround", "BufReadPost", "*", function()
-	require("mini.surround").setup()
-end)
+vim.keymap.set("n", "<leader>ds", function()
+	vim.diagnostic.setloclist()
+end, { desc = "LSP diagnostic loclist" })
 
--- mini.pick + mini.extra - 按键触发
+-- finders
 lazy.on_keys("pick", "<leader>ff", "n", pick.load_pick, function()
 	require("mini.pick").builtin.files()
 end, { desc = "Mini File Picker" })
-
 lazy.on_keys("pick", "<leader>fw", "n", pick.load_pick, function()
 	require("mini.pick").builtin.grep_live()
 end, { desc = "Live grep in project" })
-
-vim.keymap.set("n", "<leader>ds", function() vim.diagnostic.setloclist() end, { desc = "LSP diagnostic loclist" })
-
 lazy.on_keys("pick", "<leader>sk", "n", pick.load_pick, function()
 	require("mini.extra").pickers.keymaps()
 end, { desc = "Search keymaps" })
-
 lazy.on_keys("pick", "<leader>fa", "n", pick.load_pick, function()
 	require("mini.pick").builtin.cli({ command = { "rg", "--files", "--hidden", "--no-ignore", "--color=never" } })
 end, { desc = "Find all files (including hidden/ignored)" })
-
 lazy.on_keys("pick", "<leader>fh", "n", pick.load_pick, function()
 	require("mini.pick").builtin.help()
 end, { desc = "Search help tags" })
-
 lazy.on_keys("pick", "<leader>fo", "n", pick.load_pick, function()
 	require("mini.extra").pickers.oldfiles()
 end, { desc = "Search oldfiles" })
-
 lazy.on_keys("pick", "<leader>fz", "n", pick.load_pick, function()
 	require("mini.extra").pickers.buf_lines({ scope = "current" })
 end, { desc = "Search in current buffer" })
+
+-- vim-fugitive - 按键触发
+local function load_fugitive()
+	vim.cmd.packadd("vim-fugitive")
+end
+lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
+	vim.cmd("tabnew | Git | only")
+end, { desc = "Fugitive Full Page New Tab" })
+lazy.on_keys("fugitive", "<leader>gd", "n", load_fugitive, function()
+	vim.cmd("Gvdiffsplit")
+end, { desc = "Git diff split" })
 
 -- mini.completion - InsertEnter
 lazy.on_event("completion", "InsertEnter", "*", function()
@@ -194,15 +196,15 @@ lazy.on_event("diff", "BufReadPost", "*", function()
 	})
 end)
 
--- vim-fugitive - 按键触发
-local function load_fugitive()
-	vim.cmd.packadd("vim-fugitive")
-end
+-- mini.surround - BufReadPost
+lazy.on_event("surround", "BufReadPost", "*", function()
+	require("mini.surround").setup()
+end)
 
-lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
-	vim.cmd("tabnew | Git | only")
-end, { desc = "Fugitive Full Page New Tab" })
-
-lazy.on_keys("fugitive", "<leader>gd", "n", load_fugitive, function()
-	vim.cmd("Gvdiffsplit")
-end, { desc = "Git diff split" })
+-- 延迟加载 heavy 模块
+lazy.on_event("treesitter", "VimEnter", "*", function()
+	require("treesitter").setup()
+end)
+lazy.on_event("lsp", "VimEnter", "*", function()
+	require("lsp")
+end)

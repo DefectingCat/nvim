@@ -44,7 +44,6 @@ lazy.on_event("conform", "BufWritePre", "*", function()
 end)
 
 -- mason + LSP 配置
--- 由 init.lua 在 VimEnter 时 require，此处直接执行
 vim.cmd.packadd("nvim-lspconfig")
 require("mason").setup()
 
@@ -124,9 +123,4 @@ vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error"
 vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-	once = true,
-	callback = function()
-		vim.diagnostic.config({ virtual_text = true })
-	end,
-})
+vim.diagnostic.config({ virtual_text = true })
