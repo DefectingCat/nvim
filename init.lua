@@ -86,3 +86,7 @@ vim.g.moonflyTransparent = true
 -- 应用 colorscheme。catppuccin-mocha 的定义在 colors/catppuccin-mocha.lua 中。
 -- 该文件是一个精简版，只包含 Mocha 变体的调色板和高亮组定义。
 vim.cmd("colorscheme catppuccin-mocha")
+
+-- 记录 init.lua 执行完成时间（含 colorscheme），供启动页展示更接近 --startuptime 的耗时。
+-- pack.lua 中的 footer 优先使用 VimEnter 时间，回退到此时间点。
+_G.nvim_init_done = (vim.uv or vim.loop).hrtime()
