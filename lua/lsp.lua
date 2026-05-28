@@ -43,37 +43,36 @@ lazy.on_event("conform", "BufWritePre", "*", function()
 	end
 end)
 
--- mason + LSP 配置延迟到 VimEnter，避免启动时加载
-lazy.on_event("lsp", "VimEnter", "*", function()
-	vim.cmd.packadd("nvim-lspconfig")
-	require("mason").setup()
+-- mason + LSP 配置
+-- 由 init.lua 在 VimEnter 时 require，此处直接执行
+vim.cmd.packadd("nvim-lspconfig")
+require("mason").setup()
 
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
-	capabilities = vim.tbl_deep_extend("force", capabilities, require("mini.completion").get_lsp_capabilities())
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = vim.tbl_deep_extend("force", capabilities, require("mini.completion").get_lsp_capabilities())
 
-	vim.lsp.config("*", { capabilities = capabilities })
+vim.lsp.config("*", { capabilities = capabilities })
 
-	vim.lsp.config("lua_ls", {
-		settings = {
-			Lua = {
-				diagnostics = { globals = { "vim" } },
-			},
+vim.lsp.config("lua_ls", {
+	settings = {
+		Lua = {
+			diagnostics = { globals = { "vim" } },
 		},
-	})
+	},
+})
 
-	vim.lsp.enable({
-		"html",
-		"cssls",
-		"gopls",
-		"vtsls",
-		"rust_analyzer",
-		"lua_ls",
-		"taplo",
-		"svelte",
-		"dartls",
-		"kotlin_lsp",
-	})
-end)
+vim.lsp.enable({
+	"html",
+	"cssls",
+	"gopls",
+	"vtsls",
+	"rust_analyzer",
+	"lua_ls",
+	"taplo",
+	"svelte",
+	"dartls",
+	"kotlin_lsp",
+})
 
 -- LSP keymaps（用 function 包装延迟 vim.lsp/vim.diagnostic 模块加载）
 vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, { desc = "Go to definition" })
