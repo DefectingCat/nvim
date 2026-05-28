@@ -38,10 +38,10 @@ vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-    desc = "Highlight when yanking (copying) text",
-    callback = function()
-        vim.hl.on_yank()
-    end,
+	desc = "Highlight when yanking (copying) text",
+	callback = function()
+		vim.hl.on_yank()
+	end,
 })
 
 vim.opt.foldlevel = 99 -- 打开文件时默认展开所有折叠
