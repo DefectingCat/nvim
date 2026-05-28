@@ -7,3 +7,6 @@ require("usercmds")
 require("pack")
 require("treesitter")
 require("lsp")
+
+vim.g.moonflyTransparent = true
+vim.cmd("colorscheme moonfly")
