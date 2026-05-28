@@ -7,7 +7,9 @@ M.load = function(name, fn)
         return
     end
     M._loaded[name] = true
-    fn()
+    if fn then
+        fn()
+    end
 end
 
 M.on_event = function(name, event, pattern, fn)

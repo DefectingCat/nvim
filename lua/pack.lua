@@ -128,6 +128,10 @@ end)
 lazy.on_event("diff", "BufReadPost", "*", function()
 	require("mini.diff").setup({
 		source = require("mini.diff").gen_source.git({ index = false }),
+		mappings = {
+			apply = "gs",
+			textobject = "",
+		},
 	})
 end)
 
