@@ -10,6 +10,7 @@ vim.pack.add({
 	"https://github.com/mason-org/mason.nvim",
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/tpope/vim-fugitive",
+	"https://github.com/MagicDuck/grug-far.nvim",
 }, { load = false })
 
 -- mini.starter 启动页
@@ -208,3 +209,23 @@ end)
 lazy.on_event("lsp", "VimEnter", "*", function()
 	require("lsp")
 end)
+
+-- grug-far - <leader>sr 触发
+local function load_grug_far()
+	vim.cmd.packadd("grug-far.nvim")
+	require("grug-far").setup({ headerMaxWidth = 80 })
+end
+
+local function open_grug_far()
+	local grug = require("grug-far")
+	local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+	grug.open({
+		transient = true,
+		prefills = {
+			filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+		},
+	})
+end
+
+lazy.on_keys("grugfar", "<leader>sr", "n", load_grug_far, open_grug_far, { desc = "Search and Replace" })
+lazy.on_keys("grugfar", "<leader>sr", "x", load_grug_far, open_grug_far, { desc = "Search and Replace" })
