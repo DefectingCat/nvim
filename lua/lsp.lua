@@ -61,6 +61,21 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
+-- Installed
+--   ◍ biome
+--   ◍ css-lsp
+--   ◍ gofumpt
+--   ◍ goimports
+--   ◍ golangci-lint
+--   ◍ gopls
+--   ◍ html-lsp
+--   ◍ kotlin-lsp
+--   ◍ lua-language-server
+--   ◍ prettier
+--   ◍ rust-analyzer
+--   ◍ stylua
+--   ◍ svelte-language-server
+--   ◍ vtsls
 vim.lsp.enable({
 	"html",
 	"cssls",
@@ -75,14 +90,22 @@ vim.lsp.enable({
 })
 
 -- LSP keymaps（用 function 包装延迟 vim.lsp/vim.diagnostic 模块加载）
-vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, { desc = "Go to definition" })
-vim.keymap.set("n", "gh", function() vim.lsp.buf.hover() end, { desc = "Hover" })
+vim.keymap.set("n", "gd", function()
+	vim.lsp.buf.definition()
+end, { desc = "Go to definition" })
+vim.keymap.set("n", "gh", function()
+	vim.lsp.buf.hover()
+end, { desc = "Hover" })
 vim.keymap.set("n", "<leader>fm", function()
 	lazy.load("conform", setup_conform)
 	require("conform").format({ lsp_fallback = true })
 end, { desc = "Format buffer" })
-vim.keymap.set("n", "df", function() vim.diagnostic.open_float() end, { desc = "Show line diagnostics" })
-vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, { desc = "Code action" })
+vim.keymap.set("n", "df", function()
+	vim.diagnostic.open_float()
+end, { desc = "Show line diagnostics" })
+vim.keymap.set("n", "<leader>ca", function()
+	vim.lsp.buf.code_action()
+end, { desc = "Code action" })
 
 local diagnostic_goto = function(next, severity)
 	return function()
