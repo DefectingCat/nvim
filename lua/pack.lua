@@ -25,26 +25,36 @@ local function get_total_plugins()
 	return count
 end
 
+local header_lines = {
+	"",
+	"    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
+	"    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
+	"    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
+	"    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
+	"    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
+	"    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
+	"",
+}
+
+local max_header_width = 0
+for _, line in ipairs(header_lines) do
+	max_header_width = math.max(max_header_width, vim.fn.strdisplaywidth(line))
+end
+
 starter.setup({
 	autoopen = true,
 	evaluate_single = false,
 	items = { { name = " ", action = "", section = "" } },
-	header = table.concat({
-		"",
-		"    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗",
-		"    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║",
-		"    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
-		"    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
-		"    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
-		"    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
-		"",
-	}, "\n"),
+	header = table.concat(header_lines, "\n"),
 	footer = function()
 		local uv = vim.uv or vim.loop
 		local ms = (uv:hrtime() - _G.nvim_start_time) / 1e6
 		local loaded = vim.tbl_count(require("lazy")._loaded)
 		local total = get_total_plugins()
-		return string.format("  Loaded %d/%d plugins in %.0f ms", loaded, total, ms)
+		local text = string.format("  Loaded %d/%d plugins in %.0f ms", loaded, total, ms)
+		local text_width = vim.fn.strdisplaywidth(text)
+		local pad = math.floor((max_header_width - text_width) / 2)
+		return string.rep(" ", pad) .. text
 	end,
 	content_hooks = {
 		starter.gen_hook.aligning("center", "center"),
