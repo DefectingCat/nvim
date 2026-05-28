@@ -238,11 +238,6 @@ local function setup_mini_files()
 	})
 end
 
--- <leader>- ：在当前工作目录打开文件浏览器
-lazy.on_keys("files", "<leader>-", "n", setup_mini_files, function()
-	require("mini.files").open()
-end, { desc = "打开文件浏览器（工作目录）" })
-
 -- - ：在当前文件所在目录打开文件浏览器
 lazy.on_keys("files", "-", "n", setup_mini_files, function()
 	local MiniFiles = require("mini.files")
@@ -251,22 +246,30 @@ lazy.on_keys("files", "-", "n", setup_mini_files, function()
 	MiniFiles.reveal_cwd()
 end, { desc = "打开文件浏览器（当前文件目录）" })
 
--- 在启动页（mini.starter）中也绑定 - / <leader>-，
+-- _ ：在项目根目录（git root）打开文件浏览器
+lazy.on_keys("files", "_", "n", setup_mini_files, function()
+	local git_root = vim.fs.root(0, ".git")
+	-- use_latest = false 避免恢复上次浏览深度，确保只展开根目录一层
+	require("mini.files").open(git_root or vim.fn.getcwd(), false)
+end, { desc = "打开文件浏览器（项目根目录）" })
+
+-- 在启动页（mini.starter）中也绑定 - / _，
 -- 因为 starter buffer 可能拦截全局映射
 vim.api.nvim_create_autocmd("User", {
 	pattern = "MiniStarterOpened",
 	callback = function(args)
-		vim.keymap.set("n", "<leader>-", function()
-			require("lazy").load("files", setup_mini_files)
-			require("mini.files").open()
-		end, { buffer = args.buf, desc = "打开文件浏览器（工作目录）" })
-
 		vim.keymap.set("n", "-", function()
 			require("lazy").load("files", setup_mini_files)
 			local MiniFiles = require("mini.files")
 			-- starter 无当前文件，打开工作目录
 			MiniFiles.open(vim.fn.getcwd())
 		end, { buffer = args.buf, desc = "打开文件浏览器（工作目录）" })
+
+		vim.keymap.set("n", "_", function()
+			require("lazy").load("files", setup_mini_files)
+			local git_root = vim.fs.root(0, ".git")
+			require("mini.files").open(git_root or vim.fn.getcwd(), false)
+		end, { buffer = args.buf, desc = "打开文件浏览器（项目根目录）" })
 	end,
 })
 
