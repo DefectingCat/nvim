@@ -9,4 +9,4 @@ require("treesitter")
 require("lsp")
 
 vim.g.moonflyTransparent = true
-vim.cmd("colorscheme moonfly")
+vim.cmd("colorscheme catppuccin-mocha")
