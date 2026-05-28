@@ -330,7 +330,9 @@ end, { desc = "诊断位置列表" })
 -- 只在首次使用时 setup 一次。
 -- <leader>ff ：文件查找
 lazy.on_keys("pick", "<leader>ff", "n", pick.load_pick, function()
-	require("mini.pick").builtin.files()
+	require("mini.pick").builtin.cli({
+		command = { "rg", "--files", "--hidden", "--color=never" },
+	})
 end, { desc = "文件查找" })
 
 -- <leader>fw ：实时 grep（在项目中搜索文本）
