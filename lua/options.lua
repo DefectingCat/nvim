@@ -1,53 +1,151 @@
+-- =============================================================================
+-- 全局选项配置 (lua/options.lua)
+-- =============================================================================
+-- 本文件集中设置所有影响编辑器行为的全局选项。
+-- 选项分为以下几类：
+--   1. 界面显示（行号、光标、颜色）
+--   2. 缩进与格式化（tab、空格、智能缩进）
+--   3. 搜索行为（大小写敏感）
+--   4. 窗口与分割
+--   5. 文件持久化（swap、backup、undo）
+--   6. 补全与消息
+--   7. 剪贴板（延迟初始化，避免启动阻塞）
+--   8. 折叠与 diff 高亮
+-- =============================================================================
+
+-- 禁用 netrw 横幅（netrw 本身已通过 loaded_netrw 禁用，此选项作为保险）
 vim.g.netrw_banner = 0
 
-vim.opt.nu = true
-vim.opt.relativenumber = true
-vim.opt.cursorline = true
-vim.opt.cursorlineopt = "both"
-vim.opt.autoread = true
+-- ---------------------------------------------------------------------------
+-- 1. 界面显示
+-- ---------------------------------------------------------------------------
 
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+vim.opt.nu = true                    -- 显示绝对行号
+vim.opt.relativenumber = true        -- 显示相对行号（便于配合数字 + j/k 跳转）
+vim.opt.cursorline = true            -- 高亮当前行
+vim.opt.cursorlineopt = "both"       -- 高亮当前行的行号和文本行（number + line）
+vim.opt.autoread = true              -- 当文件被外部修改时自动重新读取
 
-vim.opt.smartindent = true
-vim.opt.inccommand = "split"
+-- ---------------------------------------------------------------------------
+-- 2. 缩进与格式化
+-- ---------------------------------------------------------------------------
+-- 使用 4 空格缩进，适用于大多数语言。
+-- 特定语言的缩进设置（如 JS/TS 的 2 空格）应在 ftplugin 中覆盖。
 
-vim.opt.splitbelow = true
-vim.opt.splitright = true
+vim.opt.tabstop = 4                  -- Tab 键显示的宽度（字符数）
+vim.opt.softtabstop = 4              -- 插入模式下 Tab/BS 的行为宽度
+vim.opt.shiftwidth = 4               -- 自动缩进和 >/< 操作的宽度
+vim.opt.expandtab = true             -- 将 Tab 键转换为空格
 
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.laststatus = 3
+vim.opt.smartindent = true           -- 基于语法的智能缩进（C-style 语言效果最佳）
+vim.opt.inccommand = "split"         -- 实时预览替换效果（:s 命令在分屏中显示预览）
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = vim.fn.stdpath("data") .. "/undodir"
-vim.opt.undofile = true
+-- ---------------------------------------------------------------------------
+-- 3. 窗口与分割
+-- ---------------------------------------------------------------------------
 
+vim.opt.splitbelow = true            -- 水平分割时新窗口在下方
+vim.opt.splitright = true            -- 垂直分割时新窗口在右侧
+
+-- ---------------------------------------------------------------------------
+-- 4. 搜索行为
+-- ---------------------------------------------------------------------------
+
+vim.opt.ignorecase = true            -- 搜索时忽略大小写
+vim.opt.smartcase = true             -- 如果搜索包含大写字母，则区分大小写
+                                     -- 与 ignorecase 配合：全小写时忽略大小写，
+                                     -- 包含大写时精确匹配
+
+-- ---------------------------------------------------------------------------
+-- 5. 状态栏
+-- ---------------------------------------------------------------------------
+
+vim.opt.laststatus = 3               -- 全局状态栏（所有窗口共享一个状态栏）
+                                     -- 值为 2 时每个窗口有独立状态栏
+
+-- ---------------------------------------------------------------------------
+-- 6. 文件持久化
+-- ---------------------------------------------------------------------------
+-- 禁用 swap 和 backup 文件，使用 undofile 实现跨会话的撤销历史。
+
+vim.opt.swapfile = false             -- 禁用交换文件（.swp）
+vim.opt.backup = false               -- 禁用备份文件（~ 后缀）
+vim.opt.undodir = vim.fn.stdpath("data") .. "/undodir"  -- 撤销历史存放目录
+vim.opt.undofile = true              -- 启用持久化撤销（关闭文件后仍能撤销）
+
+-- ---------------------------------------------------------------------------
+-- 7. 补全与消息
+-- ---------------------------------------------------------------------------
+
+-- 补全选项：
+--   menuone  - 即使只有一个匹配项也显示菜单
+--   noselect - 不自动选择第一项（需手动选择）
+--   fuzzy    - 启用模糊匹配（Neovim 0.11+）
+--   nosort   - 保持原始顺序，不按字母排序
 vim.opt.completeopt = "menuone,noselect,fuzzy,nosort"
+
+-- shortmess: 缩短各种消息提示
+--   c - 补全相关消息的缩短（如 "match 1 of 5" → "1/5"）
 vim.opt.shortmess:append("c")
--- 延迟初始化 clipboard，避免启动时 provider 检测阻塞（SSH 环境尤其明显）
+
+-- ---------------------------------------------------------------------------
+-- 8. 剪贴板（延迟初始化）
+-- ---------------------------------------------------------------------------
+-- 剪贴板集成（unnamedplus）会在启动时检测外部剪贴板提供者（如 xclip、wl-copy）。
+-- 在 SSH 远程环境中，此检测可能阻塞数秒。
+-- 通过 vim.schedule() 将剪贴板设置推迟到启动事件循环之后，
+-- 避免阻塞 startup 的关键路径。
 vim.schedule(function()
-	vim.opt.clipboard:append("unnamedplus")
+    vim.opt.clipboard:append("unnamedplus")
 end)
+
+-- ---------------------------------------------------------------------------
+-- 9. 其他杂项
+-- ---------------------------------------------------------------------------
+
+-- 将 @ 和 - 视为文件名的一部分（用于 gf/gx 等命令）
 vim.opt.isfname:append("@-@")
+
+-- 保持光标与屏幕边缘的最小距离（行数），确保上下文可见
 vim.opt.scrolloff = 8
 
+-- 禁用 colorcolumn（右侧参考线）
 vim.opt.colorcolumn = "0"
+
+-- 始终显示符号列（用于诊断、git diff 等标记），避免文本左右跳动
 vim.opt.signcolumn = "yes"
+
+-- 启用真彩色支持（24-bit RGB），colorscheme 需要此选项才能正确渲染
 vim.opt.termguicolors = true
 
-vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "DiffAdd" })
-vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" })
-vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" })
+-- ---------------------------------------------------------------------------
+-- 10. 高亮组链接
+-- ---------------------------------------------------------------------------
+-- 将 mini.diff 的符号高亮组链接到标准 diff 高亮组，
+-- 使 git diff 的添加/修改/删除标记使用 colorscheme 定义的配色。
+
+vim.api.nvim_set_hl(0, "MiniDiffSignAdd",    { link = "DiffAdd" })    -- 添加的行
+vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" }) -- 修改的行
+vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" }) -- 删除的行
+
+-- ---------------------------------------------------------------------------
+-- 11. Yank 高亮
+-- ---------------------------------------------------------------------------
+-- 复制文本时短暂高亮被复制的区域，提供视觉反馈。
+-- vim.hl.on_yank() 是 Neovim 0.11+ 的内置函数，
+-- 旧版使用 vim.highlight.on_yank()。
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	callback = function()
-		vim.hl.on_yank()
-	end,
+    desc = "复制文本时高亮被复制的区域",
+    callback = function()
+        vim.hl.on_yank()
+    end,
 })
 
-vim.opt.foldlevel = 99 -- 打开文件时默认展开所有折叠
+-- ---------------------------------------------------------------------------
+-- 12. 折叠设置
+-- ---------------------------------------------------------------------------
+-- foldlevel = 99 表示默认展开所有折叠。
+-- 实际的 foldmethod 和 foldexpr 在 autocmds.lua 中通过 BufEnter 延迟设置，
+-- 避免启动时加载 treesitter 模块。
+vim.opt.foldlevel = 99
