@@ -152,8 +152,6 @@ local logos = {
 ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
 }
 
-local starter = require("mini.starter")
-
 -- 所有功能模块列表（用于页脚 "X/Y modules" 统计）。
 -- 口径与 lazy._loaded 一致：每个独立初始化的功能模块算一个，
 -- 不再按 vim.pack 的插件包统计（如 mini.nvim 包含多个模块）。
@@ -184,34 +182,39 @@ for _, line in ipairs(logos.f) do
 	max_header_width = math.max(max_header_width, vim.fn.strdisplaywidth(line))
 end
 
-starter.setup({
-	autoopen = true, -- 无参数启动时自动打开
-	evaluate_single = false, -- 只有一个选项时不自动执行
-	items = { { name = " ", action = "", section = "" } }, -- 空选项（仅展示页眉页脚）
-	header = table.concat(logos.f, "\n"), -- Logo 文本
+-- mini.starter — 启动页
+-- 使用 pcall 保护，避免首次启动插件尚未下载完成时报错
+local ok_starter, starter = pcall(require, "mini.starter")
+if ok_starter then
+	starter.setup({
+		autoopen = true, -- 无参数启动时自动打开
+		evaluate_single = false, -- 只有一个选项时不自动执行
+		items = { { name = " ", action = "", section = "" } }, -- 空选项（仅展示页眉页脚）
+		header = table.concat(logos.f, "\n"), -- Logo 文本
 
-	-- 页脚函数：显示启动耗时和模块加载统计
-	footer = function()
-		-- 已加载的模块数（动态统计，包含直接加载和懒加载）
-		local loaded = vim.tbl_count(require("lazy")._loaded)
-		local total = #all_modules
-		-- 使用 init.lua 执行完成时间，不等待 VimEnter（后者包含 runtime 插件加载耗时）
-		local end_time = _G.nvim_init_done or (vim.uv or vim.loop).hrtime()
-		local ms = (end_time - _G.nvim_start_time) / 1e6
-		local text = string.format("  %d/%d modules | %.0f ms", loaded, total, ms)
-		local text_width = vim.fn.strdisplaywidth(text)
-		-- 计算左填充空格数以实现居中
-		local pad = math.floor((max_header_width - text_width) / 2)
-		return string.rep(" ", pad) .. text
-	end,
+		-- 页脚函数：显示启动耗时和模块加载统计
+		footer = function()
+			-- 已加载的模块数（动态统计，包含直接加载和懒加载）
+			local loaded = vim.tbl_count(require("lazy")._loaded)
+			local total = #all_modules
+			-- 使用 init.lua 执行完成时间，不等待 VimEnter（后者包含 runtime 插件加载耗时）
+			local end_time = _G.nvim_init_done or (vim.uv or vim.loop).hrtime()
+			local ms = (end_time - _G.nvim_start_time) / 1e6
+			local text = string.format("  %d/%d modules | %.0f ms", loaded, total, ms)
+			local text_width = vim.fn.strdisplaywidth(text)
+			-- 计算左填充空格数以实现居中
+			local pad = math.floor((max_header_width - text_width) / 2)
+			return string.rep(" ", pad) .. text
+		end,
 
-	-- 内容钩子：水平和垂直居中
-	content_hooks = {
-		starter.gen_hook.aligning("center", "center"),
-	},
-})
+		-- 内容钩子：水平和垂直居中
+		content_hooks = {
+			starter.gen_hook.aligning("center", "center"),
+		},
+	})
 
-lazy.track("starter")
+	lazy.track("starter")
+end
 
 -- ---------------------------------------------------------------------------
 -- mini.files — 文件浏览器（按键触发懒加载）
@@ -282,17 +285,21 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- ---------------------------------------------------------------------------
 -- 替换默认的 vim.notify，提供美观的浮动通知窗口。
 -- 直接初始化（轻量，不阻塞启动）。
-require("mini.notify").setup({
-	content = {
-		-- 简化格式：只显示消息内容，不附加时间戳等元信息
-		format = function(notif)
-			return notif.msg
-		end,
-	},
-})
--- 将 vim.notify 重定向到 mini.notify
-vim.notify = require("mini.notify").make_notify()
-lazy.track("notify")
+-- 使用 pcall 保护，避免首次启动插件尚未下载完成时报错
+local ok_notify, notify = pcall(require, "mini.notify")
+if ok_notify then
+	notify.setup({
+		content = {
+			-- 简化格式：只显示消息内容，不附加时间戳等元信息
+			format = function(notif)
+				return notif.msg
+			end,
+		},
+	})
+	-- 将 vim.notify 重定向到 mini.notify
+	vim.notify = notify.make_notify()
+	lazy.track("notify")
+end
 
 -- ---------------------------------------------------------------------------
 -- mini.cmdline — 增强命令行

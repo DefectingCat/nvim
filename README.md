@@ -7,9 +7,10 @@
 - **内置插件管理器** — `vim.pack`（Neovim 0.12+），无需 lazy.nvim / packer
 - **自定义懒加载框架** — `lua/lazy.lua`（约 35 行），通过 `on_event` / `on_keys` / `load` 延迟加载重型模块
 - **mini.nvim 单体插件集** — starter、pick、extra、files、icons、notify、cmdline、completion、snippets、diff、surround
-- **LSP + 代码格式化** — nvim-lspconfig + mason + conform.nvim，保存时自动格式化
-- **快速启动** — 禁用约 20 个内置插件，剪贴板通过 `vim.schedule()` 延迟初始化
+- **LSP + 代码格式化** — nvim-lspconfig + mason + conform.nvim，保存时自动格式化，支持全局/Buffer 级别开关
+- **快速启动** — 禁用约 20 个内置插件，启用 Neovim 0.12+ 内置 UI 增强 (`vim._core.ui2`)
 - **启动仪表盘** — ASCII Logo + 实时模块加载统计 + 启动耗时
+- **Colorscheme 优化** — `ex-colors.nvim` 提取并生成精简版 colorscheme（默认 `ex-catppuccin-mocha`）
 
 ## 懒加载策略
 
@@ -20,6 +21,7 @@
 | `BufReadPost` | diff、surround                       |
 | `BufWritePre` | conform                              |
 | 按键触发      | pick、files、fugitive、grugfar       |
+| 命令触发      | ex-colors (`:ExColors`)              |
 
 ## 键位映射（Leader = 空格）
 
@@ -63,6 +65,7 @@
 | `gd`         | 跳转到定义             |
 | `gh`         | 悬停查看文档           |
 | `<leader>ca` | 代码操作               |
+| `<leader>cr` | 重命名符号             |
 | `<leader>fm` | 格式化当前 Buffer      |
 | `df`         | 显示行诊断浮动窗口     |
 | `<leader>ds` | 诊断位置列表           |
@@ -83,7 +86,9 @@
 | 键位         | 动作                       |
 |--------------|----------------------------|
 | `<leader>ss` | 全局替换光标下的单词       |
-| `<leader>u`  | 打开内置撤销树             |
+| `<leader>ud` | 打开内置撤销树             |
+| `<leader>uf` | 切换全局自动格式化         |
+| `<leader>uF` | 切换当前 Buffer 自动格式化 |
 | `<Esc>`      | 清除搜索高亮               |
 | `J`          | 合并行且不移动光标         |
 
@@ -119,6 +124,7 @@
 :PackAdd user/repo     " 添加插件
 :PackDel plugin-name   " 删除插件
 :PackUpdate [name]     " 更新全部或指定插件
+:ExColors!             " 提取当前 colorscheme 为优化版 ex-colors
 ```
 
 ## 文件结构
@@ -138,7 +144,8 @@ lua/plugins/
   git.lua               -- Git 工具：hunk 预览、blame、文件历史
 nvim-pack-lock.json     -- 插件锁定文件
 colors/
-  catppuccin-*.lua      -- Catppuccin 配色方案（mocha 为默认）
+  ex-catppuccin-mocha.lua  -- 默认配色（ex-colors 生成的优化版）
+  catppuccin-*.lua         -- 原始 Catppuccin 配色方案
 ```
 
 ## 开发 / 验证
