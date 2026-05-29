@@ -42,7 +42,7 @@ vim.pack.add({
 	"https://github.com/stevearc/conform.nvim", -- 格式化
 	"https://github.com/tpope/vim-fugitive", -- Git 集成
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
-	"https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
+	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
 }, { load = false })
 
 -- ---------------------------------------------------------------------------

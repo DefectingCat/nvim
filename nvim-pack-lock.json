@@ -4,10 +4,6 @@
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "ex-colors.nvim": {
-      "rev": "76a20ce29d160a4eb9f275a615dc8257cb15c58c",
-      "src": "https://github.com/aileot/ex-colors.nvim"
-    },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
