@@ -107,4 +107,39 @@ M.on_keys = function(name, keys, mode, fn, action, opts)
 	end, { desc = opts.desc, buffer = opts.buffer })
 end
 
+-- ---------------------------------------------------------------------------
+-- 命令触发懒加载
+-- ---------------------------------------------------------------------------
+-- 参数：
+--   name    - 模块标识名
+--   cmd     - 命令名（如 "ExColors"）
+--   fn      - 初始化函数，在首次执行命令时调用
+--   opts    - 用户命令选项（bang, nargs, desc 等）
+--
+-- 原理：
+--   创建一个同名的临时用户命令，首次执行时：
+--   1. 删除临时命令（避免与插件注册的命令冲突）
+--   2. 调用 M.load(name, fn) 完成插件初始化
+--   3. 插件初始化后通常会注册同名命令，覆盖临时命令
+--   4. 如果插件没有注册同名命令，则递归执行该命令
+--
+-- 注意：
+--   要求插件在初始化（setup）时会注册同名用户命令。
+--   如果插件不注册命令，可在 fn 中手动处理命令逻辑。
+M.on_cmd = function(name, cmd, fn, opts)
+	opts = opts or {}
+	vim.api.nvim_create_user_command(cmd, function(cmd_opts)
+		vim.api.nvim_del_user_command(cmd)
+		M.load(name, fn)
+		-- 如果插件注册了新命令，这里需要重新执行
+		-- 由于 del + load 后命令可能已不存在（插件未注册）
+		-- 或已变成插件的命令，所以用 pcall 安全地尝试执行
+		local ok = pcall(vim.cmd, cmd .. (cmd_opts.bang and "!" or ""))
+		if not ok then
+			-- 插件未注册同名命令，命令已执行完毕
+			vim.notify("[" .. name .. "] 已加载", vim.log.levels.INFO)
+		end
+	end, { bang = opts.bang, nargs = opts.nargs, desc = opts.desc })
+end
+
 return M
