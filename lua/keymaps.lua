@@ -71,10 +71,25 @@ map("v", "<", "<gv")
 -- ---------------------------------------------------------------------------
 -- Neovim 0.12+ 内置了 undotree 插件（nvim.undotree）。
 -- 这里通过 packadd 按需加载并打开。
-vim.keymap.set("n", "<leader>u", function()
+vim.keymap.set("n", "<leader>ud", function()
 	vim.cmd.packadd("nvim.undotree")
 	require("undotree").open()
 end, { desc = "打开内置撤销树" })
+
+-- <leader>uf - 切换全局自动格式化
+vim.keymap.set("n", "<leader>uf", function()
+	vim.g.autoformat = vim.g.autoformat == false
+	local state = vim.g.autoformat and "开启" or "关闭"
+	vim.notify("全局自动格式化: " .. state, vim.log.levels.INFO)
+end, { desc = "切换全局自动格式化" })
+
+-- <leader>uF - 切换当前 Buffer 自动格式化
+vim.keymap.set("n", "<leader>uF", function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	vim.b[bufnr].autoformat = vim.b[bufnr].autoformat == false
+	local state = vim.b[bufnr].autoformat and "开启" or "关闭"
+	vim.notify("Buffer 自动格式化: " .. state, vim.log.levels.INFO)
+end, { desc = "切换 Buffer 自动格式化" })
 
 -- ---------------------------------------------------------------------------
 -- 文件操作
