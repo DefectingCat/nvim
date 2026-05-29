@@ -168,6 +168,11 @@ vim.keymap.set("n", "<leader>ca", function()
 	vim.lsp.buf.code_action()
 end, { desc = "代码操作" })
 
+-- <leader>cr - Rename：重命名光标下的符号
+vim.keymap.set("n", "<leader>cr", function()
+	vim.lsp.buf.rename()
+end, { desc = "重命名符号" })
+
 -- ---------------------------------------------------------------------------
 -- 诊断导航
 -- ---------------------------------------------------------------------------

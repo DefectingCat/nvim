@@ -51,7 +51,7 @@ vim.pack.add({
 -- 展示 Neovim ASCII Logo 和启动耗时统计。
 
 -- ASCII art 集合（用于启动页等展示）
-local logs = {
+local logos = {
 	a = {
 		"⣇⣿⠘⣿⣿⣿⡿⡿⣟⣟⢟⢟⢝⠵⡝⣿⡿⢂⣼⣿⣷⣌⠩⡫⡻⣝⠹⢿⣿⣷",
 		"⡆⣿⣆⠱⣝⡵⣝⢅⠙⣿⢕⢕⢕⢕⢝⣥⢒⠅⣿⣿⣿⡿⣳⣌⠪⡪⣡⢑⢝⣇",
@@ -178,7 +178,7 @@ local all_modules = {
 
 -- 计算 Logo 的最大显示宽度，用于页脚居中计算
 local max_header_width = 0
-for _, line in ipairs(logs.f) do
+for _, line in ipairs(logos.f) do
 	max_header_width = math.max(max_header_width, vim.fn.strdisplaywidth(line))
 end
 
@@ -186,7 +186,7 @@ starter.setup({
 	autoopen = true, -- 无参数启动时自动打开
 	evaluate_single = false, -- 只有一个选项时不自动执行
 	items = { { name = " ", action = "", section = "" } }, -- 空选项（仅展示页眉页脚）
-	header = table.concat(logs.f, "\n"), -- Logo 文本
+	header = table.concat(logos.f, "\n"), -- Logo 文本
 
 	-- 页脚函数：显示启动耗时和模块加载统计
 	footer = function()
