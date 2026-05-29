@@ -67,3 +67,32 @@ vim.api.nvim_create_user_command("PackUpdate", function(opts)
 		vim.pack.update()
 	end
 end, { nargs = "*", desc = "更新所有插件或指定插件" })
+
+-- ---------------------------------------------------------------------------
+-- :PackClean — 清理已从配置移除的插件
+-- ---------------------------------------------------------------------------
+-- 用法：:PackClean
+--
+-- 原理：
+--   从 vim.pack.get() 获取所有 vim.pack 管理的插件，
+--   过滤出 active = false 的插件（即从 pack.lua 移除后未加载的），
+--   批量调用 vim.pack.del() 删除本地文件。
+--   如果没有需要清理的插件，会提示 "No unused plugins to clean"。
+--
+-- 注意：
+--   必须先 :restart Neovim，让 vim.pack 识别到插件已不在当前配置中，
+--   否则 active 仍为 true，不会被清理。
+vim.api.nvim_create_user_command("PackClean", function()
+	local to_clean = vim.iter(vim.pack.get())
+		:filter(function(x) return not x.active end)
+		:map(function(x) return x.spec.name end)
+		:totable()
+
+	if #to_clean == 0 then
+		vim.notify("No unused plugins to clean", vim.log.levels.INFO)
+		return
+	end
+
+	vim.pack.del(to_clean)
+	vim.notify("Cleaned " .. #to_clean .. " plugin(s): " .. table.concat(to_clean, ", "), vim.log.levels.INFO)
+end, { desc = "删除已从配置移除的本地插件" })
