@@ -174,6 +174,8 @@ local all_modules = {
 	"fugitive",
 	"grugfar",
 	"ex-colors",
+	"pairs",
+	"ai",
 }
 
 -- 计算 Logo 的最大显示宽度，用于页脚居中计算
@@ -300,6 +302,22 @@ if ok_notify then
 	vim.notify = notify.make_notify()
 	lazy.track("notify")
 end
+
+-- ---------------------------------------------------------------------------
+-- mini.pairs — 自动括号配对（InsertEnter 懒加载）
+-- ---------------------------------------------------------------------------
+-- 输入成对字符时自动补全另一半，支持智能跳过和配对删除。
+lazy.on_event("pairs", "InsertEnter", "*", function()
+	require("mini.pairs").setup()
+end)
+
+-- ---------------------------------------------------------------------------
+-- mini.ai — 扩展 a/i textobject（BufReadPost 懒加载）
+-- ---------------------------------------------------------------------------
+-- 增强内置 textobject（括号、引号等），新增函数调用、参数、标签等。
+lazy.on_event("ai", "BufReadPost", "*", function()
+	require("mini.ai").setup()
+end)
 
 -- ---------------------------------------------------------------------------
 -- mini.cmdline — 增强命令行
