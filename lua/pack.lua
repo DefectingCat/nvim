@@ -176,6 +176,7 @@ local all_modules = {
 	"ex-colors",
 	"pairs",
 	"ai",
+	"cursorword",
 }
 
 -- 计算 Logo 的最大显示宽度，用于页脚居中计算
@@ -317,6 +318,14 @@ end)
 -- 增强内置 textobject（括号、引号等），新增函数调用、参数、标签等。
 lazy.on_event("ai", "BufReadPost", "*", function()
 	require("mini.ai").setup()
+end)
+
+-- ---------------------------------------------------------------------------
+-- mini.cursorword — 自动高亮光标下单词（BufReadPost 懒加载）
+-- ---------------------------------------------------------------------------
+-- 光标停留在某个单词上时，自动高亮 buffer 中所有相同的单词。
+lazy.on_event("cursorword", "BufReadPost", "*", function()
+	require("mini.cursorword").setup()
 end)
 
 -- ---------------------------------------------------------------------------
