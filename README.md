@@ -1,8 +1,8 @@
 # Neovim 配置
 
-[screenshot-1](https://github.com/DefectingCat/static/blob/a6768b23b6014ebf02a6e38631682690613492cc/neovim/neovim-1.png)
-
 个人 Neovim 配置，目标版本 **0.12+**。
+
+![screenshot-1](https://raw.githubusercontent.com/DefectingCat/static/a6768b23b6014ebf02a6e38631682690613492cc/neovim/neovim-1.png)
 
 ## 核心特性
 
