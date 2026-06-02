@@ -1,5 +1,7 @@
 # Neovim 配置
 
+[screenshot-1](https://github.com/DefectingCat/static/blob/a6768b23b6014ebf02a6e38631682690613492cc/neovim/neovim-1.png)
+
 个人 Neovim 配置，目标版本 **0.12+**。
 
 ## 核心特性
@@ -14,15 +16,15 @@
 
 ## 懒加载策略
 
-| 触发条件      | 插件                                    |
-| ------------- | --------------------------------------- |
-| `VimEnter`    | treesitter、lsp、icons                  |
-| `InsertEnter` | completion、snippets、pairs             |
-| `BufReadPost` | diff、surround、ai、cursorword          |
-| `BufWritePre` | conform                                 |
-| 按键触发      | pick、files、fugitive、grugfar          |
-| 首次按 `:`    | cmdline                                 |
-| 命令触发      | ex-colors (`:ExColors`)                 |
+| 触发条件      | 插件                           |
+| ------------- | ------------------------------ |
+| `VimEnter`    | treesitter、lsp、icons         |
+| `InsertEnter` | completion、snippets、pairs    |
+| `BufReadPost` | diff、surround、ai、cursorword |
+| `BufWritePre` | conform                        |
+| 按键触发      | pick、files、fugitive、grugfar |
+| 首次按 `:`    | cmdline                        |
+| 命令触发      | ex-colors (`:ExColors`)        |
 
 ## 键位映射
 
