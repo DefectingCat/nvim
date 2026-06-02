@@ -402,7 +402,7 @@ end
 
 -- <leader>gg ：在新标签页中打开 Fugitive 全屏
 lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
-	vim.cmd("tabnew | Git | only")
+	vim.cmd("Git")
 end, { desc = "Fugitive 全屏新标签" })
 
 -- <leader>gd ：Git diff 垂直分割
