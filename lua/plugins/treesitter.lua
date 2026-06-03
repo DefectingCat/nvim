@@ -33,6 +33,7 @@ local ensure_installed = {
 	"html",
 	"css",
 	"yaml",
+	"kotlin",
 	-- 后端
 	"c",
 	"rust",
@@ -44,6 +45,13 @@ local ensure_installed = {
 	-- 基础设施
 	"dockerfile",
 	"make",
+	"markdown",
+	"markdown_inline",
+	"git_config",
+	"git_rebase",
+	"gitattributes",
+	"gitcommit",
+	"gitginore",
 }
 
 -- ---------------------------------------------------------------------------

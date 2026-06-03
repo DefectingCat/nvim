@@ -132,7 +132,6 @@ vim.lsp.enable({
 	"lua_ls", -- Lua 语言支持
 	"taplo", -- TOML 支持
 	"svelte", -- Svelte 框架支持
-	"dartls", -- Dart/Flutter 支持
 	"kotlin_lsp", -- Kotlin 支持
 })
 
