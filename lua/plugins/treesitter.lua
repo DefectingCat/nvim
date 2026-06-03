@@ -51,7 +51,7 @@ local ensure_installed = {
 	"git_rebase",
 	"gitattributes",
 	"gitcommit",
-	"gitginore",
+	"gitignore",
 }
 
 -- ---------------------------------------------------------------------------
