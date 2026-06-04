@@ -410,6 +410,16 @@ lazy.on_keys("fugitive", "<leader>gd", "n", load_fugitive, function()
 	vim.cmd("Gvdiffsplit")
 end, { desc = "Git diff 分割" })
 
+-- <leader>gB — 整文件 blame（使用 fugitive 的 :Git blame）
+lazy.on_keys("fugitive", "<leader>gB", "n", load_fugitive, function()
+	vim.cmd("Git blame")
+end, { desc = "Blame 整个文件" })
+
+-- <leader>gD — 查看当前文件的 git 历史
+lazy.on_keys("fugitive", "<leader>gD", "n", load_fugitive, function()
+	vim.cmd("Git log -p -- %")
+end, { desc = "查看文件 Git 历史" })
+
 -- ---------------------------------------------------------------------------
 -- mini.completion — 自动补全（InsertEnter 懒加载）
 -- ---------------------------------------------------------------------------

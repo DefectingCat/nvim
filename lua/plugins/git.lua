@@ -187,13 +187,3 @@ vim.keymap.set("n", "<leader>ghp", preview_hunk, { desc = "预览 hunk" })
 
 -- <leader>ghb — 查看当前行 blame
 vim.keymap.set("n", "<leader>ghb", blame_line, { desc = "Blame 当前行" })
-
--- <leader>gB — 整文件 blame（使用 fugitive 的 :Git blame）
-vim.keymap.set("n", "<leader>gB", function()
-	vim.cmd("Git blame")
-end, { desc = "Blame 整个文件" })
-
--- <leader>gD — 查看当前文件的 git 历史
-vim.keymap.set("n", "<leader>gD", function()
-	vim.cmd("Git log -p -- %")
-end, { desc = "查看文件 Git 历史" })
