@@ -77,10 +77,6 @@ require("pack") -- 插件管理与懒加载配置
 -- =============================================================================
 -- Colorscheme 设置
 -- =============================================================================
--- moonflyTransparent：使 moonfly 主题的背景透明，
--- 即使当前使用 catppuccin-mocha，此变量仍保留以备切换主题。
-vim.g.moonflyTransparent = true
-
 -- 应用 colorscheme。catppuccin-mocha 的定义在 colors/catppuccin-mocha.lua 中。
 -- 该文件是一个精简版，只包含 Mocha 变体的调色板和高亮组定义。
 vim.cmd("colorscheme ex-catppuccin-mocha")

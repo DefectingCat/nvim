@@ -111,29 +111,16 @@ vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true
 
 -- ---------------------------------------------------------------------------
--- 10. 高亮组链接
+-- 10. 高亮组链接（fallback）
 -- ---------------------------------------------------------------------------
--- 将 mini.diff 的符号高亮组链接到标准 diff 高亮组，
--- 使 git diff 的添加/修改/删除标记使用 colorscheme 定义的配色。
-vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "DiffAdd" }) -- 添加的行
-vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" }) -- 修改的行
-vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" }) -- 删除的行
+-- colorscheme 中通常已定义 MiniDiffSign 的具体颜色。
+-- 如果用户临时切换到其他 colorscheme，此处 link 作为兜底。
+vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "DiffAdd" })
+vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" })
+vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" })
 
 -- ---------------------------------------------------------------------------
--- 11. Yank 高亮
--- ---------------------------------------------------------------------------
--- 复制文本时短暂高亮被复制的区域，提供视觉反馈。
--- vim.hl.on_yank() 是 Neovim 0.11+ 的内置函数，
--- 旧版使用 vim.highlight.on_yank()。
-vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "复制文本时高亮被复制的区域",
-	callback = function()
-		vim.hl.on_yank()
-	end,
-})
-
--- ---------------------------------------------------------------------------
--- 12. 折叠设置
+-- 11. 折叠设置
 -- ---------------------------------------------------------------------------
 -- foldlevel = 99 表示默认展开所有折叠。
 -- 实际的 foldmethod 和 foldexpr 在 autocmds.lua 中通过 BufEnter 延迟设置，

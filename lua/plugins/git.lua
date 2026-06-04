@@ -1,5 +1,5 @@
 -- =============================================================================
--- Git 工具封装 (lua/git.lua)
+-- Git 工具封装 (lua/plugins/git.lua)
 -- =============================================================================
 -- 本模块提供基于 mini.diff 和原生 git 命令的 Git 相关功能。
 --
@@ -8,11 +8,15 @@
 --   2. Blame Line（<leader>ghb）— 查看当前行的 git blame 信息
 --   3. Blame Buffer（<leader>gB）— 整文件 blame（via fugitive）
 --   4. File History（<leader>gD）— 查看当前文件的 git log
+--   5. Fugitive 全屏（<leader>gg）— 在新标签页打开 fugitive
+--   6. Git diff 分割（<leader>gd）— 垂直分割查看 diff
 --
 -- 依赖：
 --   - mini.diff（已在 pack.lua 中通过 BufReadPost 懒加载）
---   - vim-fugitive（已在 pack.lua 中通过按键触发懒加载）
+--   - vim-fugitive（本文件通过 lazy.on_keys 按键触发懒加载）
 -- =============================================================================
+
+local lazy = require("lazy")
 
 -- ---------------------------------------------------------------------------
 -- 辅助函数：获取光标所在行的 hunk
@@ -67,7 +71,6 @@ local function preview_hunk()
 		return
 	end
 
-	-- 构建预览内容
 	local lines = {}
 	table.insert(lines, "Hunk 类型: " .. hunk.type)
 	table.insert(lines, string.format("Buffer 行: %d-%d", hunk.buf_start, hunk.buf_start + hunk.buf_count - 1))
@@ -134,7 +137,7 @@ local function preview_hunk()
 end
 
 -- ---------------------------------------------------------------------------
--- Blame Line — 查看当前行的 Git  blame 信息
+-- Blame Line — 查看当前行的 Git blame 信息
 -- ---------------------------------------------------------------------------
 -- 执行 git blame --porcelain 获取当前行的详细提交信息，
 -- 以通知消息的形式展示提交哈希、作者、时间和提交摘要。
@@ -179,6 +182,13 @@ local function blame_line()
 end
 
 -- ---------------------------------------------------------------------------
+-- vim-fugitive 懒加载触发器
+-- ---------------------------------------------------------------------------
+local function load_fugitive()
+	vim.cmd.packadd("vim-fugitive")
+end
+
+-- ---------------------------------------------------------------------------
 -- 键位映射
 -- ---------------------------------------------------------------------------
 
@@ -187,3 +197,23 @@ vim.keymap.set("n", "<leader>ghp", preview_hunk, { desc = "预览 hunk" })
 
 -- <leader>ghb — 查看当前行 blame
 vim.keymap.set("n", "<leader>ghb", blame_line, { desc = "Blame 当前行" })
+
+-- <leader>gg — 在新标签页中打开 Fugitive 全屏
+lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
+	vim.cmd("Git")
+end, { desc = "Fugitive 全屏新标签" })
+
+-- <leader>gd — Git diff 垂直分割
+lazy.on_keys("fugitive", "<leader>gd", "n", load_fugitive, function()
+	vim.cmd("Gvdiffsplit")
+end, { desc = "Git diff 分割" })
+
+-- <leader>gB — 整文件 blame（使用 fugitive 的 :Git blame）
+lazy.on_keys("fugitive", "<leader>gB", "n", load_fugitive, function()
+	vim.cmd("Git blame")
+end, { desc = "Blame 整个文件" })
+
+-- <leader>gD — 查看当前文件的 git 历史
+lazy.on_keys("fugitive", "<leader>gD", "n", load_fugitive, function()
+	vim.cmd("Git log -p -- %")
+end, { desc = "查看文件 Git 历史" })

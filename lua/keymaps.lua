@@ -62,10 +62,6 @@ map("v", "<leader>ss", ":s/\\%V", { desc = "在可视选区内搜索替换" })
 map("n", "$", "g_")
 map("v", "$", "g_")
 
--- 再次映射缩进保持选区（与上方重复，确保可靠性）
-map("v", ">", ">gv")
-map("v", "<", "<gv")
-
 -- ---------------------------------------------------------------------------
 -- 内置撤销树 (Undotree)
 -- ---------------------------------------------------------------------------
@@ -75,6 +71,11 @@ vim.keymap.set("n", "<leader>ud", function()
 	vim.cmd.packadd("nvim.undotree")
 	require("undotree").open()
 end, { desc = "打开内置撤销树" })
+
+-- <leader>ds — 诊断位置列表
+vim.keymap.set("n", "<leader>ds", function()
+	vim.diagnostic.setloclist()
+end, { desc = "诊断位置列表" })
 
 -- <leader>uf - 切换全局自动格式化
 vim.keymap.set("n", "<leader>uf", function()
