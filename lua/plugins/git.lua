@@ -198,6 +198,39 @@ vim.keymap.set("n", "<leader>ghp", preview_hunk, { desc = "预览 hunk" })
 -- <leader>ghb — 查看当前行 blame
 vim.keymap.set("n", "<leader>ghb", blame_line, { desc = "Blame 当前行" })
 
+-- <leader>ghr — 重置当前 hunk（恢复为 HEAD 版本）
+vim.keymap.set("n", "<leader>ghr", function()
+	local hunk, ref_text = get_cursor_hunk()
+	if not hunk then
+		vim.notify("光标不在变更区域", vim.log.levels.WARN)
+		return
+	end
+
+	local buf = vim.api.nvim_get_current_buf()
+	local ref_lines = vim.split(ref_text or "", "\n")
+
+	if hunk.type == "add" then
+		-- 新增型 hunk：删除这些行
+		vim.api.nvim_buf_set_lines(buf, hunk.buf_start - 1, hunk.buf_start + hunk.buf_count - 1, false, {})
+	elseif hunk.type == "delete" then
+		-- 删除型 hunk：插入被删除的内容
+		local lines_to_insert = {}
+		for i = hunk.ref_start, hunk.ref_start + hunk.ref_count - 1 do
+			table.insert(lines_to_insert, ref_lines[i] or "")
+		end
+		vim.api.nvim_buf_set_lines(buf, hunk.buf_start - 1, hunk.buf_start - 1, false, lines_to_insert)
+	else
+		-- 修改型 hunk：用参考版本替换
+		local lines_to_replace = {}
+		for i = hunk.ref_start, hunk.ref_start + hunk.ref_count - 1 do
+			table.insert(lines_to_replace, ref_lines[i] or "")
+		end
+		vim.api.nvim_buf_set_lines(buf, hunk.buf_start - 1, hunk.buf_start + hunk.buf_count - 1, false, lines_to_replace)
+	end
+
+	vim.notify("已重置 hunk", vim.log.levels.INFO)
+end, { desc = "重置 hunk" })
+
 -- <leader>gg — 在新标签页中打开 Fugitive 全屏
 lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
 	vim.cmd("Git")
