@@ -21,9 +21,6 @@ local M = {}
 -- 如果某个 parser 未在此列表中，打开对应文件类型时仍可通过 nvim-treesitter
 -- 的 :TSInstall 手动安装。
 local ensure_installed = {
-	"lua",
-	"vim",
-	"vimdoc",
 	-- Web 前端
 	"javascript",
 	"typescript",
@@ -35,7 +32,6 @@ local ensure_installed = {
 	"yaml",
 	"kotlin",
 	-- 后端
-	"c",
 	"rust",
 	"toml",
 	"go",
@@ -45,8 +41,6 @@ local ensure_installed = {
 	-- 基础设施
 	"dockerfile",
 	"make",
-	"markdown",
-	"markdown_inline",
 	"git_config",
 	"git_rebase",
 	"gitattributes",
