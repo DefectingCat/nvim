@@ -250,3 +250,8 @@ end, { desc = "Blame 整个文件" })
 lazy.on_keys("fugitive", "<leader>gD", "n", load_fugitive, function()
 	vim.cmd("Git log -p -- %")
 end, { desc = "查看文件 Git 历史" })
+
+-- <leader>gl — 查看当前文件的 Gclog
+lazy.on_keys("fugitive", "<leader>gl", "n", load_fugitive, function()
+	vim.cmd("GcLog")
+end, { desc = "查看文件 GcLog" })
