@@ -109,7 +109,9 @@ M.on_keys = function(name, keys, mode, fn, action, opts)
 	mode = mode or "n"
 	opts = opts or {}
 	vim.keymap.set(mode, keys, function()
-		M.load(name, fn)
+		if not M.load(name, fn) then
+			return
+		end
 		if action then
 			action()
 		end
