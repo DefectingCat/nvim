@@ -99,8 +99,9 @@ end
 -- 原理：
 --   创建一个键位映射，首次按下时：
 --   1. 调用 M.load(name, fn) 完成插件初始化
---   2. 如果提供了 action，执行 action()
---   3. 后续按键直接执行 action（因为 _loaded 已标记）
+--   2. 如果 M.load 失败，直接返回，不执行 action
+--   3. 如果提供了 action 且加载成功，执行 action()
+--   4. 后续按键直接执行 action（因为 _loaded 已标记）
 --
 -- 注意：
 --   此设计使得首次按键稍慢（需要 setup），后续按键与直接映射无异。
@@ -125,32 +126,56 @@ end
 --   name    - 模块标识名
 --   cmd     - 命令名（如 "ExColors"）
 --   fn      - 初始化函数，在首次执行命令时调用
---   opts    - 用户命令选项（bang, nargs, desc 等）
+--   opts    - 用户命令选项（bang, nargs, range, desc 等）
 --
 -- 原理：
 --   创建一个同名的临时用户命令，首次执行时：
---   1. 删除临时命令（避免与插件注册的命令冲突）
---   2. 调用 M.load(name, fn) 完成插件初始化
---   3. 插件初始化后通常会注册同名命令，覆盖临时命令
---   4. 如果插件没有注册同名命令，则递归执行该命令
+--   1. 调用 M.load(name, fn) 完成插件初始化
+--   2. 如果加载失败，保留临时命令，让用户可以重试
+--   3. 加载成功后删除临时命令，避免与插件注册的命令冲突
+--   4. 按用户输入的完整形式（mods/range/bang/args）重新执行命令
 --
 -- 注意：
---   要求插件在初始化（setup）时会注册同名用户命令。
---   如果插件不注册命令，可在 fn 中手动处理命令逻辑。
+--   插件初始化后通常会注册同名命令并覆盖临时命令；
+--   如果插件不注册命令，需要用 fn 手动处理命令逻辑。
 M.on_cmd = function(name, cmd, fn, opts)
 	opts = opts or {}
 	vim.api.nvim_create_user_command(cmd, function(cmd_opts)
-		vim.api.nvim_del_user_command(cmd)
-		M.load(name, fn)
-		-- 如果插件注册了新命令，这里需要重新执行
-		-- 由于 del + load 后命令可能已不存在（插件未注册）
-		-- 或已变成插件的命令，所以用 pcall 安全地尝试执行
-		local ok = pcall(vim.cmd, cmd .. (cmd_opts.bang and "!" or ""))
-		if not ok then
-			-- 插件未注册同名命令，命令已执行完毕
-			vim.notify("[" .. name .. "] 已加载", vim.log.levels.INFO)
+		-- 先加载；只有加载成功才删除临时命令，否则保留重试机会
+		if not M.load(name, fn) then
+			return
 		end
-	end, { bang = opts.bang, nargs = opts.nargs, desc = opts.desc })
+		vim.api.nvim_del_user_command(cmd)
+
+		-- 还原用户最初输入的完整命令（mods/range/cmd/bang/args）
+		local parts = {}
+		if cmd_opts.mods and cmd_opts.mods ~= "" then
+			table.insert(parts, cmd_opts.mods)
+		end
+		if cmd_opts.range == 2 then
+			table.insert(parts, cmd_opts.line1 .. "," .. cmd_opts.line2)
+		elseif cmd_opts.range == 1 then
+			table.insert(parts, cmd_opts.line1)
+		end
+		table.insert(parts, cmd)
+		if cmd_opts.bang then
+			table.insert(parts, "!")
+		end
+		if cmd_opts.args and cmd_opts.args ~= "" then
+			table.insert(parts, " " .. cmd_opts.args)
+		end
+
+		local full = table.concat(parts, "")
+		local ok, err = pcall(vim.cmd, full)
+		if not ok then
+			vim.notify("[lazy] 执行 " .. full .. " 失败: " .. tostring(err), vim.log.levels.ERROR)
+		end
+	end, {
+		bang = opts.bang,
+		nargs = opts.nargs,
+		range = opts.range,
+		desc = opts.desc,
+	})
 end
 
 return M
