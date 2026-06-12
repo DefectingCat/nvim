@@ -28,24 +28,33 @@ M._loaded = {}
 --
 -- 行为：
 --   1. 检查 _loaded[name] 是否为真，是则直接返回（幂等）
---   2. 标记为已加载
---   3. 如果有 fn，执行 fn() 完成插件 setup
+--   2. 如果有 fn，执行 fn() 完成插件 setup
+--   3. 仅在 fn() 成功执行后，标记为已加载
 --
 -- 使用场景：
 --   在按键回调中手动触发加载，或在 on_event 回调中延迟初始化。
 M.load = function(name, fn)
 	if M._loaded[name] then
-		return
+		return true
+	end
+	if fn then
+		local ok, err = pcall(fn)
+		if not ok then
+			vim.notify("[lazy] 加载 " .. name .. " 失败: " .. tostring(err), vim.log.levels.ERROR)
+			return false
+		end
 	end
 	M._loaded[name] = true
-	if fn then
-		fn()
-	end
+	return true
 end
 
 -- 仅标记模块为已加载，不执行 setup（用于直接加载的插件）。
 M.track = function(name)
+	if M._loaded[name] then
+		return true
+	end
 	M._loaded[name] = true
+	return true
 end
 
 -- ---------------------------------------------------------------------------
