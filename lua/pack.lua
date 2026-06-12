@@ -100,7 +100,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
 	callback = function()
 		require("mini.icons").setup()
-		lazy._loaded["icons"] = true
+		lazy.track("icons")
 	end,
 })
 
@@ -201,17 +201,19 @@ local function open_grug_far()
 	local grug = require("grug-far")
 	-- 根据当前文件扩展名预填充文件过滤器
 	local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
-	grug.open({
-		transient = true,
-		prefills = {
-			filesFilter = ext and ext ~= "" and "*." .. ext or nil,
-		},
-	})
+	local filesFilter = ext and ext ~= "" and "*." .. ext or nil
+	local prefills = { filesFilter = filesFilter }
+
+	-- Visual 模式用当前选中文本预填充搜索框；Normal 模式直接打开
+	if vim.fn.mode():match("^[vV\22]$") then
+		grug.with_visual_selection({ prefills = prefills })
+	else
+		grug.open({ transient = true, prefills = prefills })
+	end
 end
 
--- Normal 模式和 Visual 模式均绑定 <leader>sr
-lazy.on_keys("grugfar", "<leader>sr", "n", load_grug_far, open_grug_far, { desc = "搜索并替换" })
-lazy.on_keys("grugfar", "<leader>sr", "x", load_grug_far, open_grug_far, { desc = "搜索并替换" })
+-- Normal 和 Visual 模式共用同一个映射，通过 mode 表一次性注册
+lazy.on_keys("grugfar", "<leader>sr", { "n", "x" }, load_grug_far, open_grug_far, { desc = "搜索并替换" })
 
 -- ---------------------------------------------------------------------------
 -- ex-colors.nvim — colorscheme 提取与优化（命令触发懒加载）
