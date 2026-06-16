@@ -6,9 +6,13 @@
 --
 -- 职责边界：
 --   - 声明插件安装（vim.pack.add）
---   - 调度各插件的加载时机（lazy.on_event / lazy.on_keys / lazy.on_cmd）
---   - 直接初始化轻量插件（notify、cmdline）
---   - 具体的插件配置和键位移至 lua/plugins/*.lua
+--   - 直接 setup 通用/轻量插件（UI、编辑增强、补全、独立工具）
+--   - 功能域插件（git/lsp/pick/files/treesitter/starter）的配置与键位
+--     移至 lua/plugins/*.lua，由本文件 require 调度
+--
+-- 拆分规则：
+--   - 配置简单（纯 setup 或少量选项）→ 留在本文件
+--   - 配置复杂（含多键位、自定义函数、交互逻辑）→ 移至 plugins/
 --
 -- 插件列表：
 --   mini.nvim          - 单体插件集（starter、pick、extra、files、icons、
@@ -56,19 +60,21 @@ vim.pack.add({
 }, { load = false })
 
 -- ---------------------------------------------------------------------------
--- 加载各插件的配置模块（含键位映射）
--- 必须在 vim.pack.add 之后，确保插件路径已注册到 runtimepath
+-- 功能域插件配置（lua/plugins/*.lua）
 -- ---------------------------------------------------------------------------
+-- 加载各功能域插件的配置模块（含键位映射与自定义逻辑）。
+-- 必须在 vim.pack.add 之后，确保插件路径已注册到 runtimepath。
 require("plugins.git")
 require("plugins.pick")
 require("plugins.files")
 require("plugins.starter")
 
--- ---------------------------------------------------------------------------
--- mini.notify — 通知消息（直接初始化）
--- ---------------------------------------------------------------------------
--- 替换默认的 vim.notify，提供美观的浮动通知窗口。
--- 轻量，不阻塞启动。使用 pcall 保护首次启动。
+-- =============================================================================
+-- UI 层：通知、命令行、图标
+-- =============================================================================
+
+-- mini.notify — 替换默认 vim.notify，提供浮动通知窗口（直接初始化，轻量不阻塞）
+-- 使用 pcall 保护首次启动（插件可能尚未下载完成）
 local ok_notify, notify = pcall(require, "mini.notify")
 if ok_notify then
 	notify.setup({
@@ -83,10 +89,8 @@ if ok_notify then
 	lazy.track("notify")
 end
 
--- ---------------------------------------------------------------------------
 -- mini.cmdline — 增强命令行（首次按 : 时加载）
--- ---------------------------------------------------------------------------
--- 提供美观的命令行界面，使用 expr 映射：返回 ":" 让 Vim 继续处理。
+-- 使用 expr 映射：返回 ":" 让 Vim 继续处理
 vim.keymap.set("n", ":", function()
 	-- 首次按下 : 时删除此映射，避免后续重复触发
 	vim.keymap.del("n", ":")
@@ -97,10 +101,8 @@ vim.keymap.set("n", ":", function()
 	return ":"
 end, { expr = true, noremap = true })
 
--- ---------------------------------------------------------------------------
--- mini.icons — 图标支持（VimEnter 后延迟加载）
--- ---------------------------------------------------------------------------
--- 提供文件类型图标，供 mini.pick、mini.files 等使用。
+-- mini.icons — 文件类型图标（VimEnter 后延迟加载）
+-- 供 mini.pick、mini.files 等使用
 vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
 	callback = function()
@@ -109,30 +111,35 @@ vim.api.nvim_create_autocmd("VimEnter", {
 	end,
 })
 
--- ---------------------------------------------------------------------------
+-- =============================================================================
+-- 编辑增强：括号配对、textobject、光标高亮、环绕操作
+-- =============================================================================
+
 -- mini.pairs — 自动括号配对（InsertEnter 懒加载）
--- ---------------------------------------------------------------------------
 lazy.on_event("pairs", "InsertEnter", "*", function()
 	require("mini.pairs").setup()
 end)
 
--- ---------------------------------------------------------------------------
 -- mini.ai — 扩展 a/i textobject（BufReadPost 懒加载）
--- ---------------------------------------------------------------------------
 lazy.on_event("ai", "BufReadPost", "*", function()
 	require("mini.ai").setup()
 end)
 
--- ---------------------------------------------------------------------------
 -- mini.cursorword — 自动高亮光标下单词（BufReadPost 懒加载）
--- ---------------------------------------------------------------------------
 lazy.on_event("cursorword", "BufReadPost", "*", function()
 	require("mini.cursorword").setup()
 end)
 
--- ---------------------------------------------------------------------------
--- mini.completion — 自动补全（InsertEnter 懒加载）
--- ---------------------------------------------------------------------------
+-- mini.surround — 环绕文本操作（BufReadPost 懒加载）
+lazy.on_event("surround", "BufReadPost", "*", function()
+	require("mini.surround").setup()
+end)
+
+-- =============================================================================
+-- 补全与代码片段（InsertEnter 懒加载）
+-- =============================================================================
+
+-- mini.completion — 自动补全引擎（LSP + Buffer）
 lazy.on_event("completion", "InsertEnter", "*", function()
 	require("mini.completion").setup({
 		lsp_completion = {
@@ -141,9 +148,7 @@ lazy.on_event("completion", "InsertEnter", "*", function()
 	})
 end)
 
--- ---------------------------------------------------------------------------
--- mini.snippets — 代码片段（InsertEnter 懒加载）
--- ---------------------------------------------------------------------------
+-- mini.snippets — 代码片段引擎
 lazy.on_event("snippets", "InsertEnter", "*", function()
 	local MiniSnippets = require("mini.snippets")
 	MiniSnippets.setup({
@@ -154,16 +159,9 @@ lazy.on_event("snippets", "InsertEnter", "*", function()
 	MiniSnippets.start_lsp_server({ match = false })
 end)
 
--- ---------------------------------------------------------------------------
--- mini.surround — 环绕文本操作（BufReadPost 懒加载）
--- ---------------------------------------------------------------------------
-lazy.on_event("surround", "BufReadPost", "*", function()
-	require("mini.surround").setup()
-end)
-
--- ---------------------------------------------------------------------------
--- 重型模块延迟加载（VimEnter 事件）
--- ---------------------------------------------------------------------------
+-- =============================================================================
+-- 重型模块（VimEnter 延迟加载）
+-- =============================================================================
 -- treesitter 和 lsp 是启动时最耗时的模块，
 -- 延迟到 VimEnter 事件触发后加载，让编辑器界面先渲染出来。
 lazy.on_event("treesitter", "VimEnter", "*", function()
@@ -174,10 +172,12 @@ lazy.on_event("lsp", "VimEnter", "*", function()
 	require("plugins.lsp")
 end)
 
--- ---------------------------------------------------------------------------
+-- =============================================================================
+-- 独立工具（按键/命令触发懒加载）
+-- =============================================================================
+
 -- grug-far.nvim — 搜索与替换（按键触发懒加载）
--- ---------------------------------------------------------------------------
--- 提供类似 VS Code 的查找替换界面，支持正则和文件过滤。
+-- 提供类似 VS Code 的查找替换界面，支持正则和文件过滤
 local function load_grug_far()
 	vim.cmd.packadd("grug-far.nvim")
 	require("grug-far").setup({ headerMaxWidth = 80 })
@@ -201,9 +201,7 @@ end
 -- Normal 和 Visual 模式共用同一个映射，通过 mode 表一次性注册
 lazy.on_keys("grugfar", "<leader>sr", { "n", "x" }, load_grug_far, open_grug_far, { desc = "搜索并替换" })
 
--- ---------------------------------------------------------------------------
 -- ex-colors.nvim — colorscheme 提取与优化（命令触发懒加载）
--- ---------------------------------------------------------------------------
 -- 仅在执行 :ExColors 时加载，不占用启动时间。
 -- 生成的文件保存在 ~/.config/nvim/colors/ex-{colors_name}.lua
 lazy.on_cmd("ex-colors", "ExColors", function()
