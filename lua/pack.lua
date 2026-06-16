@@ -12,20 +12,22 @@
 --
 -- 插件列表：
 --   mini.nvim          - 单体插件集（starter、pick、extra、files、icons、
---                        notify、cmdline、completion、snippets、diff、surround）
+--                        notify、cmdline、completion、snippets、surround）
 --   friendly-snippets  - 社区代码片段集合
 --   nvim-treesitter    - 语法树解析与高亮
 --   nvim-lspconfig     - LSP 客户端配置
 --   mason.nvim         - LSP/DAP/格式化工具安装管理器
 --   conform.nvim       - 代码格式化（保存时自动格式化）
---   vim-fugitive       - Git 集成
+--   gitsigns.nvim      - Git inline gutter + hunk 操作（buffer 级）
+--   neogit             - Git status 客户端（仓库级，依赖 plenary）
+--   codediff.nvim      - side-by-side diff 可视化（文件级）
 --   grug-far.nvim      - 搜索与替换
 --
 -- 懒加载策略：
 --   InsertEnter    → completion, snippets, pairs
---   BufReadPost    → diff, surround, ai, cursorword
+--   BufReadPost    → gitsigns, surround, ai, cursorword
 --   VimEnter       → treesitter, lsp, icons
---   按键触发      → pick, fugitive, files, grugfar
+--   按键触发      → pick, neogit, codediff, files, grugfar
 --   BufWritePre    → conform
 --   命令触发      → ex-colors
 -- =============================================================================
@@ -45,7 +47,10 @@ vim.pack.add({
 	"https://github.com/neovim/nvim-lspconfig", -- LSP 配置
 	"https://github.com/mason-org/mason.nvim", -- 工具安装器
 	"https://github.com/stevearc/conform.nvim", -- 格式化
-	"https://github.com/tpope/vim-fugitive", -- Git 集成
+	"https://github.com/lewis6991/gitsigns.nvim", -- Git inline gutter + hunk 操作
+	"https://github.com/nvim-lua/plenary.nvim", -- neogit 依赖
+	"https://github.com/NeogitOrg/neogit", -- Git status 客户端
+	"https://github.com/esmuellert/codediff.nvim", -- side-by-side diff 可视化
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
 	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
 }, { load = false })
@@ -147,25 +152,6 @@ lazy.on_event("snippets", "InsertEnter", "*", function()
 		},
 	})
 	MiniSnippets.start_lsp_server({ match = false })
-end)
-
--- ---------------------------------------------------------------------------
--- mini.diff — Git diff 标记（BufReadPost 懒加载）
--- ---------------------------------------------------------------------------
--- 在 signcolumn 中显示当前 buffer 相对于 git HEAD 的变更标记。
-lazy.on_event("diff", "BufReadPost", "*", function()
-	require("mini.diff").setup({
-		-- 使用 git 作为 diff 源（index = false 表示对比工作区 vs HEAD，不含暂存区）
-		source = require("mini.diff").gen_source.git({ index = false }),
-		view = {
-			style = "sign",
-			signs = { add = "│", change = "│", delete = "│" },
-		},
-		mappings = {
-			apply = "gs",
-			textobject = "",
-		},
-	})
 end)
 
 -- ---------------------------------------------------------------------------

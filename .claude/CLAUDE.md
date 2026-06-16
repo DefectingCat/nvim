@@ -23,7 +23,7 @@ lua/plugins/
   lsp.lua                 -- LSP config (nvim-lspconfig + mason), conform.nvim formatter
   treesitter.lua          -- Treesitter setup: deferred parser install, per-buffer attach
   pick.lua                -- mini.pick wrappers: buffer picker, filetype picker
-  git.lua                 -- Custom git utilities: hunk preview, blame line, fugitive keymaps
+  git.lua                 -- Git toolstack: gitsigns (buffer), neogit (repo), codediff (file)
 colors/                   -- Catppuccin colorscheme variants (frappe, latte, macchiato, mocha)
 nvim-pack-lock.json       -- Lock file for vim.pack managed plugins
 ```
@@ -44,10 +44,10 @@ Plugins are loaded lazily via the custom framework in `lua/lazy.lua`:
 
 Key lazy-loading points in `pack.lua`:
 - `mini.completion` / `mini.snippets` — `InsertEnter`
-- `mini.diff` / `mini.surround` — `BufReadPost`
+- `gitsigns` / `mini.surround` — `BufReadPost`
 - `treesitter` / `lsp` — `VimEnter`
 - `mini.pick` / `mini.extra` — key trigger (`<leader>ff`, etc.)
-- `vim-fugitive` — key trigger (`<leader>gg`)
+- `neogit` / `codediff` — key trigger (`<leader>gg`, `<leader>gd`)
 - `conform.nvim` — `BufWritePre`
 
 ## LSP and Formatting
@@ -85,12 +85,14 @@ Common bindings defined across files:
 - `_` — open at project root (git root)
 
 **Git:**
-- `<leader>gg` — fugitive (fullscreen new tab)
-- `<leader>gd` — git diff vertical split
-- `<leader>ghp` — preview current hunk
-- `<leader>ghb` — blame current line
-- `<leader>gB` — blame entire file
-- `<leader>gD` — file git history
+- `<leader>gg` — neogit status (new tab)
+- `<leader>gd` — codediff git status
+- `<leader>gD` — codediff file history
+- `<leader>ghp` — preview hunk (gitsigns)
+- `<leader>ghb` — blame current line (gitsigns)
+- `<leader>ghB` — blame entire file (gitsigns)
+- `<leader>ghs` — stage hunk (gitsigns)
+- `<leader>ghr` — reset hunk (gitsigns)
 - `<leader>sr` — search and replace (grug-far)
 
 **LSP & diagnostics:**
@@ -154,6 +156,6 @@ nvim --startuptime /tmp/startup.log +q
 
 2. **Custom lazy-loading in `lua/lazy.lua`**. Do not confuse with the lazy.nvim plugin manager — this is a ~35-line custom module. When adding new plugins that should load lazily, use `lazy.on_event()` or `lazy.on_keys()`.
 
-3. **mini.nvim monorepo**. Most UI/functionality comes from the single `mini.nvim` package (starter, pick, extra, files, icons, notify, cmdline, completion, snippets, diff, surround). These are configured individually in `pack.lua` or on-demand.
+3. **mini.nvim monorepo**. Most UI/functionality comes from the single `mini.nvim` package (starter, pick, extra, files, icons, notify, cmdline, completion, snippets, surround). These are configured individually in `pack.lua` or on-demand.
 
 4. **Colorscheme**. The active colorscheme is `catppuccin-mocha`, defined in `colors/catppuccin-mocha.lua`. The `moonflyTransparent` variable is still set in `init.lua` for compatibility but the moonfly theme was removed.

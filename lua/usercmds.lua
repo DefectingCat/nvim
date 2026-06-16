@@ -15,7 +15,7 @@
 -- :PackAdd — 添加插件
 -- ---------------------------------------------------------------------------
 -- 用法：:PackAdd user/repo1 user/repo2 ...
--- 示例：:PackAdd stevearc/conform.nvim tpope/vim-fugitive
+-- 示例：:PackAdd stevearc/conform.nvim lewis6991/gitsigns.nvim
 --
 -- 原理：
 --   将命令行参数（opts.fargs，已按空格分割的字符串数组）
@@ -31,7 +31,7 @@ end, { nargs = "+", desc = "添加插件 (:PackAdd user/repo1 user/repo2)" })
 -- :PackDel — 删除插件
 -- ---------------------------------------------------------------------------
 -- 用法：:PackDel plugin1 plugin2 ...
--- 示例：:PackDel conform.nvim vim-fugitive
+-- 示例：:PackDel conform.nvim gitsigns.nvim
 --
 -- 注意：
 --   参数是插件目录名（即 repo 名），不是完整 URL。

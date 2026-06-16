@@ -1,257 +1,161 @@
 -- =============================================================================
 -- Git 工具封装 (lua/plugins/git.lua)
 -- =============================================================================
--- 本模块提供基于 mini.diff 和原生 git 命令的 Git 相关功能。
+-- 本模块提供三层 Git 工具栈，职责无重叠（对齐 nvchad 分支设计）：
 --
--- 功能列表：
---   1. Hunk Preview（<leader>ghp）— 预览当前光标处 git diff hunk
---   2. Blame Line（<leader>ghb）— 查看当前行的 git blame 信息
---   3. Blame Buffer（<leader>gB）— 整文件 blame（via fugitive）
---   4. File History（<leader>gD）— 查看当前文件的 git log
---   5. Fugitive 全屏（<leader>gg）— 在新标签页打开 fugitive
---   6. Git diff 分割（<leader>gd）— 垂直分割查看 diff
+--   1. buffer 级（实时）— gitsigns.nvim
+--      signcolumn gutter 标记 + hunk stage/reset/preview/blame + diffthis
+--      键位：ghs/ghr/ghp/ghb/ghB/ghd/ghD + ]h/[h hunk 导航
+--
+--   2. 仓库级（交互式）— neogit
+--      Magit 风格 status 界面，commit/push/pull/log
+--      键位：<leader>gg
+--
+--   3. 文件级（可视化）— codediff.nvim
+--      VSCode 风格 side-by-side diff + 文件历史
+--      键位：<leader>gd / <leader>gD
 --
 -- 依赖：
---   - mini.diff（已在 pack.lua 中通过 BufReadPost 懒加载）
---   - vim-fugitive（本文件通过 lazy.on_keys 按键触发懒加载）
+--   - gitsigns.nvim（本文件通过 BufReadPost 懒加载）
+--   - neogit（依赖 plenary.nvim，按键触发懒加载）
+--   - codediff.nvim（按键触发懒加载）
 -- =============================================================================
 
 local lazy = require("lazy")
 
 -- ---------------------------------------------------------------------------
--- 辅助函数：获取光标所在行的 hunk
+-- gitsigns.nvim — buffer 级 Git 集成（BufReadPost 懒加载）
 -- ---------------------------------------------------------------------------
--- 遍历当前 buffer 的所有 hunks，找到包含光标所在行的那个。
---
--- 返回值：
---   hunk      - hunk 对象 { type, buf_start, buf_count, ref_start, ref_count }
---   ref_text  - 参考文本（HEAD 版本的内容）
---   nil       - 光标不在任何 hunk 上
-local function get_cursor_hunk()
-	local buf = vim.api.nvim_get_current_buf()
-	-- 从 mini.diff 获取当前 buffer 的 diff 数据
-	local data = require("mini.diff").get_buf_data(buf)
-	if not data or not data.hunks or #data.hunks == 0 then
-		return nil
-	end
+-- 在 signcolumn 中显示 add/change/delete 标记，并提供 hunk 级操作。
+-- on_attach 回调中注册 buffer-local 键位映射，仅对已 attach 的 buffer 生效。
+local function load_gitsigns()
+	vim.cmd.packadd("gitsigns.nvim")
+	require("gitsigns").setup({
+		signs = {
+			add = { text = "▎" },
+			change = { text = "▎" },
+			delete = { text = "" },
+			topdelete = { text = "" },
+			changedelete = { text = "~" },
+			untracked = { text = "┆" },
+		},
+		signcolumn = true,
+		on_attach = function(bufnr)
+			local gs = require("gitsigns")
 
-	local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+			local function map(mode, l, r, desc)
+				vim.keymap.set(mode, l, r, { buffer = bufnr, silent = true, desc = desc })
+			end
 
-	for _, h in ipairs(data.hunks) do
-		-- hunk 在 buffer 中的起始行（1-based）
-		local start_line = math.max(h.buf_start, 1)
-		-- hunk 在 buffer 中的结束行
-		local end_line = h.buf_start + h.buf_count - 1
-		-- 空删除（0 行）时特殊处理
-		if h.buf_count == 0 then
-			end_line = start_line
-		end
+			-- hunk 导航（diff 模式下降级为原生 ]c/[c）
+			map("n", "]h", function()
+				if vim.wo.diff then
+					vim.cmd.normal({ "]c", bang = true })
+				else
+					gs.nav_hunk("next")
+				end
+			end, "下一个 hunk")
+			map("n", "[h", function()
+				if vim.wo.diff then
+					vim.cmd.normal({ "[c", bang = true })
+				else
+					gs.nav_hunk("prev")
+				end
+			end, "上一个 hunk")
+			map("n", "]H", function()
+				gs.nav_hunk("last")
+			end, "最后一个 hunk")
+			map("n", "[H", function()
+				gs.nav_hunk("first")
+			end, "第一个 hunk")
 
-		-- 检查光标是否在此 hunk 范围内
-		if cursor_line >= start_line and cursor_line <= end_line then
-			return h, data.ref_text
-		end
-	end
-
-	return nil
-end
-
--- ---------------------------------------------------------------------------
--- Hunk Preview — 浮动窗口预览当前 hunk
--- ---------------------------------------------------------------------------
--- 创建一个居中的浮动窗口，显示光标所在 hunk 的详细 diff 信息。
--- 支持三种 hunk 类型：
---   add    — 显示新增的行
---   delete — 显示被删除的行（从参考文本中恢复）
---   change — 并排显示修改前后的内容
-local function preview_hunk()
-	local hunk, ref_text = get_cursor_hunk()
-	if not hunk then
-		vim.notify("光标不在变更区域", vim.log.levels.WARN)
-		return
-	end
-
-	local lines = {}
-	table.insert(lines, "Hunk 类型: " .. hunk.type)
-	table.insert(lines, string.format("Buffer 行: %d-%d", hunk.buf_start, hunk.buf_start + hunk.buf_count - 1))
-	table.insert(lines, string.format("参考行: %d-%d", hunk.ref_start, hunk.ref_start + hunk.ref_count - 1))
-	table.insert(lines, "---")
-
-	local buf = vim.api.nvim_get_current_buf()
-	local ref_lines = vim.split(ref_text or "", "\n")
-
-	if hunk.type == "delete" then
-		-- 删除型 hunk：显示被删除的内容（来自参考文本）
-		table.insert(lines, "被删除的行（来自参考版本）:")
-		for i = hunk.ref_start, hunk.ref_start + hunk.ref_count - 1 do
-			table.insert(lines, "- " .. (ref_lines[i] or ""))
-		end
-	elseif hunk.type == "add" then
-		-- 新增型 hunk：显示 buffer 中新增的内容
-		table.insert(lines, "新增的行:")
-		for i = hunk.buf_start, hunk.buf_start + hunk.buf_count - 1 do
-			table.insert(lines, "+ " .. (vim.api.nvim_buf_get_lines(buf, i - 1, i, false)[1] or ""))
-		end
-	else
-		-- 修改型 hunk：显示修改前后的对比
-		table.insert(lines, "修改前（参考版本）:")
-		for i = hunk.ref_start, hunk.ref_start + hunk.ref_count - 1 do
-			table.insert(lines, "- " .. (ref_lines[i] or ""))
-		end
-		table.insert(lines, "修改后（当前版本）:")
-		for i = hunk.buf_start, hunk.buf_start + hunk.buf_count - 1 do
-			table.insert(lines, "+ " .. (vim.api.nvim_buf_get_lines(buf, i - 1, i, false)[1] or ""))
-		end
-	end
-
-	-- 计算浮动窗口尺寸
-	local width = math.min(80, vim.o.columns - 4)
-	local height = math.min(#lines + 2, vim.o.lines - 4)
-
-	-- 创建预览 buffer
-	local preview_buf = vim.api.nvim_create_buf(false, true) -- 无文件、可编辑
-	vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, lines)
-	vim.api.nvim_set_option_value("modifiable", false, { buf = preview_buf })
-	vim.api.nvim_set_option_value("filetype", "diff", { buf = preview_buf }) -- diff 语法高亮
-
-	-- 打开浮动窗口
-	local win = vim.api.nvim_open_win(preview_buf, true, {
-		relative = "editor",
-		row = math.floor((vim.o.lines - height) / 2),
-		col = math.floor((vim.o.columns - width) / 2),
-		width = width,
-		height = height,
-		style = "minimal",
-		border = "rounded",
-		title = " Hunk Preview ",
-		title_pos = "center",
+			-- hunk 操作（Normal + Visual）
+			-- stylua: ignore start
+			map({ "n", "x" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
+			map({ "n", "x" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
+			map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
+			map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
+			map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
+			map("n", "<leader>ghp", gs.preview_hunk, "Preview Hunk")
+			map("n", "<leader>ghb", function()
+				gs.blame_line({ full = true })
+			end, "Blame 当前行")
+			map("n", "<leader>ghB", gs.blame, "Blame 整个文件")
+			map("n", "<leader>ghd", gs.diffthis, "Diff This")
+			map("n", "<leader>ghD", function()
+				gs.diffthis("~")
+			end, "Diff This ~")
+			map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns Select Hunk")
+			-- stylua: ignore end
+		end,
 	})
-
-	-- q / Esc 关闭窗口
-	vim.keymap.set("n", "q", function()
-		vim.api.nvim_win_close(win, true)
-	end, { buffer = preview_buf })
-	vim.keymap.set("n", "<Esc>", function()
-		vim.api.nvim_win_close(win, true)
-	end, { buffer = preview_buf })
 end
 
+lazy.on_event("gitsigns", "BufReadPost", "*", load_gitsigns)
+
 -- ---------------------------------------------------------------------------
--- Blame Line — 查看当前行的 Git blame 信息
+-- neogit — 仓库级 Git 客户端（按键触发懒加载）
 -- ---------------------------------------------------------------------------
--- 执行 git blame --porcelain 获取当前行的详细提交信息，
--- 以通知消息的形式展示提交哈希、作者、时间和提交摘要。
---
--- --porcelain 格式是机器可读的 blame 输出，包含以下字段：
---   <hash> <orig-line> <final-line> [<num-lines>]
---   author <name>
---   author-mail <email>
---   author-time <timestamp>
---   author-tz <timezone>
---   summary <commit-message>
---   ...
-local function blame_line()
-	local file = vim.api.nvim_buf_get_name(0)
-	if file == "" then
-		vim.notify("当前 buffer 无文件名", vim.log.levels.WARN)
-		return
-	end
-
-	local line = vim.api.nvim_win_get_cursor(0)[1]
-	-- -L 限制 blame 范围为单行，提升性能
-	local cmd = { "git", "blame", "-L", line .. "," .. line, "--porcelain", file }
-	local output = vim.fn.system(cmd)
-
-	if vim.v.shell_error ~= 0 then
-		vim.notify("git blame 执行失败", vim.log.levels.ERROR)
-		return
-	end
-
-	-- 解析 --porcelain 输出
-	local hash = output:match("^(%x+)%s") or "?"
-	local author = output:match("author ([^\n]+)") or "?"
-	local email = output:match("author%-mail ([^\n]+)") or "?"
-	local time = output:match("author%-time (%d+)")
-	local summary = output:match("summary ([^\n]+)") or "?"
-	local time_str = time and os.date("%Y-%m-%d %H:%M", tonumber(time)) or "?"
-
-	vim.notify(
-		string.format("%s | %s %s | %s\n%s", hash:sub(1, 8), author, email, time_str, summary),
-		vim.log.levels.INFO
-	)
+-- Magit 风格的交互式 status 界面，集成 commit/push/pull/log/rebase 等。
+-- 依赖 plenary.nvim，加载 neogit 前需确保 plenary 已在 runtimepath。
+local function load_neogit()
+	vim.cmd.packadd("plenary.nvim")
+	vim.cmd.packadd("neogit")
+	require("neogit").setup({})
 end
 
+-- <leader>gg — 打开 Neogit status（新标签页）
+lazy.on_keys("neogit", "<leader>gg", "n", load_neogit, function()
+	require("neogit").open({ kind = "tab" })
+end, { desc = "Neogit status" })
+
 -- ---------------------------------------------------------------------------
--- vim-fugitive 懒加载触发器
+-- codediff.nvim — 文件级 diff 可视化（按键触发懒加载）
 -- ---------------------------------------------------------------------------
-local function load_fugitive()
-	vim.cmd.packadd("vim-fugitive")
+-- VSCode 风格 side-by-side diff，支持行级 + 字符级双层高亮。
+-- 提供工作区 diff（:CodeDiff）和文件历史（:CodeDiff history）两种视图。
+local function load_codediff()
+	vim.cmd.packadd("codediff.nvim")
+	require("codediff").setup({
+		diff = {
+			layout = "side-by-side",
+			disable_inlay_hints = true,
+			jump_to_first_change = true,
+			cycle_next_hunk = true,
+			cycle_next_file = true,
+		},
+		explorer = {
+			width = 35,
+		},
+		keymaps = {
+			view = {
+				quit = "q",
+				next_hunk = "]c",
+				prev_hunk = "[c",
+				next_file = "]f",
+				prev_file = "[f",
+				diff_get = "do",
+				diff_put = "dp",
+				open_in_prev_tab = "gf",
+				toggle_stage = "<leader>cs",
+				stage_hunk = "<leader>hs",
+				unstage_hunk = "<leader>hu",
+				discard_hunk = "<leader>hr",
+				hunk_textobject = "ih",
+				show_help = "g?",
+				align_move = "gm",
+				toggle_layout = "t",
+			},
+		},
+	})
 end
 
--- ---------------------------------------------------------------------------
--- 键位映射
--- ---------------------------------------------------------------------------
+-- <leader>gd — CodeDiff 工作区 diff 视图
+lazy.on_keys("codediff", "<leader>gd", "n", load_codediff, function()
+	vim.cmd("CodeDiff")
+end, { desc = "CodeDiff git status" })
 
--- <leader>ghp — 预览当前 hunk
-vim.keymap.set("n", "<leader>ghp", preview_hunk, { desc = "预览 hunk" })
-
--- <leader>ghb — 查看当前行 blame
-vim.keymap.set("n", "<leader>ghb", blame_line, { desc = "Blame 当前行" })
-
--- <leader>ghr — 重置当前 hunk（恢复为 HEAD 版本）
-vim.keymap.set("n", "<leader>ghr", function()
-	local hunk, ref_text = get_cursor_hunk()
-	if not hunk then
-		vim.notify("光标不在变更区域", vim.log.levels.WARN)
-		return
-	end
-
-	local buf = vim.api.nvim_get_current_buf()
-	local ref_lines = vim.split(ref_text or "", "\n")
-
-	if hunk.type == "add" then
-		-- 新增型 hunk：删除这些行
-		vim.api.nvim_buf_set_lines(buf, hunk.buf_start - 1, hunk.buf_start + hunk.buf_count - 1, false, {})
-	elseif hunk.type == "delete" then
-		-- 删除型 hunk：插入被删除的内容
-		local lines_to_insert = {}
-		for i = hunk.ref_start, hunk.ref_start + hunk.ref_count - 1 do
-			table.insert(lines_to_insert, ref_lines[i] or "")
-		end
-		vim.api.nvim_buf_set_lines(buf, hunk.buf_start - 1, hunk.buf_start - 1, false, lines_to_insert)
-	else
-		-- 修改型 hunk：用参考版本替换
-		local lines_to_replace = {}
-		for i = hunk.ref_start, hunk.ref_start + hunk.ref_count - 1 do
-			table.insert(lines_to_replace, ref_lines[i] or "")
-		end
-		vim.api.nvim_buf_set_lines(buf, hunk.buf_start - 1, hunk.buf_start + hunk.buf_count - 1, false, lines_to_replace)
-	end
-
-	vim.notify("已重置 hunk", vim.log.levels.INFO)
-end, { desc = "重置 hunk" })
-
--- <leader>gg — 在新标签页中打开 Fugitive 全屏
-lazy.on_keys("fugitive", "<leader>gg", "n", load_fugitive, function()
-	vim.cmd("Git")
-end, { desc = "Fugitive 全屏新标签" })
-
--- <leader>gd — Git diff 垂直分割
-lazy.on_keys("fugitive", "<leader>gd", "n", load_fugitive, function()
-	vim.cmd("Gvdiffsplit")
-end, { desc = "Git diff 分割" })
-
--- <leader>gB — 整文件 blame（使用 fugitive 的 :Git blame）
-lazy.on_keys("fugitive", "<leader>gB", "n", load_fugitive, function()
-	vim.cmd("Git blame")
-end, { desc = "Blame 整个文件" })
-
--- <leader>gD — 查看当前文件的 git 历史
-lazy.on_keys("fugitive", "<leader>gD", "n", load_fugitive, function()
-	vim.cmd("Git log -p -- %")
-end, { desc = "查看文件 Git 历史" })
-
--- <leader>gl — 查看当前文件的 Gclog
-lazy.on_keys("fugitive", "<leader>gl", "n", load_fugitive, function()
-	vim.cmd("GcLog")
-end, { desc = "查看文件 GcLog" })
+-- <leader>gD — CodeDiff 当前文件历史（共享 codediff 懒加载，setup 仅首次执行）
+lazy.on_keys("codediff", "<leader>gD", "n", load_codediff, function()
+	vim.cmd("CodeDiff history")
+end, { desc = "CodeDiff 文件历史" })

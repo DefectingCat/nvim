@@ -105,7 +105,7 @@ end
 --
 -- 注意：
 --   此设计使得首次按键稍慢（需要 setup），后续按键与直接映射无异。
---   适合重型插件如 mini.pick、vim-fugitive。
+--   适合重型插件如 mini.pick、neogit。
 M.on_keys = function(name, keys, mode, fn, action, opts)
 	mode = mode or "n"
 	opts = opts or {}

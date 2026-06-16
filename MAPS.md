@@ -25,15 +25,24 @@
 
 ## Git
 
-| 键位           | 动作                     |
-|----------------|--------------------------|
-| `<leader>gg`   | Fugitive（全屏新标签页） |
-| `<leader>gd`   | Git diff 垂直分割        |
-| `<leader>ghp`  | 预览当前 hunk            |
-| `<leader>ghb`  | Blame 当前行             |
-| `<leader>gB`   | Blame 整个文件           |
-| `<leader>gD`   | 查看文件 Git 历史        |
-| `<leader>sr`   | 搜索并替换（grug-far）   |
+| 键位           | 动作                              |
+|----------------|-----------------------------------|
+| `<leader>gg`   | Neogit status（新标签页）         |
+| `<leader>gd`   | CodeDiff 工作区 diff              |
+| `<leader>gD`   | CodeDiff 文件历史                 |
+| `<leader>ghp`  | 预览当前 hunk（gitsigns）         |
+| `<leader>ghb`  | Blame 当前行（gitsigns）          |
+| `<leader>ghB`  | Blame 整个文件（gitsigns）        |
+| `<leader>ghs`  | Stage hunk（gitsigns）            |
+| `<leader>ghr`  | Reset hunk（gitsigns）            |
+| `<leader>ghS`  | Stage 整个 buffer（gitsigns）     |
+| `<leader>ghR`  | Reset 整个 buffer（gitsigns）     |
+| `<leader>ghu`  | 撤销 stage hunk（gitsigns）       |
+| `<leader>ghd`  | Diff this（vs index）             |
+| `<leader>ghD`  | Diff this ~（vs HEAD）            |
+| `]h` / `[h`    | 下一个 / 上一个 hunk              |
+| `]H` / `[H`    | 最后 / 第一个 hunk                |
+| `<leader>sr`   | 搜索并替换（grug-far）            |
 
 ## LSP 与诊断
 
