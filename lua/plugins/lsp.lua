@@ -207,5 +207,16 @@ vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "上一个警
 -- ---------------------------------------------------------------------------
 -- 诊断显示配置
 -- ---------------------------------------------------------------------------
--- 在代码行右侧显示诊断文本（virtual text）。
-vim.diagnostic.config({ virtual_text = true })
+-- - virtual_text: 代码行右侧显示诊断文本
+-- - signs: 左侧 sign column 的诊断标志（0.12 默认为 E/W/I/H 字母）
+vim.diagnostic.config({
+	virtual_text = true,
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "✖",
+			[vim.diagnostic.severity.WARN] = "▲",
+			[vim.diagnostic.severity.INFO] = "i",
+			[vim.diagnostic.severity.HINT] = "h",
+		},
+	},
+})
