@@ -29,7 +29,6 @@ vim.opt.autoread = true -- 当文件被外部修改时自动重新读取
 -- 2. 缩进与格式化
 -- ---------------------------------------------------------------------------
 -- 使用 4 空格缩进，适用于大多数语言。
--- 特定语言的缩进设置（如 JS/TS 的 2 空格）应在 ftplugin 中覆盖。
 vim.opt.tabstop = 4 -- Tab 键显示的宽度（字符数）
 vim.opt.softtabstop = 4 -- 插入模式下 Tab/BS 的行为宽度
 vim.opt.shiftwidth = 4 -- 自动缩进和 >/< 操作的宽度
@@ -111,18 +110,9 @@ vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true
 
 -- ---------------------------------------------------------------------------
--- 10. 高亮组链接（fallback）
--- ---------------------------------------------------------------------------
--- colorscheme 中通常已定义 MiniDiffSign 的具体颜色。
--- 如果用户临时切换到其他 colorscheme，此处 link 作为兜底。
-vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "DiffAdd" })
-vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "DiffChange" })
-vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "DiffDelete" })
-
--- ---------------------------------------------------------------------------
--- 11. 折叠设置
+-- 10. 折叠设置
 -- ---------------------------------------------------------------------------
 -- foldlevel = 99 表示默认展开所有折叠。
--- 实际的 foldmethod 和 foldexpr 在 autocmds.lua 中通过 BufEnter 延迟设置，
+-- 实际的 foldmethod 和 foldexpr 在 autocmds.lua 中按 buffer 延迟设置，
 -- 避免启动时加载 treesitter 模块。
 vim.opt.foldlevel = 99

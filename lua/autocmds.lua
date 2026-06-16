@@ -74,20 +74,21 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- ---------------------------------------------------------------------------
--- 4. 延迟设置 Treesitter 折叠
+-- 4. 按文件类型设置 Treesitter 折叠
 -- ---------------------------------------------------------------------------
 -- 使用 treesitter 的 foldexpr 进行语法感知的代码折叠。
--- 延迟到 BufEnter 时设置（而非启动时），避免在 startup 阶段加载 treesitter 模块。
+-- 在 FileType 事件中按 buffer 设置 window-local 选项：
+--   - 仅对有 treesitter parser 的文件类型启用 expr 折叠
+--   - window-local（vim.wo）而非全局（vim.o），避免污染 help/man/quickfix 等窗口
+--   - 每个 buffer 独立设置，分屏与新窗口正确继承
 --
--- once = true 表示此 autocmd 只触发一次，首次 BufEnter 后自动销毁。
 -- foldmethod = "expr" 表示使用表达式（foldexpr）计算折叠范围。
 -- foldexpr = "v:lua.vim.treesitter.foldexpr()" 是 Neovim 0.10+ 的内置函数，
---   基于 treesitter 语法树计算折叠边界。
-vim.api.nvim_create_autocmd("BufEnter", {
+--   基于 treesitter 语法树计算折叠边界。无 parser 时返回 0（不折叠），不会报错。
+vim.api.nvim_create_autocmd("FileType", {
 	group = group,
-	once = true,
 	callback = function()
-		vim.o.foldmethod = "expr"
-		vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+		vim.wo.foldmethod = "expr"
+		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 	end,
 })
