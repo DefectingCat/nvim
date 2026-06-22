@@ -16,7 +16,7 @@
 --
 -- 插件列表：
 --   mini.nvim          - 单体插件集（starter、pick、extra、files、icons、
---                        notify、cmdline、completion、snippets、surround）
+--                        notify、cmdline、completion、snippets、surround、clue）
 --   friendly-snippets  - 社区代码片段集合
 --   nvim-treesitter    - 语法树解析与高亮
 --   nvim-lspconfig     - LSP 客户端配置
@@ -171,6 +171,71 @@ end)
 lazy.on_event("lsp", "VimEnter", "*", function()
 	require("plugins.lsp")
 end)
+
+-- =============================================================================
+-- mini.clue — 按键提示浮窗（VimEnter 后 setup）
+-- =============================================================================
+-- 按下前缀键（<Leader>/g/z/<C-w>/[/]）后弹出浮窗，列出后续可用键及描述。
+-- 类 which-key 但更轻量，且独立于 'timeoutlen'。
+--
+-- 不走 lazy.on_keys 懒加载：mini.clue 需自己把前缀键注册为 buffer-local
+-- 触发器，与 on_keys 的"包装映射"机制互斥；且 setup 成本极低，无懒加载收益。
+--
+-- 时序要点（来自官方文档）：触发器必须是 buffer 中最后创建的 buffer-local
+-- 映射，否则会被后续 LSP/gitsigns 等的 buffer-local 映射"压住"而失灵。
+-- 这里通过 VimEnter 延迟 setup（此时全局映射已全部就位），
+-- 并在 LspAttach 中调用 ensure_buf_triggers 兜底。
+vim.api.nvim_create_autocmd("VimEnter", {
+	once = true,
+	callback = function()
+		local ok_clue, miniclue = pcall(require, "mini.clue")
+		if not ok_clue then
+			return
+		end
+
+		miniclue.setup({
+			triggers = {
+				{ mode = { "n", "x" }, keys = "<Leader>" },
+				{ mode = { "n", "x" }, keys = "g" },
+				{ mode = { "n", "x" }, keys = "z" },
+				{ mode = "n", keys = "<C-w>" },
+				{ mode = "n", keys = "[" },
+				{ mode = "n", keys = "]" },
+			},
+			clues = {
+				-- 内置前缀键描述生成器（g/z/窗口/方括号跳转）
+				miniclue.gen_clues.g(),
+				miniclue.gen_clues.z(),
+				miniclue.gen_clues.windows(),
+				miniclue.gen_clues.square_brackets(),
+
+				-- <Leader> 分组描述（与 keymaps.lua / plugins/*.lua 中的映射对齐）
+				{ mode = "n", keys = "<Leader>f", desc = "+文件" },
+				{ mode = "n", keys = "<Leader>g", desc = "+Git" },
+				{ mode = "n", keys = "<Leader>b", desc = "+Buffer" },
+				{ mode = "n", keys = "<Leader>c", desc = "+代码" },
+				{ mode = "n", keys = "<Leader>d", desc = "+诊断" },
+				{ mode = "n", keys = "<Leader>s", desc = "+搜索" },
+				{ mode = "n", keys = "<Leader>t", desc = "+标签/终端" },
+				{ mode = "n", keys = "<Leader>u", desc = "+用户" },
+				{ mode = "n", keys = "<Leader>y", desc = "+复制" },
+			},
+			window = {
+				delay = 300, -- 默认 1000ms 太慢，300ms 接近 which-key 体验
+				config = { border = "rounded" },
+			},
+		})
+
+		-- LSP attach 后重新确保触发器排在最后（LSP 可能创建 buffer-local 映射）
+		vim.api.nvim_create_autocmd("LspAttach", {
+			callback = function()
+				pcall(miniclue.ensure_buf_triggers)
+			end,
+		})
+
+		lazy.track("clue")
+	end,
+})
 
 -- =============================================================================
 -- 独立工具（按键/命令触发懒加载）

@@ -87,6 +87,13 @@ local function load_gitsigns()
 			end, "Diff This ~")
 			map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns Select Hunk")
 			-- stylua: ignore end
+
+			-- gitsigns 创建的 buffer-local 映射可能"压住" mini.clue 触发器，
+			-- 这里重新确保触发器排在最后（mini.clue 未加载时静默跳过）。
+			local ok_clue, miniclue = pcall(require, "mini.clue")
+			if ok_clue and miniclue.ensure_buf_triggers then
+				miniclue.ensure_buf_triggers()
+			end
 		end,
 	})
 end

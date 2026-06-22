@@ -116,6 +116,7 @@ local all_modules = {
 	"notify",
 	"cmdline",
 	"icons",
+	"clue",
 	"pick",
 	"files",
 	"surround",
