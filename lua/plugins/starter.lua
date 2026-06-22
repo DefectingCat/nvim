@@ -118,6 +118,7 @@ local all_modules = {
 	"icons",
 	"clue",
 	"pick",
+	"extra",
 	"files",
 	"surround",
 	"completion",
