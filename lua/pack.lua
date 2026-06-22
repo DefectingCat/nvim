@@ -115,10 +115,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		-- Git/diff 段回退到 gitsigns.nvim（已启用），无需 mini.git/mini.diff。
 		require("mini.statusline").setup({ use_icons = true })
 
-		-- 覆盖 section_git 返回空串以隐藏分支名：默认会读 vim.b.gitsigns_head
-		-- 显示当前分支（如 " 0.12"）。这里用空串让它不显示，combine_groups
-		-- 会自动跳过空段，不留多余空格。
+		-- 覆盖 section_git / section_diff 返回空串以隐藏分支名和 diff 统计：
+		-- 默认会读 gitsigns buffer 变量显示分支（如 " 0.12"）和增删改数（如 "+1 ~0"）。
+		-- 这里用空串让它们不显示，combine_groups 会自动跳过空段，不留多余空格。
 		require("mini.statusline").section_git = function()
+			return ""
+		end
+		require("mini.statusline").section_diff = function()
 			return ""
 		end
 		lazy.track("statusline")
