@@ -114,6 +114,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		-- 最简配置：用内置 section 组合，自适应窗口宽度。
 		-- Git/diff 段回退到 gitsigns.nvim（已启用），无需 mini.git/mini.diff。
 		require("mini.statusline").setup({ use_icons = true })
+
+		-- 覆盖 section_git 返回空串以隐藏分支名：默认会读 vim.b.gitsigns_head
+		-- 显示当前分支（如 " 0.12"）。这里用空串让它不显示，combine_groups
+		-- 会自动跳过空段，不留多余空格。
+		require("mini.statusline").section_git = function()
+			return ""
+		end
 		lazy.track("statusline")
 	end,
 })
