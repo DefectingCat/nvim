@@ -117,6 +117,7 @@ local all_modules = {
 	"cmdline",
 	"icons",
 	"clue",
+	"statusline",
 	"pick",
 	"extra",
 	"files",

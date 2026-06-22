@@ -6,7 +6,7 @@ This is a personal Neovim configuration targeting **Neovim 0.12+**. It lives at 
 
 - **Plugin manager**: Neovim 0.12+ built-in `vim.pack` (not lazy.nvim / packer). Plugins are declared in `lua/pack.lua` via `vim.pack.add({ urls }, { load = false })` and tracked in `nvim-pack-lock.json`.
 - **Custom lazy-loading**: `lua/lazy.lua` is a ~35-line custom framework (unrelated to lazy.nvim). It provides `load()`, `on_event()`, `on_keys()`, `on_cmd()` and tracks loaded modules in `M._loaded`.
-- **Mini.nvim monorepo**: Most UI/functionality comes from the single `mini.nvim` package. Its submodules (starter, pick, extra, files, icons, notify, cmdline, completion, snippets, surround, clue, ai, cursorword, pairs) are configured individually in `lua/pack.lua` or on-demand.
+- **Mini.nvim monorepo**: Most UI/functionality comes from the single `mini.nvim` package. Its submodules (starter, pick, extra, files, icons, notify, cmdline, completion, snippets, surround, clue, statusline, ai, cursorword, pairs) are configured individually in `lua/pack.lua` or on-demand.
 
 ## File Loading Order
 
@@ -52,7 +52,7 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 
 | Trigger       | Plugins / Modules                    |
 |---------------|--------------------------------------|
-| `VimEnter`    | treesitter, lsp, icons, clue         |
+| `VimEnter`    | treesitter, lsp, icons, clue, statusline |
 | `InsertEnter` | completion, snippets, pairs          |
 | `BufReadPost` | gitsigns, surround, ai, cursorword   |
 | `BufWritePre` | conform (format-on-save)             |

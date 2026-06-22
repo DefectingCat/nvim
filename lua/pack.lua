@@ -16,7 +16,8 @@
 --
 -- 插件列表：
 --   mini.nvim          - 单体插件集（starter、pick、extra、files、icons、
---                        notify、cmdline、completion、snippets、surround、clue）
+--                        notify、cmdline、completion、snippets、surround、
+--                        clue、statusline）
 --   friendly-snippets  - 社区代码片段集合
 --   nvim-treesitter    - 语法树解析与高亮
 --   nvim-lspconfig     - LSP 客户端配置
@@ -102,12 +103,18 @@ vim.keymap.set("n", ":", function()
 end, { expr = true, noremap = true })
 
 -- mini.icons — 文件类型图标（VimEnter 后延迟加载）
--- 供 mini.pick、mini.files 等使用
+-- 供 mini.pick、mini.files、mini.statusline 等使用
 vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
 	callback = function()
 		require("mini.icons").setup()
 		lazy.track("icons")
+
+		-- mini.statusline — 状态栏（依赖 mini.icons，故同处 VimEnter）
+		-- 最简配置：用内置 section 组合，自适应窗口宽度。
+		-- Git/diff 段回退到 gitsigns.nvim（已启用），无需 mini.git/mini.diff。
+		require("mini.statusline").setup({ use_icons = true })
+		lazy.track("statusline")
 	end,
 })
 
