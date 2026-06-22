@@ -136,13 +136,23 @@ end, { desc = "Buffer 列表" })
 -- 显示所有可用的文件类型列表，选择后设置当前 buffer 的 filetype。
 lazy.on_keys("pick", "<leader>ft", "n", M.load_pick, function()
 	local MiniPick = require("mini.pick")
+	-- mini.pick 会把 item 规范化后再传给 choose，不能直接用原始字符串。
+	-- 这里显式构造 { text = ft } 形态的 item，choose 中取 .text 拿到 filetype 字符串。
 	local filetypes = vim.fn.getcompletion("", "filetype")
+	local items = vim.tbl_map(function(ft)
+		return { text = ft }
+	end, filetypes)
 	MiniPick.start({
 		source = {
 			name = "Filetypes",
-			items = filetypes,
+			items = items,
 			choose = function(item)
-				vim.bo.filetype = item
+				-- choose 执行时 picker 浮窗仍是当前窗口，vim.bo 默认作用于 picker 自己的 buffer。
+				-- 必须用 picker_state.windows.target 拿到用户原本的窗口，在其 buffer 上设 filetype。
+				local state = MiniPick.get_picker_state()
+				local win = state and state.windows and state.windows.target
+				local target_buf = win and vim.api.nvim_win_get_buf(win) or 0
+				vim.bo[target_buf].filetype = item.text
 			end,
 		},
 	})
