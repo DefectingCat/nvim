@@ -128,6 +128,16 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		require("mini.statusline").section_lsp = function()
 			return ""
 		end
+
+		-- 覆盖 section_filename：原逻辑宽窗口返回 %F（绝对路径），
+		-- 这里改为宽窗口也用 %f（相对路径）。窄窗口降级到 %t（仅文件名）。
+		require("mini.statusline").section_filename = function(args)
+			local ms = require("mini.statusline")
+			if vim.bo.buftype == "terminal" or ms.is_truncated(args.trunc_width) then
+				return "%t%m%r"
+			end
+			return "%f%m%r"
+		end
 		lazy.track("statusline")
 	end,
 })
