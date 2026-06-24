@@ -44,6 +44,7 @@ local function setup_conform()
 			javascriptreact = biome_or_prettier, -- JSX：Biome 或 Prettier
 			typescriptreact = biome_or_prettier, -- TSX：Biome 或 Prettier
 			json = biome_or_prettier, -- JSON：Biome 或 Prettier
+			jsonc = biome_or_prettier, -- JSONC：Biome 或 Prettier
 			css = { "prettier" }, -- CSS：Prettier
 			html = { "prettier" }, -- HTML：Prettier
 			markdown = { "prettier" }, -- Markdown：Prettier
