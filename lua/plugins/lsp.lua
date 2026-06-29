@@ -24,14 +24,14 @@ local function setup_conform()
 	-- 通过 packadd 加载 conform.nvim（因为 vim.pack.add 时设置了 load = false）
 	vim.cmd.packadd("conform.nvim")
 
-	-- 动态判断使用 Biome 还是 Prettier。
+	-- 动态判断使用 Biome 还是 Prettierd。
 	-- 从当前文件向上搜索 biome.json / biome.jsonc，如果找到则使用 Biome，
-	-- 否则回退到 Prettier。stop 参数限制搜索到用户主目录，避免向上搜索到根目录。
+	-- 否则回退到 Prettierd。stop 参数限制搜索到用户主目录，避免向上搜索到根目录。
 	local function biome_or_prettier()
 		if vim.fs.find({ "biome.json", "biome.jsonc" }, { upward = true, stop = vim.uv.os_homedir() })[1] then
 			return { "biome-check", "biome", stop_after_first = true }
 		end
-		return { "prettier" }
+		return { "prettierd" }
 	end
 
 	require("conform").setup({
@@ -39,15 +39,15 @@ local function setup_conform()
 		formatters_by_ft = {
 			lua = { "stylua" }, -- Lua 格式化
 			go = { "gofumpt", "goimports" }, -- Go：先 gofumpt 格式化，再 goimports 整理导入
-			javascript = biome_or_prettier, -- JS：Biome 或 Prettier
-			typescript = biome_or_prettier, -- TS：Biome 或 Prettier
-			javascriptreact = biome_or_prettier, -- JSX：Biome 或 Prettier
-			typescriptreact = biome_or_prettier, -- TSX：Biome 或 Prettier
-			json = biome_or_prettier, -- JSON：Biome 或 Prettier
-			jsonc = biome_or_prettier, -- JSONC：Biome 或 Prettier
-			css = { "prettier" }, -- CSS：Prettier
-			html = { "prettier" }, -- HTML：Prettier
-			markdown = { "prettier" }, -- Markdown：Prettier
+			javascript = biome_or_prettier, -- JS：Biome 或 Prettierd
+			typescript = biome_or_prettier, -- TS：Biome 或 Prettierd
+			javascriptreact = biome_or_prettier, -- JSX：Biome 或 Prettierd
+			typescriptreact = biome_or_prettier, -- TSX：Biome 或 Prettierd
+			json = biome_or_prettier, -- JSON：Biome 或 Prettierd
+			jsonc = biome_or_prettier, -- JSONC：Biome 或 Prettierd
+			css = { "prettierd" }, -- CSS：Prettierd
+			html = { "prettierd" }, -- HTML：Prettierd
+			markdown = { "prettierd" }, -- Markdown：Prettierd
 			toml = { "taplo" }, -- TOML：taplo
 		},
 
@@ -116,7 +116,7 @@ vim.lsp.config("lua_ls", {
 --   ◍ html-lsp           - HTML 语言服务器
 --   ◍ kotlin-lsp         - Kotlin 语言服务器
 --   ◍ lua-language-server- Lua 语言服务器
---   ◍ prettier           - 通用代码格式化器
+--   ◍ prettierd          - 通用代码格式化器（高性能守护进程版）
 --   ◍ rust-analyzer      - Rust 语言服务器
 --   ◍ stylua             - Lua 格式化器
 --   ◍ svelte-language-server - Svelte 语言服务器
