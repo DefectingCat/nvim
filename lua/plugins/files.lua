@@ -7,6 +7,21 @@
 
 local lazy = require("lazy")
 
+-- 复制光标下条目的路径到默认寄存器。
+-- kind = "absolute" 复制绝对路径，"relative" 复制相对 cwd 的路径。
+local function yank_entry_path(kind)
+	local entry = require("mini.files").get_fs_entry()
+	if entry == nil or entry.path == nil then
+		vim.notify("光标不在有效条目上", vim.log.levels.WARN)
+		return
+	end
+	local path = kind == "relative" and vim.fn.fnamemodify(entry.path, ":.") or entry.path
+	vim.fn.setreg(vim.v.register, path)
+	-- 复用内置 yank 高亮
+	vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+	vim.notify("已复制: " .. path)
+end
+
 -- mini.files setup 配置
 local function setup_mini_files()
 	require("mini.files").setup({
@@ -16,6 +31,23 @@ local function setup_mini_files()
 			go_out = "_", -- _ 返回上级目录
 			go_out_plus = "H", -- H 返回上级并同步光标
 		},
+	})
+
+	-- 在 explorer buffer 中绑定 buffer-local 键位
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "MiniFilesBufferCreate",
+		callback = function(args)
+			local buf_id = args.data.buf_id
+			local opts = function(desc)
+				return { buffer = buf_id, desc = desc }
+			end
+			vim.keymap.set("n", "<leader>yp", function()
+				yank_entry_path("relative")
+			end, opts("复制相对路径"))
+			vim.keymap.set("n", "<leader>yP", function()
+				yank_entry_path("absolute")
+			end, opts("复制绝对路径"))
+		end,
 	})
 end
 
