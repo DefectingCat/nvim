@@ -88,8 +88,13 @@ lazy.track("mason")
 
 -- 构建 LSP 客户端 capabilities（能力声明），告知服务器客户端支持的功能。
 -- 先获取 Neovim 默认 capabilities，再与 mini.completion 的 LSP 补全能力合并。
+-- 注意：这里 require("mini.completion") 会提前加载该模块（其 setup 仍在 InsertEnter），
+-- 但 capabilities 必须在 LSP 启动前就位，无法再延迟。用 pcall 保护避免插件未安装时报错。
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities, require("mini.completion").get_lsp_capabilities())
+local ok_mc, mini_completion = pcall(require, "mini.completion")
+if ok_mc and mini_completion.get_lsp_capabilities then
+	capabilities = vim.tbl_deep_extend("force", capabilities, mini_completion.get_lsp_capabilities())
+end
 
 -- 为所有 LSP 服务器设置默认 capabilities
 vim.lsp.config("*", { capabilities = capabilities })
@@ -158,8 +163,9 @@ vim.keymap.set("n", "<leader>fm", function()
 	require("conform").format({ lsp_fallback = true })
 end, { desc = "格式化当前 Buffer" })
 
--- df - 显示当前行的诊断浮动窗口
-vim.keymap.set("n", "df", function()
+-- <leader>df - 显示当前行的诊断浮动窗口
+-- 注意：原映射 "df" 会破坏 df{char}（删除到字符）操作符动作，故改用 <leader> 前缀。
+vim.keymap.set("n", "<leader>df", function()
 	vim.diagnostic.open_float()
 end, { desc = "显示行诊断" })
 

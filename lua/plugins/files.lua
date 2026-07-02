@@ -16,9 +16,10 @@ local function yank_entry_path(kind)
 		return
 	end
 	local path = kind == "relative" and vim.fn.fnamemodify(entry.path, ":.") or entry.path
-	vim.fn.setreg(vim.v.register, path)
-	-- 复用内置 yank 高亮
-	vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+	-- 统一复制到系统剪贴板（+ 寄存器），与 keymaps.lua 的 <leader>yp/yP 行为一致
+	vim.fn.setreg("+", path)
+	-- 复用内置 yank 高亮（vim.hl 是 0.11+ 新 API，vim.highlight 为已弃用别名）
+	vim.hl.on_yank({ higroup = "IncSearch", timeout = 200 })
 	vim.notify("已复制: " .. path)
 end
 
