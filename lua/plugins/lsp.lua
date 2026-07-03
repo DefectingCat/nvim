@@ -240,3 +240,20 @@ vim.diagnostic.config({
 		},
 	},
 })
+
+-- 客户端过滤 rust-analyzer 的 inactive_code 诊断（"code is inactive due to #[cfg]"）。
+-- 服务端 diagnostics.disabled 是官方做法，但该 weak 诊断在部分 rust-analyzer 版本下
+-- 不会随 workspace/configuration 即时清除；这里在 publishDiagnostics 入口再过滤一次，
+-- 按 message 模式精准剔除，保证 100% 静默。仅作用于 rust_analyzer 客户端。
+local orig_publish = vim.lsp.handlers["textDocument/publishDiagnostics"]
+vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+	if result and result.diagnostics then
+		local client = vim.lsp.get_client_by_id(ctx.client_id)
+		if client and client.name == "rust_analyzer" then
+			result.diagnostics = vim.tbl_filter(function(d)
+				return not (d.message and d.message:find("code is inactive due to #%[cfg%]"))
+			end, result.diagnostics)
+		end
+	end
+	return orig_publish(err, result, ctx, config)
+end
