@@ -220,10 +220,10 @@ vim.diagnostic.config({
 	virtual_text = true,
 	signs = {
 		text = {
-			[vim.diagnostic.severity.ERROR] = "✖",
-			[vim.diagnostic.severity.WARN] = "▲",
-			[vim.diagnostic.severity.INFO] = "i",
-			[vim.diagnostic.severity.HINT] = "h",
+			[vim.diagnostic.severity.ERROR] = "󰅚", -- mdi-alert
+			[vim.diagnostic.severity.WARN] = "󰀧", -- mdi-alert-outline
+			[vim.diagnostic.severity.INFO] = "󰋼", -- mdi-information-outline
+			[vim.diagnostic.severity.HINT] = "󰌵", -- mdi-lightbulb-outline
 		},
 	},
 })
