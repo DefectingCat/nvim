@@ -108,6 +108,19 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
+-- Rust 语言服务器特殊配置：关闭 inactive_code 诊断。
+-- 该诊断会对所有不满足 #[cfg] 条件的代码块（如 target_arch = "wasm32"）
+-- 逐行报 "code is inactive due to #[cfg] directives"，在跨平台项目中噪声很大。
+vim.lsp.config("rust_analyzer", {
+	settings = {
+		["rust-analyzer"] = {
+			diagnostics = {
+				disabled = { "inactive_code" },
+			},
+		},
+	},
+})
+
 -- ---------------------------------------------------------------------------
 -- 已安装的 Mason 工具清单（通过 :Mason 查看）
 -- ---------------------------------------------------------------------------
