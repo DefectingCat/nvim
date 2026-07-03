@@ -111,6 +111,18 @@ vim.lsp.config("lua_ls", {
 -- Rust 语言服务器特殊配置：关闭 inactive_code 诊断。
 -- 该诊断会对所有不满足 #[cfg] 条件的代码块（如 target_arch = "wasm32"）
 -- 逐行报 "code is inactive due to #[cfg] directives"，在跨平台项目中噪声很大。
+--
+-- 采用双层防御（实测缺一不可）：
+--   1. 服务端：diagnostics.disabled = { "inactive_code" }
+--      rust-analyzer 官方开关，从源头不发该诊断。
+--   2. 客户端：在 client 级 handler 里按 code == "inactive-code" 过滤。
+--      服务端配置对某些 cfg 场景不会即时重算，需客户端兜底。
+--
+-- 关键：过滤必须写在 vim.lsp.config("rust_analyzer", { handlers = ... }) 里，
+-- 这是 client 级绑定，随 vim.lsp.enable 时一起注册给 client。
+-- 若覆盖全局 vim.lsp.handlers["textDocument/publishDiagnostics"] 则无效——
+-- vim.lsp.enable 内部会捕获注册时刻的 handler 引用，之后改全局表对已注册的
+-- client 不再生效（本配置中 enable 调用早于文件末尾的全局覆盖）。
 vim.lsp.config("rust_analyzer", {
 	settings = {
 		["rust-analyzer"] = {
@@ -118,6 +130,16 @@ vim.lsp.config("rust_analyzer", {
 				disabled = { "inactive_code" },
 			},
 		},
+	},
+	handlers = {
+		["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+			if result and result.diagnostics then
+				result.diagnostics = vim.tbl_filter(function(d)
+					return d.code ~= "inactive-code"
+				end, result.diagnostics)
+			end
+			return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+		end,
 	},
 })
 
@@ -240,20 +262,3 @@ vim.diagnostic.config({
 		},
 	},
 })
-
--- 客户端过滤 rust-analyzer 的 inactive_code 诊断（"code is inactive due to #[cfg]"）。
--- 服务端 diagnostics.disabled 是官方做法，但该 weak 诊断在部分 rust-analyzer 版本下
--- 不会随 workspace/configuration 即时清除；这里在 publishDiagnostics 入口再过滤一次，
--- 按 message 模式精准剔除，保证 100% 静默。仅作用于 rust_analyzer 客户端。
-local orig_publish = vim.lsp.handlers["textDocument/publishDiagnostics"]
-vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
-	if result and result.diagnostics then
-		local client = vim.lsp.get_client_by_id(ctx.client_id)
-		if client and client.name == "rust_analyzer" then
-			result.diagnostics = vim.tbl_filter(function(d)
-				return not (d.message and d.message:find("code is inactive due to #%[cfg%]"))
-			end, result.diagnostics)
-		end
-	end
-	return orig_publish(err, result, ctx, config)
-end
