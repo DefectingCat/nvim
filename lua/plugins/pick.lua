@@ -78,7 +78,7 @@ end, { desc = "当前缓冲区行内搜索" })
 -- ---------------------------------------------------------------------------
 -- 显示当前打开的 buffer 列表，按最近使用时间排序。
 -- 特殊功能：
---   - <C-d>：删除当前选中的 buffer
+--   - <C-d>：删除当前选中的 buffer（删除后光标停在原位置对应的下一项）
 --   - 支持 mini.icons 图标显示
 lazy.on_keys("pick", "<leader><leader>", "n", M.load_pick, function()
 	local MiniPick = require("mini.pick")
@@ -89,13 +89,26 @@ lazy.on_keys("pick", "<leader><leader>", "n", M.load_pick, function()
 		if not item or not item.bufnr then
 			return
 		end
+		-- 删除前：当前 item 在 items 中的绝对索引
+		-- 删除后该槽位由原"下一项"占据；删末项则退到新末项
+		local cur_abs_ind = matches.current_ind
 		local bufnr = item.bufnr
 		pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
-		if MiniPick.is_picker_active() then
-			local items = vim.tbl_filter(function(i)
-				return i.bufnr and vim.api.nvim_buf_is_valid(i.bufnr)
-			end, MiniPick.get_picker_items() or {})
-			MiniPick.set_picker_items(items)
+		if not MiniPick.is_picker_active() then
+			return
+		end
+
+		local items = vim.tbl_filter(function(i)
+			return i.bufnr and vim.api.nvim_buf_is_valid(i.bufnr)
+		end, MiniPick.get_picker_items() or {})
+
+		local target = math.min(cur_abs_ind, #items)
+
+		MiniPick.set_picker_items(items)
+		-- set_picker_items 会重置 current_ind 到 1，这里用公开 API 恢复光标
+		-- pcall：若 target 不在当前 query 匹配中（被过滤），上游会 H.error，吞掉以保持第 1 项
+		if target >= 1 then
+			pcall(MiniPick.set_picker_match_inds, { target }, "current")
 		end
 	end
 
