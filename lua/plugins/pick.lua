@@ -102,14 +102,44 @@ lazy.on_keys("pick", "<leader><leader>", "n", M.load_pick, function()
 			return i.bufnr and vim.api.nvim_buf_is_valid(i.bufnr)
 		end, MiniPick.get_picker_items() or {})
 
+		-- 目标绝对索引：删中间项→原下一项落入该槽位；删末项→退到新末项
 		local target = math.min(cur_abs_ind, #items)
 
-		MiniPick.set_picker_items(items)
-		-- set_picker_items 会重置 current_ind 到 1，这里用公开 API 恢复光标
-		-- pcall：若 target 不在当前 query 匹配中（被过滤），上游会 H.error，吞掉以保持第 1 项
-		if target >= 1 then
-			pcall(MiniPick.set_picker_match_inds, { target }, "current")
-		end
+		-- set_picker_items 内部 picker_set_items 的尾部会无条件重置 current_ind=1：
+		--   1) 第 2394 picker_set_match_inds → 触发 MiniPickMatch（current_ind 已被置 1）
+		--   2) 第 2397 picker_update(do_match) → 若 do_match=true 再次 picker_match，
+		--      又重置 current_ind=1，晚于任何同步回调。
+		-- 因此分两步处理：
+		--   a) 传 do_match=false 跳过 2397 的二次匹配（对无 query 的 buffer 列表，
+		--      match_inds 由 2394 的 seq_along 已正确设为全量，无需再 match）；
+		--   b) 注册一次性 MiniPickMatch（2394 触发，此时 match_inds 已稳定）回调里
+		--      恢复光标。picker_set_items 协程可能在 poke_picker 处 yield，
+		--      事件会推迟到 resume 之后触发，同样能正确捕获。
+		local group = vim.api.nvim_create_augroup("MiniPickBufDelete", { clear = true })
+		vim.api.nvim_create_autocmd("User", {
+			pattern = "MiniPickMatch",
+			once = true,
+			group = group,
+			callback = function()
+				if MiniPick.is_picker_active() and target >= 1 then
+					-- pcall：target 若不在当前 query 匹配中（被过滤），上游 H.error，
+					-- 吞掉以保持第 1 项（合理降级）
+					pcall(MiniPick.set_picker_match_inds, { target }, "current")
+				end
+				vim.api.nvim_clear_autocmds({ group = group })
+			end,
+		})
+		-- 兜底：picker 关闭前若 MiniPickMatch 未触发，清理 autocmd 避免泄漏
+		vim.api.nvim_create_autocmd("User", {
+			pattern = "MiniPickStop",
+			once = true,
+			group = group,
+			callback = function()
+				vim.api.nvim_clear_autocmds({ group = group })
+			end,
+		})
+
+		MiniPick.set_picker_items(items, { do_match = false })
 	end
 
 	local bufs = vim.tbl_filter(function(b)
