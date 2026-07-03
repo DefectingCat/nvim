@@ -115,14 +115,17 @@ vim.lsp.config("lua_ls", {
 -- 采用双层防御（实测缺一不可）：
 --   1. 服务端：diagnostics.disabled = { "inactive_code" }
 --      rust-analyzer 官方开关，从源头不发该诊断。
---   2. 客户端：在 client 级 handler 里按 code == "inactive-code" 过滤。
---      服务端配置对某些 cfg 场景不会即时重算，需客户端兜底。
+--   2. 客户端：在 client 级 handler 里按 code == "inactive-code" 过滤兜底。
 --
--- 关键：过滤必须写在 vim.lsp.config("rust_analyzer", { handlers = ... }) 里，
--- 这是 client 级绑定，随 vim.lsp.enable 时一起注册给 client。
--- 若覆盖全局 vim.lsp.handlers["textDocument/publishDiagnostics"] 则无效——
--- vim.lsp.enable 内部会捕获注册时刻的 handler 引用，之后改全局表对已注册的
--- client 不再生效（本配置中 enable 调用早于文件末尾的全局覆盖）。
+-- 关键经验（Neovim 0.12 + rust-analyzer 实测）：
+--   - rust-analyzer 公告了 diagnosticProvider 能力，Neovim 0.11+ 会优先用
+--     **pull 模型**（textDocument/diagnostic，注意是单数），而非传统的
+--     **push 模型**（textDocument/publishDiagnostics，注意是复数）。
+--   - 因此过滤必须挂在 "textDocument/diagnostic" handler 上，挂在
+--     "textDocument/publishDiagnostics" 上则永不触发（push handler 根本不被调用）。
+--   - pull 模型的诊断数据在 result.items（不是 result.diagnostics），
+--     且仅在 result.kind == "full" 时存在；"unchanged" 表示复用上次结果。
+--   - 过滤后必须交给默认 handler on_diagnostic 处理，它会负责写入 vim.diagnostic。
 vim.lsp.config("rust_analyzer", {
 	settings = {
 		["rust-analyzer"] = {
@@ -132,13 +135,13 @@ vim.lsp.config("rust_analyzer", {
 		},
 	},
 	handlers = {
-		["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
-			if result and result.diagnostics then
-				result.diagnostics = vim.tbl_filter(function(d)
+		["textDocument/diagnostic"] = function(err, result, ctx, config)
+			if result and result.kind == "full" and result.items then
+				result.items = vim.tbl_filter(function(d)
 					return d.code ~= "inactive-code"
-				end, result.diagnostics)
+				end, result.items)
 			end
-			return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+			return vim.lsp.diagnostic.on_diagnostic(err, result, ctx, config)
 		end,
 	},
 })
