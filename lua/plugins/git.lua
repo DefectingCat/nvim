@@ -108,7 +108,13 @@ lazy.on_event("gitsigns", "BufReadPost", "*", load_gitsigns)
 local function load_neogit()
 	vim.cmd.packadd("plenary.nvim")
 	vim.cmd.packadd("neogit")
-	require("neogit").setup({})
+	require("neogit").setup({
+		integrations = {
+			-- neogit 的 auto 探测用 pcall(require, "mini-pick")，名字被 gsub("_","-")
+			-- 拼错了（正确模块名是 mini.pick），auto 永远失败。这里显式开启绕过该 bug。
+			mini_pick = true,
+		},
+	})
 end
 
 -- <leader>gg — 打开 Neogit status（新标签页）
