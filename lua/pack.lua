@@ -178,6 +178,22 @@ lazy.on_event("completion", "InsertEnter", "*", function()
 			auto_setup = true,
 		},
 	})
+
+	-- 回车确认补全：
+	--   有选中项 → 接受选中项（<C-y>）
+	--   弹窗可见但无选中项 → 先选第一项再接受（<C-n><C-y>）
+	--   无弹窗 → 走 mini.pairs 的换行
+	_G.cr_action = function()
+		local info = vim.fn.complete_info()
+		if info.selected ~= -1 then
+			return "\25" -- <C-y>
+		end
+		if info.pum_visible == 1 then
+			return "\14\25" -- <C-n><C-y>
+		end
+		return require("mini.pairs").cr()
+	end
+	vim.keymap.set("i", "<CR>", "v:lua.cr_action()", { expr = true })
 end)
 
 -- mini.snippets — 代码片段引擎
