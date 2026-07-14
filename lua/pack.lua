@@ -54,8 +54,8 @@ vim.pack.add({
 	"https://github.com/stevearc/conform.nvim", -- 格式化
 	"https://github.com/lewis6991/gitsigns.nvim", -- Git inline gutter + hunk 操作
 	"https://github.com/nvim-lua/plenary.nvim", -- neogit 依赖
-	-- "https://github.com/NeogitOrg/neogit", -- Git status 客户端
-	"https://github.com/DefectingCat/neogit", -- Git status 客户端
+	"https://github.com/NeogitOrg/neogit", -- Git status 客户端
+	-- "https://github.com/DefectingCat/neogit", -- Git status 客户端
 	"https://github.com/esmuellert/codediff.nvim", -- side-by-side diff 可视化
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
 	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化

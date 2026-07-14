@@ -30,7 +30,7 @@
     },
     "neogit": {
       "rev": "5d1b65d6215928e941e1a6a4e76e02fd45ada31f",
-      "src": "https://github.com/DefectingCat/neogit"
+      "src": "https://github.com/NeogitOrg/neogit"
     },
     "nvim-lspconfig": {
       "rev": "6f76a3eeadc2ee235d74cd7d5319e95a261084af",
