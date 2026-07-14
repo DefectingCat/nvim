@@ -27,7 +27,8 @@ end
 local function go_in_smart()
 	local MiniFiles = require("mini.files")
 	local entry = MiniFiles.get_fs_entry()
-	if entry and not entry.is_dir then
+	-- fs_type 为 "directory" 时展开目录，其余（"file"）打开文件后关闭浏览器
+	if entry and entry.fs_type ~= "directory" then
 		MiniFiles.go_in()
 		MiniFiles.close()
 	else
