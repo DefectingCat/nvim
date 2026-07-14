@@ -23,6 +23,18 @@ local function yank_entry_path(kind)
 	vim.notify("已复制: " .. path)
 end
 
+-- 回车智能进入：光标在目录上则展开，在文件上则打开并关闭文件浏览器
+local function go_in_smart()
+	local MiniFiles = require("mini.files")
+	local entry = MiniFiles.get_fs_entry()
+	if entry and not entry.is_dir then
+		MiniFiles.go_in()
+		MiniFiles.close()
+	else
+		MiniFiles.go_in()
+	end
+end
+
 -- mini.files setup 配置
 local function setup_mini_files()
 	require("mini.files").setup({
@@ -42,6 +54,8 @@ local function setup_mini_files()
 			local opts = function(desc)
 				return { buffer = buf_id, desc = desc }
 			end
+			-- 回车打开文件后自动关闭文件浏览器；目录则正常展开
+			vim.keymap.set("n", "<CR>", go_in_smart, opts("打开文件并关闭浏览器"))
 			vim.keymap.set("n", "<leader>yp", function()
 				yank_entry_path("relative")
 			end, opts("复制相对路径"))
