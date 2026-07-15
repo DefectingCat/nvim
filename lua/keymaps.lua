@@ -152,9 +152,12 @@ end, { desc = "复制绝对文件路径" })
 -- ---------------------------------------------------------------------------
 -- 关闭当前 Buffer，有未保存更改时提示确认。
 -- 使用 vim.ui.select 提供交互式选择对话框。
+-- 终端 buffer 因有运行进程，:bdelete 会被 Neovim 拦下（E89），直接 force 删除。
 map("n", "<leader>x", function()
 	local buf = vim.api.nvim_get_current_buf()
-	if vim.bo[buf].modified then
+	if vim.bo[buf].buftype == "terminal" then
+		vim.api.nvim_buf_delete(buf, { force = true })
+	elseif vim.bo[buf].modified then
 		vim.ui.select({ "是", "否" }, {
 			prompt = "Buffer 有未保存的更改，不保存就关闭吗？",
 			format_item = function(item)
