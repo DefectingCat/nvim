@@ -73,6 +73,11 @@ lazy.on_keys("pick", "<leader>fz", "n", M.load_pick, function()
 	require("mini.extra").pickers.buf_lines({ scope = "current" })
 end, { desc = "当前缓冲区行内搜索" })
 
+-- <leader>fr ：恢复上次搜索（重开最近的 picker，输入框清空）
+lazy.on_keys("pick", "<leader>fr", "n", M.load_pick, function()
+	require("mini.pick").builtin.resume()
+end, { desc = "恢复上次搜索" })
+
 -- ---------------------------------------------------------------------------
 -- Buffer Picker（<leader><leader>）
 -- ---------------------------------------------------------------------------
