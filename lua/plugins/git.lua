@@ -168,7 +168,9 @@ lazy.on_keys("codediff", "<leader>gd", "n", load_codediff, function()
 	vim.cmd("CodeDiff")
 end, { desc = "CodeDiff git status" })
 
--- <leader>gl — CodeDiff 当前文件历史（共享 codediff 懒加载，setup 仅首次执行）
+-- <leader>gl — CodeDiff 当前文件历史（仅列出修改过当前文件的提交）
+-- % 会被 vim 展开为当前 buffer 的相对路径，等价于 :CodeDiff history HEAD~20 %
+-- 历史面板里每条提交可展开查看改动文件，选中后展示 commit^ vs commit 的 diff。
 lazy.on_keys("codediff", "<leader>gl", "n", load_codediff, function()
-	vim.cmd("CodeDiff history")
-end, { desc = "CodeDiff 文件历史" })
+	vim.cmd("CodeDiff history %")
+end, { desc = "CodeDiff 当前文件历史" })

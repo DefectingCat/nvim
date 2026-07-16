@@ -29,7 +29,7 @@
 |----------------|-----------------------------------|
 | `<leader>gg`   | Neogit status（新标签页）         |
 | `<leader>gd`   | CodeDiff 工作区 diff              |
-| `<leader>gD`   | CodeDiff 文件历史                 |
+| `<leader>gl`   | CodeDiff 当前文件历史             |
 | `<leader>ghp`  | 预览当前 hunk（gitsigns）         |
 | `<leader>ghb`  | Blame 当前行（gitsigns）          |
 | `<leader>ghB`  | Blame 整个文件（gitsigns）        |
