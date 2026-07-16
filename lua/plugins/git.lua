@@ -13,7 +13,7 @@
 --
 --   3. 文件级（可视化）— codediff.nvim
 --      VSCode 风格 side-by-side diff + 文件历史
---      键位：<leader>gd / <leader>gD
+--      键位：<leader>gd / <leader>gl
 --
 -- 依赖：
 --   - gitsigns.nvim（本文件通过 BufReadPost 懒加载）
@@ -168,7 +168,7 @@ lazy.on_keys("codediff", "<leader>gd", "n", load_codediff, function()
 	vim.cmd("CodeDiff")
 end, { desc = "CodeDiff git status" })
 
--- <leader>gD — CodeDiff 当前文件历史（共享 codediff 懒加载，setup 仅首次执行）
-lazy.on_keys("codediff", "<leader>gD", "n", load_codediff, function()
+-- <leader>gl — CodeDiff 当前文件历史（共享 codediff 懒加载，setup 仅首次执行）
+lazy.on_keys("codediff", "<leader>gl", "n", load_codediff, function()
 	vim.cmd("CodeDiff history")
 end, { desc = "CodeDiff 文件历史" })
