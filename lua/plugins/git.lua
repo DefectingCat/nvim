@@ -13,7 +13,7 @@
 --
 --   3. 文件级（可视化）— codediff.nvim
 --      VSCode 风格 side-by-side diff + 文件历史
---      键位：<leader>gd / <leader>gl
+--      键位：<leader>gd / <leader>gl（全仓库）/ <leader>gD（当前文件）
 --
 -- 依赖：
 --   - gitsigns.nvim（本文件通过 BufReadPost 懒加载）
@@ -168,9 +168,13 @@ lazy.on_keys("codediff", "<leader>gd", "n", load_codediff, function()
 	vim.cmd("CodeDiff")
 end, { desc = "CodeDiff git status" })
 
--- <leader>gl — CodeDiff 当前文件历史（仅列出修改过当前文件的提交）
--- % 会被 vim 展开为当前 buffer 的相对路径，等价于 :CodeDiff history HEAD~20 %
--- 历史面板里每条提交可展开查看改动文件，选中后展示 commit^ vs commit 的 diff。
+-- <leader>gl — CodeDiff 提交历史（全仓库，共享 codediff 懒加载，setup 仅首次执行）
 lazy.on_keys("codediff", "<leader>gl", "n", load_codediff, function()
+	vim.cmd("CodeDiff history")
+end, { desc = "CodeDiff 提交历史" })
+
+-- <leader>gD — CodeDiff 当前文件历史（仅列出修改过当前文件的提交）
+-- % 展开为当前 buffer 相对路径，每条提交可展开查看该文件 commit^ vs commit 的 diff。
+lazy.on_keys("codediff", "<leader>gD", "n", load_codediff, function()
 	vim.cmd("CodeDiff history %")
 end, { desc = "CodeDiff 当前文件历史" })
