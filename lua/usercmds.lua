@@ -84,8 +84,12 @@ end, { nargs = "*", desc = "更新所有插件或指定插件" })
 --   否则 active 仍为 true，不会被清理。
 vim.api.nvim_create_user_command("PackClean", function()
 	local to_clean = vim.iter(vim.pack.get())
-		:filter(function(x) return not x.active end)
-		:map(function(x) return x.spec.name end)
+		:filter(function(x)
+			return not x.active
+		end)
+		:map(function(x)
+			return x.spec.name
+		end)
 		:totable()
 
 	if #to_clean == 0 then

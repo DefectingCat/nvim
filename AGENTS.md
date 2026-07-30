@@ -51,14 +51,14 @@ There is no traditional lint, typecheck, or test command. The validation command
 
 When adding new plugins that should load lazily, use the custom framework in `lua/lazy.lua` — do **not** use lazy.nvim patterns.
 
-| Trigger       | Plugins / Modules                    |
-|---------------|--------------------------------------|
+| Trigger       | Plugins / Modules                        |
+| ------------- | ---------------------------------------- |
 | `VimEnter`    | treesitter, lsp, icons, clue, statusline |
-| `InsertEnter` | completion, snippets, pairs          |
-| `BufReadPost` | gitsigns, surround, ai, cursorword   |
-| `BufWritePre` | conform (format-on-save)             |
-| Key press     | pick, files, neogit, codediff, grugfar |
-| Command       | ex-colors (`:ExColors`)              |
+| `InsertEnter` | completion, snippets, pairs              |
+| `BufReadPost` | gitsigns, surround, ai, cursorword       |
+| `BufWritePre` | conform (format-on-save)                 |
+| Key press     | pick, files, neogit, codediff, grugfar   |
+| Command       | ex-colors (`:ExColors`)                  |
 
 Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue` must register prefix keys itself as buffer-local triggers, which is incompatible with the wrapper-mapping approach. Its buffer triggers are re-asserted on `LspAttach` and inside gitsigns' `on_attach` via `MiniClue.ensure_buf_triggers()`.
 

@@ -21,12 +21,7 @@ local function load_render_markdown()
 end
 
 -- 1. FileType 事件延迟加载
-lazy.on_event(
-	"render-markdown",
-	"FileType",
-	{ "markdown", "quarto", "vimwiki", "codecompanion" },
-	load_render_markdown
-)
+lazy.on_event("render-markdown", "FileType", { "markdown", "quarto", "vimwiki", "codecompanion" }, load_render_markdown)
 
 -- 2. 按键 <leader>tm 切换 Markdown 渲染
 lazy.on_keys("render-markdown", "<leader>tm", "n", load_render_markdown, function()
@@ -34,4 +29,9 @@ lazy.on_keys("render-markdown", "<leader>tm", "n", load_render_markdown, functio
 end, { desc = "切换 Markdown 渲染" })
 
 -- 3. 命令 :RenderMarkdown 触发懒加载
-lazy.on_cmd("render-markdown", "RenderMarkdown", load_render_markdown, { nargs = "*", bang = true, desc = "Markdown 渲染命令" })
+lazy.on_cmd(
+	"render-markdown",
+	"RenderMarkdown",
+	load_render_markdown,
+	{ nargs = "*", bang = true, desc = "Markdown 渲染命令" }
+)
