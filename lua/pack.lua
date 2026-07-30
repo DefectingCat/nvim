@@ -72,6 +72,7 @@ require("plugins.pick")
 require("plugins.files")
 require("plugins.starter")
 require("plugins.markdown")
+require("plugins.neovide")
 
 -- =============================================================================
 -- UI 层：通知、命令行、图标
