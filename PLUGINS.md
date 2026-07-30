@@ -6,19 +6,19 @@
 
 ### 核心插件
 
-| 插件                  | 仓库                                                                                  | 用途                             |
-| --------------------- | ------------------------------------------------------------------------------------- | -------------------------------- |
-| **mini.nvim**         | [nvim-mini/mini.nvim](https://github.com/nvim-mini/mini.nvim)                         | 单体插件集，提供多种 UI/功能模块 |
-| **nvim-treesitter**   | [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | 语法树解析与语法高亮             |
-| **nvim-lspconfig**    | [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)                     | LSP 客户端预设配置               |
-| **mason.nvim**        | [mason-org/mason.nvim](https://github.com/mason-org/mason.nvim)                       | LSP/DAP/格式化工具安装管理       |
-| **conform.nvim**      | [stevearc/conform.nvim](https://github.com/stevearc/conform.nvim)                     | 代码格式化（保存时自动格式化）   |
+| 插件                  | 仓库                                                                                  | 用途                                       |
+| --------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **mini.nvim**         | [nvim-mini/mini.nvim](https://github.com/nvim-mini/mini.nvim)                         | 单体插件集，提供多种 UI/功能模块           |
+| **nvim-treesitter**   | [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | 语法树解析与语法高亮                       |
+| **nvim-lspconfig**    | [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)                     | LSP 客户端预设配置                         |
+| **mason.nvim**        | [mason-org/mason.nvim](https://github.com/mason-org/mason.nvim)                       | LSP/DAP/格式化工具安装管理                 |
+| **conform.nvim**      | [stevearc/conform.nvim](https://github.com/stevearc/conform.nvim)                     | 代码格式化（保存时自动格式化）             |
 | **gitsigns.nvim**     | [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)                 | Git inline gutter + hunk 操作（buffer 级） |
-| **neogit**            | [NeogitOrg/neogit](https://github.com/NeogitOrg/neogit)                               | Git status 客户端（仓库级，依赖 plenary） |
-| **codediff.nvim**     | [esmuellert/codediff.nvim](https://github.com/esmuellert/codediff.nvim)               | side-by-side diff 可视化（文件级） |
-| **grug-far.nvim**     | [MagicDuck/grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim)                 | 搜索与替换                       |
-| **friendly-snippets** | [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets)       | 社区代码片段集合                 |
-
+| **neogit**            | [NeogitOrg/neogit](https://github.com/NeogitOrg/neogit)                               | Git status 客户端（仓库级，依赖 plenary）  |
+| **codediff.nvim**     | [esmuellert/codediff.nvim](https://github.com/esmuellert/codediff.nvim)               | side-by-side diff 可视化（文件级）         |
+| **grug-far.nvim**     | [MagicDuck/grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim)                 | 搜索与替换                                 |
+| **render-markdown.nvim** | [MeanderingProgrammer/render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) | Buffer 内实时渲染 Markdown 元素 |
+| **friendly-snippets** | [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets)       | 社区代码片段集合                           |
 ### mini.nvim 子模块
 
 | 模块                | 用途                              | 加载方式             |

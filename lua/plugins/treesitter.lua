@@ -38,7 +38,7 @@ local ensure_installed = {
 	"gomod", -- Go Modules
 	"gosum", -- Go Sum
 	"gowork", -- Go Workspaces
-	-- 基础设施
+	-- 基础设施与文档
 	"dockerfile",
 	"make",
 	"git_config",
@@ -46,6 +46,8 @@ local ensure_installed = {
 	"gitattributes",
 	"gitcommit",
 	"gitignore",
+	"markdown",
+	"markdown_inline",
 }
 
 -- ---------------------------------------------------------------------------

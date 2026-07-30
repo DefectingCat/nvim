@@ -141,11 +141,11 @@ end
 M.on_cmd = function(name, cmd, fn, opts)
 	opts = opts or {}
 	vim.api.nvim_create_user_command(cmd, function(cmd_opts)
-		-- 先加载；只有加载成功才删除临时命令，否则保留重试机会
+		-- 先删除临时命令，再加载插件（避免覆盖插件 setup 注册的同名命令）
+		pcall(vim.api.nvim_del_user_command, cmd)
 		if not M.load(name, fn) then
 			return
 		end
-		vim.api.nvim_del_user_command(cmd)
 
 		-- 还原用户最初输入的完整命令（mods/range/cmd/bang/args）
 		local parts = {}

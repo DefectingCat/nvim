@@ -16,15 +16,16 @@
 
 ## 懒加载策略
 
-| 触发条件      | 插件                                |
-| ------------- | ----------------------------------- |
-| `VimEnter`    | treesitter、lsp、icons              |
-| `InsertEnter` | completion、snippets、pairs         |
-| `BufReadPost` | gitsigns、surround、ai、cursorword  |
-| `BufWritePre` | conform                             |
+| 触发条件      | 插件                                   |
+| ------------- | -------------------------------------- |
+| `VimEnter`    | treesitter、lsp、icons                 |
+| `InsertEnter` | completion、snippets、pairs            |
+| `BufReadPost` | gitsigns、surround、ai、cursorword     |
+| `BufWritePre` | conform                                |
 | 按键触发      | pick、files、neogit、codediff、grugfar |
-| 首次按 `:`    | cmdline                             |
-| 命令触发      | ex-colors (`:ExColors`)             |
+| `FileType` / 按键 | render-markdown (`FileType: markdown`, `<leader>tm`, `:RenderMarkdown`) |
+| 首次按 `:`    | cmdline                                |
+| 命令触发      | ex-colors (`:ExColors`)                |
 
 ## 键位映射
 

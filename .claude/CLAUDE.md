@@ -24,6 +24,7 @@ lua/plugins/
   treesitter.lua          -- Treesitter setup: deferred parser install, per-buffer attach
   pick.lua                -- mini.pick wrappers: buffer picker, filetype picker
   git.lua                 -- Git toolstack: gitsigns (buffer), neogit (repo), codediff (file)
+  markdown.lua            -- render-markdown.nvim: in-buffer markdown renderer
 colors/                   -- Catppuccin colorscheme variants (frappe, latte, macchiato, mocha)
 nvim-pack-lock.json       -- Lock file for vim.pack managed plugins
 ```
@@ -48,8 +49,8 @@ Key lazy-loading points in `pack.lua`:
 - `treesitter` / `lsp` — `VimEnter`
 - `mini.pick` / `mini.extra` — key trigger (`<leader>ff`, etc.)
 - `neogit` / `codediff` — key trigger (`<leader>gg`, `<leader>gd`)
+- `render-markdown.nvim` — `FileType` (`markdown`/`quarto`/etc.) / key trigger (`<leader>tm`) / command (`:RenderMarkdown`)
 - `conform.nvim` — `BufWritePre`
-
 ## LSP and Formatting
 
 - **LSP**: nvim-lspconfig + mason. Enabled servers: html, cssls, gopls, vtsls, rust_analyzer, lua_ls, taplo, svelte, dartls, kotlin_lsp.
@@ -111,10 +112,10 @@ Common bindings defined across files:
 - `<leader>bo` — close other buffers
 
 **Editing & search:**
+- `<leader>tm` — toggle markdown rendering (render-markdown.nvim)
 - `<leader>ss` — global replace word under cursor
 - `<leader>u` — undotree (builtin)
 - `<Esc>` — clear search highlight
-
 **Window & tab:**
 - `<C-h/j/k/l>` — navigate between windows
 - `<leader>tc/tn/]/[` — tab close / new / next / prev
