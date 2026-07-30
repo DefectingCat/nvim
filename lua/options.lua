@@ -24,6 +24,7 @@ vim.opt.relativenumber = true -- 显示相对行号（便于配合数字 + j/k �
 vim.opt.cursorline = true -- 高亮当前行
 vim.opt.cursorlineopt = "both" -- 高亮当前行的行号和文本行（number + line）
 vim.opt.autoread = true -- 当文件被外部修改时自动重新读取
+vim.opt.wrap = false -- 禁用自动换行（长代码超出屏幕水平滚动）
 
 -- ---------------------------------------------------------------------------
 -- 2. 缩进与格式化
