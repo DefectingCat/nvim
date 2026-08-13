@@ -36,6 +36,45 @@ local function go_in_smart()
 	end
 end
 
+-- 仅对纯创建批次自动确认；删除、移动、复制和重命名继续提示。
+local function is_create_only_confirmation(message)
+	local has_action = false
+	for line in message:gmatch("[^\n]+") do
+		local action = line:match("^  (%u+)%s+│%s")
+		if action ~= nil then
+			has_action = true
+			if action ~= "CREATE" then
+				return false
+			end
+		end
+	end
+	return has_action
+end
+
+-- mini.files 没有免确认参数；仅对创建操作临时自动确认。
+local function synchronize_with_safe_create()
+	local MiniFiles = require("mini.files")
+	local confirm = vim.fn.confirm
+
+	vim.fn.confirm = function(message, ...)
+		vim.fn.confirm = confirm
+		if type(message) == "string" and is_create_only_confirmation(message) then
+			return 1
+		end
+		return confirm(message, ...)
+	end
+
+	local ok, result = xpcall(function()
+		return MiniFiles.synchronize()
+	end, debug.traceback)
+
+	vim.fn.confirm = confirm
+	if not ok then
+		error(result)
+	end
+	return result
+end
+
 -- mini.files setup 配置
 local function setup_mini_files()
 	require("mini.files").setup({
@@ -63,6 +102,7 @@ local function setup_mini_files()
 			vim.keymap.set("n", "<leader>yP", function()
 				yank_entry_path("absolute")
 			end, opts("复制绝对路径"))
+			vim.keymap.set("n", "<C-s>", synchronize_with_safe_create, opts("同步（创建免确认）"))
 		end,
 	})
 end

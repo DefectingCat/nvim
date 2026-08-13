@@ -166,18 +166,52 @@ vim.lsp.config("rust_analyzer", {
 --   ◍ taplo              - TOML 工具
 --   ◍ vtsls              - TypeScript 语言服务器（VS Code 的 TS 服务端移植）
 
--- 启用指定的 LSP 服务器
-vim.lsp.enable({
-	"html", -- HTML 语言支持
-	"cssls", -- CSS/SCSS/Less 语言支持
-	"gopls", -- Go 语言支持
-	"vtsls", -- TypeScript/JavaScript 支持（推荐替代 tsserver）
-	"rust_analyzer", -- Rust 语言支持
-	"lua_ls", -- Lua 语言支持
-	"taplo", -- TOML 支持
-	"svelte", -- Svelte 框架支持
-	"kotlin_lsp", -- Kotlin 支持
-})
+-- ---------------------------------------------------------------------------
+-- 按命令可用性启用 LSP
+-- ---------------------------------------------------------------------------
+-- vim.lsp.enable() 不会预先检查 cmd。若配置启用但服务端未安装，首次打开
+-- 对应文件时会尝试启动进程，并弹出 "Client ... quit ..."。
+-- 只把命令可用的服务端交给 vim.lsp.enable()，即可静默跳过缺失服务端；
+-- 已安装服务端后续启动失败仍保留 Neovim 默认的错误通知。
+local lsp_servers = {
+	{ name = "html", command = "vscode-html-language-server" },
+	{ name = "cssls", command = "vscode-css-language-server" },
+	{ name = "gopls", command = "gopls" },
+	{ name = "vtsls", command = "vtsls" },
+	{ name = "rust_analyzer", command = "rust-analyzer" },
+	{ name = "lua_ls", command = "lua-language-server" },
+	{ name = "taplo", command = "taplo" },
+	{ name = "svelte", command = "svelteserver" },
+	{ name = "kotlin_lsp", command = "intellij-server" },
+}
+
+local function lsp_command_available(command)
+	if vim.fn.executable(command) ~= 1 then
+		return false
+	end
+
+	-- rustup 即使没有安装 rust-analyzer 组件，也会提供一个同名代理；
+	-- executable() 会将该代理误判为已安装，因此额外验证版本命令。
+	if command == "rust-analyzer" then
+		local ok, result = pcall(function()
+			return vim.system({ command, "--version" }, { text = true }):wait()
+		end)
+		return ok and result.code == 0
+	end
+
+	return true
+end
+
+local enabled_servers = {}
+for _, server in ipairs(lsp_servers) do
+	if lsp_command_available(server.command) then
+		table.insert(enabled_servers, server.name)
+	end
+end
+
+if #enabled_servers > 0 then
+	vim.lsp.enable(enabled_servers)
+end
 
 -- ---------------------------------------------------------------------------
 -- LSP 键位映射
