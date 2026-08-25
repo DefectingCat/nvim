@@ -80,9 +80,9 @@ local function setup_mini_files()
 	require("mini.files").setup({
 		mappings = {
 			go_in = "<CR>", -- 回车进入目录或打开文件
-			go_in_plus = "L", -- L 进入并同步光标
+			go_in_plus = "<C-l>", -- Ctrl-l 进入并同步光标
 			go_out = "_", -- _ 返回上级目录
-			go_out_plus = "H", -- H 返回上级并同步光标
+			go_out_plus = "<C-h>", -- Ctrl-h 返回上级并同步光标
 		},
 	})
 
