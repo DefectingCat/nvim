@@ -42,8 +42,8 @@ local lazy = require("lazy")
 -- ---------------------------------------------------------------------------
 -- 插件安装声明
 -- ---------------------------------------------------------------------------
--- vim.pack.add(urls, { load = false }) 将插件下载到 pack 目录，
--- 但不自动加载（load = false）。后续通过 packadd 或 require 按需加载。
+-- load = false 等同 :packadd!：加入 runtimepath，但不立即执行 plugin/ 入口。
+-- 启动后仍会扫描这些入口；真正按需加载的插件使用下方自定义 load 回调。
 -- 所有插件的状态锁定在 nvim-pack-lock.json 中。
 vim.pack.add({
 	"https://github.com/nvim-mini/mini.nvim", -- 核心 UI/功能插件集
@@ -58,15 +58,20 @@ vim.pack.add({
 	-- "https://github.com/DefectingCat/neogit", -- Git status 客户端
 	"https://github.com/esmuellert/codediff.nvim", -- side-by-side diff 可视化
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
-	"https://github.com/MeanderingProgrammer/render-markdown.nvim", -- Markdown 渲染增强
 	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
 }, { load = false })
+
+-- render-markdown.nvim 只安装并登记，不在启动时加入 runtimepath。
+-- plugins.markdown 会在 FileType、按键或命令首次触发时执行 :packadd。
+vim.pack.add({ "https://github.com/MeanderingProgrammer/render-markdown.nvim" }, {
+	load = function() end,
+})
 
 -- ---------------------------------------------------------------------------
 -- 功能域插件配置（lua/plugins/*.lua）
 -- ---------------------------------------------------------------------------
 -- 加载各功能域插件的配置模块（含键位映射与自定义逻辑）。
--- 必须在 vim.pack.add 之后，确保插件路径已注册到 runtimepath。
+-- 必须在 vim.pack.add 之后：普通插件路径已注册，延迟插件也已完成安装登记。
 require("plugins.git")
 require("plugins.pick")
 require("plugins.files")

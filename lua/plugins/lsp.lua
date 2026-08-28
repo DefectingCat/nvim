@@ -168,49 +168,59 @@ vim.lsp.config("rust_analyzer", {
 
 -- ---------------------------------------------------------------------------
 -- 按命令可用性启用 LSP
--- ---------------------------------------------------------------------------
--- vim.lsp.enable() 不会预先检查 cmd。若配置启用但服务端未安装，首次打开
--- 对应文件时会尝试启动进程，并弹出 "Client ... quit ..."。
--- 只把命令可用的服务端交给 vim.lsp.enable()，即可静默跳过缺失服务端；
--- 已安装服务端后续启动失败仍保留 Neovim 默认的错误通知。
+-- 常规服务只检查可执行文件，不启动额外进程。
 local lsp_servers = {
 	{ name = "html", command = "vscode-html-language-server" },
 	{ name = "cssls", command = "vscode-css-language-server" },
 	{ name = "gopls", command = "gopls" },
 	{ name = "vtsls", command = "vtsls" },
-	{ name = "rust_analyzer", command = "rust-analyzer" },
 	{ name = "lua_ls", command = "lua-language-server" },
 	{ name = "taplo", command = "taplo" },
 	{ name = "svelte", command = "svelteserver" },
 	{ name = "kotlin_lsp", command = "intellij-server" },
 }
 
-local function lsp_command_available(command)
-	if vim.fn.executable(command) ~= 1 then
-		return false
-	end
-
-	-- rustup 即使没有安装 rust-analyzer 组件，也会提供一个同名代理；
-	-- executable() 会将该代理误判为已安装，因此额外验证版本命令。
-	if command == "rust-analyzer" then
-		local ok, result = pcall(function()
-			return vim.system({ command, "--version" }, { text = true }):wait()
-		end)
-		return ok and result.code == 0
-	end
-
-	return true
-end
-
 local enabled_servers = {}
 for _, server in ipairs(lsp_servers) do
-	if lsp_command_available(server.command) then
+	if vim.fn.executable(server.command) == 1 then
 		table.insert(enabled_servers, server.name)
 	end
 end
 
 if #enabled_servers > 0 then
 	vim.lsp.enable(enabled_servers)
+end
+
+-- rustup 即使没有安装 rust-analyzer 组件，也会提供同名代理。
+-- 首次打开 Rust buffer 时异步验证，避免每次启动都同步等待失败的代理。
+local function enable_rust_analyzer_if_available()
+	if vim.fn.executable("rust-analyzer") ~= 1 then
+		return
+	end
+
+	vim.system({ "rust-analyzer", "--version" }, { stdout = false, stderr = false }, function(result)
+		if result.code ~= 0 then
+			return
+		end
+		vim.schedule(function()
+			vim.lsp.enable("rust_analyzer")
+		end)
+	end)
+end
+
+local rust_check_autocmd = vim.api.nvim_create_autocmd("FileType", {
+	pattern = "rust",
+	once = true,
+	callback = enable_rust_analyzer_if_available,
+})
+
+-- 以 Rust 文件启动时，FileType 早于 VimEnter 触发；补查已存在的 Rust buffer。
+for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+	if vim.bo[bufnr].filetype == "rust" then
+		vim.api.nvim_del_autocmd(rust_check_autocmd)
+		enable_rust_analyzer_if_available()
+		break
+	end
 end
 
 -- ---------------------------------------------------------------------------
