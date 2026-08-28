@@ -26,10 +26,10 @@ local function setup_conform()
 	vim.cmd.packadd("conform.nvim")
 
 	-- 动态判断使用 Biome 还是 Prettierd。
-	-- 从当前文件向上搜索 biome.json / biome.jsonc，如果找到则使用 Biome，
-	-- 否则回退到 Prettierd。stop 参数限制搜索到用户主目录，避免向上搜索到根目录。
-	local function biome_or_prettier()
-		if vim.fs.find({ "biome.json", "biome.jsonc" }, { upward = true, stop = vim.uv.os_homedir() })[1] then
+	-- 从目标 Buffer 向上搜索 biome.json / biome.jsonc，如果找到则使用 Biome，
+	-- 否则回退到 Prettierd。
+	local function biome_or_prettier(bufnr)
+		if vim.fs.root(bufnr, { "biome.json", "biome.jsonc" }) then
 			return { "biome-check", "biome", stop_after_first = true }
 		end
 		return { "prettierd" }
