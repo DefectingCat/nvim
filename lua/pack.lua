@@ -185,6 +185,12 @@ lazy.on_event("surround", { "BufReadPost", "BufNewFile", "BufNew" }, "*", functi
 		},
 		search_method = "cover_or_next",
 	})
+	-- Visual 模式使用 S，避免 ys 前缀让 y 等待 timeoutlen。
+	vim.keymap.del("x", "ys")
+	vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add("visual")<CR>]], {
+		silent = true,
+		desc = "Add surrounding to selection",
+	})
 end)
 
 -- =============================================================================
