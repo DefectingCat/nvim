@@ -90,6 +90,22 @@ vim.opt.shortmess:append("c")
 -- 避免阻塞 startup 的关键路径。
 vim.schedule(function()
 	vim.opt.clipboard:append("unnamedplus")
+	-- SSH 环境下没有系统剪贴板 provider（无 xclip/wl-copy/X forwarding），
+	-- 使用内置 OSC52 通过终端转义序列穿透到宿主机剪贴板。
+	if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
+		local osc52 = require("vim.ui.clipboard.osc52")
+		vim.g.clipboard = {
+			name = "OSC52",
+			copy = {
+				["+"] = osc52.copy("+"),
+				["*"] = osc52.copy("*"),
+			},
+			paste = {
+				["+"] = osc52.paste("+"),
+				["*"] = osc52.paste("*"),
+			},
+		}
+	end
 end)
 
 -- ---------------------------------------------------------------------------
