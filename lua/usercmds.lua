@@ -18,13 +18,13 @@
 -- 示例：:PackAdd stevearc/conform.nvim lewis6991/gitsigns.nvim
 --
 -- 原理：
---   将 user/repo 简写补全为 GitHub URL，完整 URI 和本地路径保持不变，
+--   将 user/repo 简写补全为 GitHub URL，完整 URI 和已存在的本地路径保持不变，
 --   再传递给 vim.pack.add()。
 --
 -- nargs = "+" 表示至少需要 1 个参数。
 vim.api.nvim_create_user_command("PackAdd", function(opts)
 	local sources = vim.tbl_map(function(source)
-		if source:match("^[%w][%w_.-]*/[%w][%w_.-]*$") then
+		if not vim.uv.fs_stat(source) and source:match("^[%w][%w_.-]*/[%w_.-]+$") then
 			return "https://github.com/" .. source
 		end
 		return source
