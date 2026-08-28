@@ -67,9 +67,9 @@ end
 --   fn      - 初始化函数
 --
 -- 原理：
---   创建一个一次性的 autocmd（once = true），
---   当指定事件首次触发时，调用 M.load(name, fn) 完成初始化。
---   由于 once = true，autocmd 在触发后自动销毁，不会重复执行。
+--   当指定事件触发时，调用 M.load(name, fn) 完成初始化。
+--   加载成功后 callback 返回 true，由 Neovim 自动删除 autocmd；
+--   加载失败则保留 autocmd，让后续事件可以重试。
 --
 -- 典型用法：
 --   lazy.on_event("completion", "InsertEnter", "*", function()
@@ -78,9 +78,8 @@ end
 M.on_event = function(name, event, pattern, fn)
 	vim.api.nvim_create_autocmd(event, {
 		pattern = pattern or "*",
-		once = true,
 		callback = function()
-			M.load(name, fn)
+			return M.load(name, fn)
 		end,
 	})
 end
@@ -144,6 +143,7 @@ M.on_cmd = function(name, cmd, fn, opts)
 		-- 先删除临时命令，再加载插件（避免覆盖插件 setup 注册的同名命令）
 		pcall(vim.api.nvim_del_user_command, cmd)
 		if not M.load(name, fn) then
+			M.on_cmd(name, cmd, fn, opts)
 			return
 		end
 
