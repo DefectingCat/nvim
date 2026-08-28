@@ -74,25 +74,32 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- ---------------------------------------------------------------------------
--- 4. 按文件类型设置 Treesitter 折叠
+-- 4. 首次使用折叠时启用 Treesitter foldexpr
 -- ---------------------------------------------------------------------------
--- 使用 treesitter 的 foldexpr 进行语法感知的代码折叠。
--- 在 FileType 事件中按 buffer 设置 window-local 选项：
---   - window-local（vim.wo）而非全局（vim.o），每个 buffer 独立
---   - 排除非代码 filetype（help/man/qf），保留它们的原生折叠行为
---
--- foldmethod = "expr" 表示使用表达式（foldexpr）计算折叠范围。
--- foldexpr = "v:lua.vim.treesitter.foldexpr()" 是 Neovim 0.10+ 的内置函数，
---   基于 treesitter 语法树计算折叠边界。无 parser 时返回 0（不折叠），不会报错。
-vim.api.nvim_create_autocmd("FileType", {
-	group = group,
-	callback = function(args)
-		-- 跳过非代码 filetype，保留它们的原生折叠行为
-		local excluded = { help = true, man = true, qf = true, terminal = true }
-		if excluded[vim.bo[args.buf].filetype] then
-			return
-		end
-		vim.wo.foldmethod = "expr"
-		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-	end,
-})
+-- foldexpr 会在首屏计算所有折叠；等用户实际按下 z 再启用，避免无折叠操作时的开销。
+-- 使用命名 namespace，重新加载配置时替换旧监听器，不会重复注册。
+local fold_ns = vim.api.nvim_create_namespace("UserTreesitterFoldOnDemand")
+local treesitter_foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.on_key(function(_, typed)
+	if typed ~= "z" then
+		return
+	end
+
+	local mode = vim.api.nvim_get_mode().mode
+	if mode ~= "n" and mode ~= "v" and mode ~= "V" and mode ~= "\22" then
+		return
+	end
+
+	-- 保留特殊 buffer 和自定义折叠；允许 Neovim 的 Lua ftplugin 预设同一个 foldexpr。
+	local foldexpr = vim.wo.foldexpr
+	if
+		vim.bo.buftype ~= ""
+		or vim.wo.foldmethod ~= "manual"
+		or (foldexpr ~= "0" and foldexpr ~= treesitter_foldexpr)
+	then
+		return
+	end
+
+	vim.wo.foldexpr = treesitter_foldexpr
+	vim.wo.foldmethod = "expr"
+end, fold_ns)
