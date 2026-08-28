@@ -31,7 +31,8 @@
 -- 懒加载策略：
 --   InsertEnter    → completion, snippets, pairs
 --   BufReadPost    → gitsigns, surround, ai, cursorword
---   VimEnter       → treesitter, lsp, icons
+--   VimEnter       → treesitter, icons
+--   代码 FileType  → lsp, mason
 --   按键触发      → pick, neogit, codediff, files, grugfar
 --   BufWritePre    → conform
 --   命令触发      → ex-colors
@@ -76,6 +77,7 @@ require("plugins.files")
 require("plugins.starter")
 require("plugins.markdown")
 require("plugins.neovide")
+local lsp = require("plugins.lsp")
 
 -- =============================================================================
 -- UI 层：通知、命令行、图标
@@ -227,17 +229,83 @@ lazy.on_event("snippets", "InsertEnter", "*", function()
 end)
 
 -- =============================================================================
--- 重型模块（VimEnter 延迟加载）
+-- 重型模块（按实际需要延迟加载）
 -- =============================================================================
--- treesitter 和 lsp 是启动时最耗时的模块，
--- 延迟到 VimEnter 事件触发后加载，让编辑器界面先渲染出来。
+-- treesitter 在 VimEnter 后初始化；LSP/Mason 仅在首次打开代码文件时初始化。
 lazy.on_event("treesitter", "VimEnter", "*", function()
 	require("plugins.treesitter").setup()
 end)
 
-lazy.on_event("lsp", "VimEnter", "*", function()
-	require("plugins.lsp")
-end)
+local lsp_filetypes = {
+	"css",
+	"scss",
+	"less",
+	"go",
+	"gomod",
+	"gowork",
+	"gotmpl",
+	"html",
+	"javascript",
+	"javascriptreact",
+	"typescript",
+	"typescriptreact",
+	"kotlin",
+	"lua",
+	"rust",
+	"svelte",
+	"toml",
+}
+
+local lsp_loading = false
+local lsp_filetype_loader
+local lsp_command_loader
+local function load_lsp()
+	-- vim.lsp.enable() 会为已有 buffer 重放 FileType；加载中直接返回，避免递归。
+	if lsp_loading then
+		return
+	end
+	lsp_loading = true
+	local ok = lazy.load("lsp", lsp.setup)
+	lsp_loading = false
+	if not ok then
+		return
+	end
+
+	-- 初始化成功后移除两个入口，后续由真实 LSP/Mason 命令接管。
+	if lsp_filetype_loader then
+		vim.api.nvim_del_autocmd(lsp_filetype_loader)
+		lsp_filetype_loader = nil
+	end
+	if lsp_command_loader then
+		vim.api.nvim_del_autocmd(lsp_command_loader)
+		lsp_command_loader = nil
+	end
+end
+
+lsp_filetype_loader = vim.api.nvim_create_autocmd("FileType", {
+	pattern = lsp_filetypes,
+	callback = function(args)
+		-- quickfix、帮助页等特殊 buffer 即使伪装成代码 filetype 也不启动 LSP。
+		if vim.bo[args.buf].buftype ~= "" then
+			return
+		end
+		load_lsp()
+	end,
+})
+
+-- 空启动也允许直接执行 Mason 命令；CmdUndefined 后命令会自动重试。
+-- Neovim 0.12 的 LSP 管理由内置 :lsp / :checkhealth vim.lsp 提供，无需兼容旧命令。
+lsp_command_loader = vim.api.nvim_create_autocmd("CmdUndefined", {
+	pattern = {
+		"Mason",
+		"MasonInstall",
+		"MasonLog",
+		"MasonUninstall",
+		"MasonUninstallAll",
+		"MasonUpdate",
+	},
+	callback = load_lsp,
+})
 
 -- =============================================================================
 -- mini.clue — 按键提示浮窗（VimEnter 后 setup）

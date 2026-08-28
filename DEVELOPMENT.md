@@ -43,7 +43,8 @@ nvim --headless -c 'checkhealth' -c 'qa!'
 
 ```bash
 # 测量启动时间
-nvim --startuptime /tmp/startup.log +q
+nvim --headless --startuptime /tmp/startup.log \
+  --cmd 'autocmd VimEnter * ++once lua vim.schedule(function() vim.cmd("qa!") end)'
 ```
 
 ## 常用命令

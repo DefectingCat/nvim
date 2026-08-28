@@ -4,8 +4,8 @@
 -- 本文件配置 Neovim 的 LSP 客户端、代码格式化（conform.nvim）和诊断导航。
 --
 -- 加载方式：
---   由 pack.lua 通过 lazy.on_event("lsp", "VimEnter", "*", ...) 延迟加载，
---   在 VimEnter 事件触发后初始化，避免阻塞 startup。
+--   本文件启动时只注册格式化与键位；Mason/LSP 由 pack.lua 在代码文件的
+--   FileType 首次触发时调用 setup()，空启动不会加载相关插件。
 --
 -- 依赖加载顺序：
 --   1. conform.nvim（BufWritePre 时按需 packadd 加载）
@@ -13,6 +13,7 @@
 --   3. mason.nvim（直接 setup）
 -- =============================================================================
 local lazy = require("lazy")
+local M = {}
 
 -- ---------------------------------------------------------------------------
 -- conform.nvim — 代码格式化（BufWritePre 懒加载）
@@ -80,148 +81,163 @@ end)
 -- ---------------------------------------------------------------------------
 -- Mason 是 LSP 服务器、DAP 适配器和格式化工具的安装管理器。
 -- nvim-lspconfig 提供常见 LSP 服务器的预设配置。
-vim.cmd.packadd("nvim-lspconfig")
-lazy.track("lspconfig")
+M.setup = function()
+	vim.cmd.packadd("nvim-lspconfig")
+	lazy.track("lspconfig")
 
-vim.cmd("packadd! mason.nvim")
-require("mason").setup()
-lazy.track("mason")
+	vim.cmd("packadd! mason.nvim")
+	require("mason").setup()
+	lazy.track("mason")
 
--- 构建 LSP 客户端 capabilities（能力声明），告知服务器客户端支持的功能。
--- 先获取 Neovim 默认 capabilities，再与 mini.completion 的 LSP 补全能力合并。
--- 注意：这里 require("mini.completion") 会提前加载该模块（其 setup 仍在 InsertEnter），
--- 但 capabilities 必须在 LSP 启动前就位，无法再延迟。用 pcall 保护避免插件未安装时报错。
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok_mc, mini_completion = pcall(require, "mini.completion")
-if ok_mc and mini_completion.get_lsp_capabilities then
-	capabilities = vim.tbl_deep_extend("force", capabilities, mini_completion.get_lsp_capabilities())
-end
+	-- 构建 LSP 客户端 capabilities（能力声明），告知服务器客户端支持的功能。
+	-- 先获取 Neovim 默认 capabilities，再与 mini.completion 的 LSP 补全能力合并。
+	-- 注意：这里 require("mini.completion") 会提前加载该模块（其 setup 仍在 InsertEnter），
+	-- 但 capabilities 必须在 LSP 启动前就位，无法再延迟。用 pcall 保护避免插件未安装时报错。
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	local ok_mc, mini_completion = pcall(require, "mini.completion")
+	if ok_mc and mini_completion.get_lsp_capabilities then
+		capabilities = vim.tbl_deep_extend("force", capabilities, mini_completion.get_lsp_capabilities())
+	end
 
--- 为所有 LSP 服务器设置默认 capabilities
-vim.lsp.config("*", { capabilities = capabilities })
+	-- 为所有 LSP 服务器设置默认 capabilities
+	vim.lsp.config("*", { capabilities = capabilities })
 
--- Lua 语言服务器特殊配置：将 "vim" 声明为全局变量，避免 "Undefined global" 诊断
-vim.lsp.config("lua_ls", {
-	settings = {
-		Lua = {
-			diagnostics = { globals = { "vim" } },
-		},
-	},
-})
-
--- Rust 语言服务器特殊配置：关闭 inactive_code 诊断。
--- 该诊断会对所有不满足 #[cfg] 条件的代码块（如 target_arch = "wasm32"）
--- 逐行报 "code is inactive due to #[cfg] directives"，在跨平台项目中噪声很大。
---
--- 采用双层防御（实测缺一不可）：
---   1. 服务端：diagnostics.disabled = { "inactive_code" }
---      rust-analyzer 官方开关，从源头不发该诊断。
---   2. 客户端：在 client 级 handler 里按 code == "inactive-code" 过滤兜底。
---
--- 关键经验（Neovim 0.12 + rust-analyzer 实测）：
---   - rust-analyzer 公告了 diagnosticProvider 能力，Neovim 0.11+ 会优先用
---     **pull 模型**（textDocument/diagnostic，注意是单数），而非传统的
---     **push 模型**（textDocument/publishDiagnostics，注意是复数）。
---   - 因此过滤必须挂在 "textDocument/diagnostic" handler 上，挂在
---     "textDocument/publishDiagnostics" 上则永不触发（push handler 根本不被调用）。
---   - pull 模型的诊断数据在 result.items（不是 result.diagnostics），
---     且仅在 result.kind == "full" 时存在；"unchanged" 表示复用上次结果。
---   - 过滤后必须交给默认 handler on_diagnostic 处理，它会负责写入 vim.diagnostic。
-vim.lsp.config("rust_analyzer", {
-	settings = {
-		["rust-analyzer"] = {
-			diagnostics = {
-				disabled = { "inactive_code" },
+	-- Lua 语言服务器特殊配置：将 "vim" 声明为全局变量，避免 "Undefined global" 诊断
+	vim.lsp.config("lua_ls", {
+		settings = {
+			Lua = {
+				diagnostics = { globals = { "vim" } },
 			},
 		},
-	},
-	handlers = {
-		["textDocument/diagnostic"] = function(err, result, ctx, config)
-			if result and result.kind == "full" and result.items then
-				result.items = vim.tbl_filter(function(d)
-					return d.code ~= "inactive-code"
-				end, result.items)
-			end
-			return vim.lsp.diagnostic.on_diagnostic(err, result, ctx, config)
-		end,
-	},
-})
+	})
 
--- ---------------------------------------------------------------------------
--- 已安装的 Mason 工具清单（通过 :Mason 查看）
--- ---------------------------------------------------------------------------
--- 以下是通过 Mason 安装的 LSP 服务器和工具：
---   ◍ biome              - JS/TS/JSON 格式化和 lint
---   ◍ css-lsp            - CSS 语言服务器
---   ◍ gofumpt            - Go 格式化（stricter than gofmt）
---   ◍ goimports          - Go 导入整理
---   ◍ golangci-lint      - Go linter
---   ◍ gopls              - Go 语言服务器
---   ◍ html-lsp           - HTML 语言服务器
---   ◍ kotlin-lsp         - Kotlin 语言服务器
---   ◍ lua-language-server- Lua 语言服务器
---   ◍ prettierd          - 通用代码格式化器（高性能守护进程版）
---   ◍ rust-analyzer      - Rust 语言服务器
---   ◍ stylua             - Lua 格式化器
---   ◍ svelte-language-server - Svelte 语言服务器
---   ◍ taplo              - TOML 工具
---   ◍ vtsls              - TypeScript 语言服务器（VS Code 的 TS 服务端移植）
+	-- Rust 语言服务器特殊配置：关闭 inactive_code 诊断。
+	-- 该诊断会对所有不满足 #[cfg] 条件的代码块（如 target_arch = "wasm32"）
+	-- 逐行报 "code is inactive due to #[cfg] directives"，在跨平台项目中噪声很大。
+	--
+	-- 采用双层防御（实测缺一不可）：
+	--   1. 服务端：diagnostics.disabled = { "inactive_code" }
+	--      rust-analyzer 官方开关，从源头不发该诊断。
+	--   2. 客户端：在 client 级 handler 里按 code == "inactive-code" 过滤兜底。
+	--
+	-- 关键经验（Neovim 0.12 + rust-analyzer 实测）：
+	--   - rust-analyzer 公告了 diagnosticProvider 能力，Neovim 0.11+ 会优先用
+	--     **pull 模型**（textDocument/diagnostic，注意是单数），而非传统的
+	--     **push 模型**（textDocument/publishDiagnostics，注意是复数）。
+	--   - 因此过滤必须挂在 "textDocument/diagnostic" handler 上，挂在
+	--     "textDocument/publishDiagnostics" 上则永不触发（push handler 根本不被调用）。
+	--   - pull 模型的诊断数据在 result.items（不是 result.diagnostics），
+	--     且仅在 result.kind == "full" 时存在；"unchanged" 表示复用上次结果。
+	--   - 过滤后必须交给默认 handler on_diagnostic 处理，它会负责写入 vim.diagnostic。
+	vim.lsp.config("rust_analyzer", {
+		settings = {
+			["rust-analyzer"] = {
+				diagnostics = {
+					disabled = { "inactive_code" },
+				},
+			},
+		},
+		handlers = {
+			["textDocument/diagnostic"] = function(err, result, ctx, config)
+				if result and result.kind == "full" and result.items then
+					result.items = vim.tbl_filter(function(d)
+						return d.code ~= "inactive-code"
+					end, result.items)
+				end
+				return vim.lsp.diagnostic.on_diagnostic(err, result, ctx, config)
+			end,
+		},
+	})
 
--- ---------------------------------------------------------------------------
--- 按命令可用性启用 LSP
--- 常规服务只检查可执行文件，不启动额外进程。
-local lsp_servers = {
-	{ name = "html", command = "vscode-html-language-server" },
-	{ name = "cssls", command = "vscode-css-language-server" },
-	{ name = "gopls", command = "gopls" },
-	{ name = "vtsls", command = "vtsls" },
-	{ name = "lua_ls", command = "lua-language-server" },
-	{ name = "taplo", command = "taplo" },
-	{ name = "svelte", command = "svelteserver" },
-	{ name = "kotlin_lsp", command = "intellij-server" },
-}
+	-- ---------------------------------------------------------------------------
+	-- 已安装的 Mason 工具清单（通过 :Mason 查看）
+	-- ---------------------------------------------------------------------------
+	-- 以下是通过 Mason 安装的 LSP 服务器和工具：
+	--   ◍ biome              - JS/TS/JSON 格式化和 lint
+	--   ◍ css-lsp            - CSS 语言服务器
+	--   ◍ gofumpt            - Go 格式化（stricter than gofmt）
+	--   ◍ goimports          - Go 导入整理
+	--   ◍ golangci-lint      - Go linter
+	--   ◍ gopls              - Go 语言服务器
+	--   ◍ html-lsp           - HTML 语言服务器
+	--   ◍ kotlin-lsp         - Kotlin 语言服务器
+	--   ◍ lua-language-server- Lua 语言服务器
+	--   ◍ prettierd          - 通用代码格式化器（高性能守护进程版）
+	--   ◍ rust-analyzer      - Rust 语言服务器
+	--   ◍ stylua             - Lua 格式化器
+	--   ◍ svelte-language-server - Svelte 语言服务器
+	--   ◍ taplo              - TOML 工具
+	--   ◍ vtsls              - TypeScript 语言服务器（VS Code 的 TS 服务端移植）
 
-local enabled_servers = {}
-for _, server in ipairs(lsp_servers) do
-	if vim.fn.executable(server.command) == 1 then
-		table.insert(enabled_servers, server.name)
+	-- ---------------------------------------------------------------------------
+	-- 按命令可用性启用 LSP
+	-- 常规服务只检查可执行文件，不启动额外进程。
+	local lsp_servers = {
+		{ name = "html", command = "vscode-html-language-server" },
+		{ name = "cssls", command = "vscode-css-language-server" },
+		{ name = "gopls", command = "gopls" },
+		{ name = "vtsls", command = "vtsls" },
+		{ name = "lua_ls", command = "lua-language-server" },
+		{ name = "taplo", command = "taplo" },
+		{ name = "svelte", command = "svelteserver" },
+		{ name = "kotlin_lsp", command = "intellij-server" },
+	}
+
+	local enabled_servers = {}
+	for _, server in ipairs(lsp_servers) do
+		if vim.fn.executable(server.command) == 1 then
+			table.insert(enabled_servers, server.name)
+		end
 	end
-end
 
-if #enabled_servers > 0 then
-	vim.lsp.enable(enabled_servers)
-end
-
--- rustup 即使没有安装 rust-analyzer 组件，也会提供同名代理。
--- 首次打开 Rust buffer 时异步验证，避免每次启动都同步等待失败的代理。
-local function enable_rust_analyzer_if_available()
-	if vim.fn.executable("rust-analyzer") ~= 1 then
-		return
+	if #enabled_servers > 0 then
+		vim.lsp.enable(enabled_servers)
 	end
 
-	vim.system({ "rust-analyzer", "--version" }, { stdout = false, stderr = false }, function(result)
-		if result.code ~= 0 then
+	-- rustup 即使没有安装 rust-analyzer 组件，也会提供同名代理。
+	-- 首次打开 Rust buffer 时异步验证，避免每次启动都同步等待失败的代理。
+	local function enable_rust_analyzer_if_available()
+		if vim.fn.executable("rust-analyzer") ~= 1 then
 			return
 		end
-		vim.schedule(function()
-			vim.lsp.enable("rust_analyzer")
+
+		vim.system({ "rust-analyzer", "--version" }, { stdout = false, stderr = false }, function(result)
+			if result.code ~= 0 then
+				return
+			end
+			vim.schedule(function()
+				vim.lsp.enable("rust_analyzer")
+			end)
 		end)
-	end)
-end
-
-local rust_check_autocmd = vim.api.nvim_create_autocmd("FileType", {
-	pattern = "rust",
-	once = true,
-	callback = enable_rust_analyzer_if_available,
-})
-
--- 以 Rust 文件启动时，FileType 早于 VimEnter 触发；补查已存在的 Rust buffer。
-for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-	if vim.bo[bufnr].filetype == "rust" then
-		vim.api.nvim_del_autocmd(rust_check_autocmd)
-		enable_rust_analyzer_if_available()
-		break
 	end
+
+	local rust_check_autocmd = vim.api.nvim_create_autocmd("FileType", {
+		pattern = "rust",
+		once = true,
+		callback = enable_rust_analyzer_if_available,
+	})
+
+	-- 以 Rust 文件启动时，FileType 早于 VimEnter 触发；补查已存在的 Rust buffer。
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.bo[bufnr].filetype == "rust" then
+			vim.api.nvim_del_autocmd(rust_check_autocmd)
+			enable_rust_analyzer_if_available()
+			break
+		end
+	end
+
+	-- 诊断显示配置在 LSP 首次启用时再加载 vim.diagnostic。
+	vim.diagnostic.config({
+		virtual_text = true,
+		signs = {
+			text = {
+				[vim.diagnostic.severity.ERROR] = "󰅚", -- mdi-alert
+				[vim.diagnostic.severity.WARN] = "󰀧", -- mdi-alert-outline
+				[vim.diagnostic.severity.INFO] = "󰋼", -- mdi-information-outline
+				[vim.diagnostic.severity.HINT] = "󰌵", -- mdi-lightbulb-outline
+			},
+		},
+	})
 end
 
 -- ---------------------------------------------------------------------------
@@ -294,19 +310,4 @@ vim.keymap.set("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "上一个�
 vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "下一个警告" })
 vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "上一个警告" })
 
--- ---------------------------------------------------------------------------
--- 诊断显示配置
--- ---------------------------------------------------------------------------
--- - virtual_text: 代码行右侧显示诊断文本
--- - signs: 左侧 sign column 的诊断标志（0.12 默认为 E/W/I/H 字母）
-vim.diagnostic.config({
-	virtual_text = true,
-	signs = {
-		text = {
-			[vim.diagnostic.severity.ERROR] = "󰅚", -- mdi-alert
-			[vim.diagnostic.severity.WARN] = "󰀧", -- mdi-alert-outline
-			[vim.diagnostic.severity.INFO] = "󰋼", -- mdi-information-outline
-			[vim.diagnostic.severity.HINT] = "󰌵", -- mdi-lightbulb-outline
-		},
-	},
-})
+return M

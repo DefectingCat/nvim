@@ -18,7 +18,8 @@
 
 | 触发条件          | 插件                                                                    |
 | ----------------- | ----------------------------------------------------------------------- |
-| `VimEnter`        | treesitter、lsp、icons                                                  |
+| `VimEnter`        | treesitter、icons                                                       |
+| 代码 `FileType`   | lsp、mason                                                               |
 | `InsertEnter`     | completion、snippets、pairs                                             |
 | `BufReadPost`     | gitsigns、surround、ai、cursorword                                      |
 | `BufWritePre`     | conform                                                                 |

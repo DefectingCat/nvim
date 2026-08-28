@@ -42,7 +42,8 @@ nvim --headless -c 'lua require("pack")' -c 'qa!'
 nvim --headless -c 'checkhealth' -c 'qa!'
 
 # Measure startup time
-nvim --startuptime /tmp/startup.log +q
+nvim --headless --startuptime /tmp/startup.log \
+  --cmd 'autocmd VimEnter * ++once lua vim.schedule(function() vim.cmd("qa!") end)'
 ```
 
 There is no traditional lint, typecheck, or test command. The validation commands above are the only verification steps.
@@ -53,7 +54,8 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 
 | Trigger       | Plugins / Modules                        |
 | ------------- | ---------------------------------------- |
-| `VimEnter`    | treesitter, lsp, icons, clue, statusline |
+| `VimEnter`    | treesitter, icons, clue, statusline      |
+| Code `FileType` | lsp, mason                             |
 | `InsertEnter` | completion, snippets, pairs              |
 | `BufReadPost` | gitsigns, surround, ai, cursorword       |
 | `BufWritePre` | conform (format-on-save)                 |
@@ -76,7 +78,7 @@ Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue
 
 ## Key Conventions
 
-- Startup performance is a priority. Heavy modules are deferred to `VimEnter` or later. Clipboard is set via `vim.schedule()` to avoid blocking.
+- Startup performance is a priority. Heavy modules are deferred to `VimEnter` or the first relevant `FileType`. Clipboard is set via `vim.schedule()` to avoid blocking.
 - The active colorscheme is `ex-catppuccin-mocha`, defined in `colors/ex-catppuccin-mocha.lua`.
 - Comments and UI strings are in **Chinese**.
 - Line diagnostic float is on `<leader>df`. Do **not** map bare `df` — it shadows the `df{char}` operator-pending motion (delete-until-char), a footgun previously hit in this repo.
