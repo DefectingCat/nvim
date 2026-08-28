@@ -8,8 +8,8 @@
 --   由 pack.lua 通过 lazy.on_event("treesitter", "VimEnter", "*", ...) 延迟加载。
 --
 -- 设计要点：
---   1. Parser 安装延迟 100ms 执行，避免阻塞 startup
---   2. 高亮按 buffer 动态附加（FileType autocmd），只安装需要的 parser
+--   1. 启动 100ms 后只检查 parser 文件，仅将缺失项交给安装器
+--   2. 高亮按 buffer 动态附加（FileType autocmd），仅在 parser 可用时启用
 -- =============================================================================
 
 local M = {}
@@ -58,10 +58,15 @@ M.setup = function()
 	vim.cmd.packadd("nvim-treesitter")
 	local treesitter = require("nvim-treesitter")
 
-	-- 延迟安装 parser：在 startup 完成 100ms 后后台安装，
-	-- 避免在安装过程中阻塞编辑器。
+	-- 先用 runtimepath 做一次轻量检查；全部已安装时不创建安装任务，
+	-- 避免每次启动都让 nvim-treesitter 重扫完整 parser 清单。
 	vim.defer_fn(function()
-		treesitter.install(ensure_installed)
+		local missing = vim.tbl_filter(function(lang)
+			return #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".so", false) == 0
+		end, ensure_installed)
+		if #missing > 0 then
+			treesitter.install(missing)
+		end
 	end, 100)
 
 	-- 按文件类型动态启用 treesitter 高亮。
