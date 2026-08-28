@@ -154,12 +154,13 @@ if ok_starter then
 		items = { { name = " ", action = "", section = "" } }, -- 空选项（仅展示页眉页脚）
 		header = table.concat(logos.f, "\n"), -- Logo 文本
 
-		-- 页脚函数：显示启动耗时和模块加载统计
+		-- 页脚函数：显示同步配置段耗时和模块加载统计。
+		-- 这里刻意不统计 plugin/ 扫描与 VimEnter，避免把延迟任务混入配置开销。
 		footer = function()
 			-- 已加载的模块数（动态统计，包含直接加载和懒加载）
 			local loaded = vim.tbl_count(require("lazy")._loaded)
 			local total = #all_modules
-			-- 使用 init.lua 执行完成时间，不等待 VimEnter（后者包含 runtime 插件加载耗时）
+			-- 固定使用 init.lua 完成时间；这不是完整首屏耗时。
 			local end_time = _G.nvim_init_done or (vim.uv or vim.loop).hrtime()
 			local ms = (end_time - _G.nvim_start_time) / 1e6
 			local text = string.format("  %d/%d modules | %.0f ms", loaded, total, ms)

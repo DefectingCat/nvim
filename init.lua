@@ -13,7 +13,9 @@
 --  6. pack.lua      → 插件声明与懒加载配置
 -- =============================================================================
 
--- 记录启动时间点，用于在 starter 页脚展示启动耗时。
+-- 记录启动时间点，用于在 starter 页脚展示同步配置段耗时。
+-- 该口径有意只覆盖 init.lua，不包含后续 plugin/ 扫描与 VimEnter；
+-- 用于观察配置本身的开销，不代表 Neovim 完整首屏时间。
 -- vim.uv (Neovim 0.10+) 是 libuv 的绑定，提供高性能计时器；
 -- vim.loop 是旧版兼容名，在 0.10 之前使用。
 _G.nvim_start_time = (vim.uv or vim.loop).hrtime()
@@ -82,6 +84,6 @@ require("pack") -- 插件管理与懒加载配置
 -- 该文件是一个精简版，只包含 Mocha 变体的调色板和高亮组定义。
 vim.cmd("colorscheme ex-catppuccin-mocha")
 
--- 记录 init.lua 执行完成时间（含 colorscheme），供启动页展示更接近 --startuptime 的耗时。
--- pack.lua 中的 footer 优先使用 VimEnter 时间，回退到此时间点。
+-- 记录 init.lua 同步配置完成时间（含 colorscheme）。
+-- starter 固定使用该时间点，刻意排除后续 plugin/ 扫描与 VimEnter。
 _G.nvim_init_done = (vim.uv or vim.loop).hrtime()
