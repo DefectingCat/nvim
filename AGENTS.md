@@ -4,7 +4,7 @@ This is a personal Neovim configuration targeting **Neovim 0.12+**. It lives at 
 
 ## Critical Architecture Notes
 
-- **Plugin manager**: Neovim 0.12+ built-in `vim.pack` (not lazy.nvim / packer). Plugins are declared in `lua/pack.lua` via `vim.pack.add({ urls }, { load = false })` and tracked in `nvim-pack-lock.json`.
+- **Plugin manager**: Neovim 0.12+ built-in `vim.pack` (not lazy.nvim / packer). `mini.nvim` uses `load = false` so its shared modules are immediately require-able; trigger-loaded plugins use a no-op `load` callback and explicit `:packadd`. All plugins are tracked in `nvim-pack-lock.json`.
 - **Custom lazy-loading**: `lua/lazy.lua` is a ~35-line custom framework (unrelated to lazy.nvim). It provides `load()`, `on_event()`, `on_keys()`, `on_cmd()` and tracks loaded modules in `M._loaded`.
 - **Mini.nvim monorepo**: Most UI/functionality comes from the single `mini.nvim` package. Its submodules (starter, pick, extra, files, icons, notify, cmdline, completion, snippets, surround, clue, statusline, ai, cursorword, pairs) are configured individually in `lua/pack.lua` or on-demand.
 

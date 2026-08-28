@@ -42,11 +42,12 @@ local lazy = require("lazy")
 -- ---------------------------------------------------------------------------
 -- 插件安装声明
 -- ---------------------------------------------------------------------------
--- load = false 等同 :packadd!：加入 runtimepath，但不立即执行 plugin/ 入口。
--- 启动后仍会扫描这些入口；真正按需加载的插件使用下方自定义 load 回调。
+-- mini.nvim 的 starter/notify 会在本文件中直接 require，因此先加入 runtimepath；
+-- 其余插件仅登记安装，等各自触发器执行 :packadd 后才进入 runtimepath。
 -- 所有插件的状态锁定在 nvim-pack-lock.json 中。
+vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" }, { load = false })
+
 vim.pack.add({
-	"https://github.com/nvim-mini/mini.nvim", -- 核心 UI/功能插件集
 	"https://github.com/rafamadriz/friendly-snippets", -- 代码片段库
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", branch = "main" }, -- 语法树
 	"https://github.com/neovim/nvim-lspconfig", -- LSP 配置
@@ -58,12 +59,9 @@ vim.pack.add({
 	-- "https://github.com/DefectingCat/neogit", -- Git status 客户端
 	"https://github.com/esmuellert/codediff.nvim", -- side-by-side diff 可视化
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
+	"https://github.com/MeanderingProgrammer/render-markdown.nvim", -- Markdown 渲染增强
 	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
-}, { load = false })
-
--- render-markdown.nvim 只安装并登记，不在启动时加入 runtimepath。
--- plugins.markdown 会在 FileType、按键或命令首次触发时执行 :packadd。
-vim.pack.add({ "https://github.com/MeanderingProgrammer/render-markdown.nvim" }, {
+}, {
 	load = function() end,
 })
 
@@ -218,6 +216,7 @@ end)
 
 -- mini.snippets — 代码片段引擎
 lazy.on_event("snippets", "InsertEnter", "*", function()
+	vim.cmd("packadd! friendly-snippets")
 	local MiniSnippets = require("mini.snippets")
 	MiniSnippets.setup({
 		snippets = {

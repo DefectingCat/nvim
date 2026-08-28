@@ -13,11 +13,11 @@
 local lazy = require("lazy")
 
 local function load_render_markdown()
-	vim.cmd.packadd("render-markdown.nvim")
-	require("render-markdown").setup({
-		-- 默认依赖 mini.icons / nvim-web-devicons，按需渲染标题与图标
+	-- plugin 入口会读取该全局配置并完成唯一一次 setup。
+	vim.g.render_markdown_config = {
 		file_types = { "markdown", "quarto", "vimwiki", "codecompanion" },
-	})
+	}
+	vim.cmd.packadd("render-markdown.nvim")
 end
 
 -- 1. FileType 事件延迟加载

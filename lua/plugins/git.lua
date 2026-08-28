@@ -29,7 +29,8 @@ local lazy = require("lazy")
 -- 在 signcolumn 中显示 add/change/delete 标记，并提供 hunk 级操作。
 -- on_attach 回调中注册 buffer-local 键位映射，仅对已 attach 的 buffer 生效。
 local function load_gitsigns()
-	vim.cmd.packadd("gitsigns.nvim")
+	-- 跳过 plugin/gitsigns.lua 的默认 setup，只执行下面这一份自定义配置。
+	vim.cmd("packadd! gitsigns.nvim")
 	require("gitsigns").setup({
 		signs = {
 			add = { text = "▎" },

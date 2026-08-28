@@ -21,7 +21,7 @@ local lazy = require("lazy")
 -- 由于格式化器通常不是立即需要的，通过 lazy.on_event 在 BufWritePre 时
 -- 才进行 packadd 和 setup。
 local function setup_conform()
-	-- 通过 packadd 加载 conform.nvim（因为 vim.pack.add 时设置了 load = false）
+	-- 插件仅在 vim.pack 中登记，首次格式化时再加入 runtimepath 并加载入口。
 	vim.cmd.packadd("conform.nvim")
 
 	-- 动态判断使用 Biome 还是 Prettierd。
@@ -83,6 +83,7 @@ end)
 vim.cmd.packadd("nvim-lspconfig")
 lazy.track("lspconfig")
 
+vim.cmd("packadd! mason.nvim")
 require("mason").setup()
 lazy.track("mason")
 
