@@ -172,7 +172,19 @@ end)
 
 -- mini.surround — 环绕文本操作（BufReadPost 懒加载）
 lazy.on_event("surround", "BufReadPost", "*", function()
-	require("mini.surround").setup()
+	require("mini.surround").setup({
+		mappings = {
+			add = "ys",
+			delete = "ds",
+			replace = "cs",
+			find = "",
+			find_left = "",
+			highlight = "",
+			suffix_last = "",
+			suffix_next = "",
+		},
+		search_method = "cover_or_next",
+	})
 end)
 
 -- =============================================================================
