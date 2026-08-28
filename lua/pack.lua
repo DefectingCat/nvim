@@ -50,7 +50,7 @@ vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" }, { load = false })
 
 vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets", -- 代码片段库
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", branch = "main" }, -- 语法树
+	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" }, -- 语法树
 	"https://github.com/neovim/nvim-lspconfig", -- LSP 配置
 	"https://github.com/mason-org/mason.nvim", -- 工具安装器
 	"https://github.com/stevearc/conform.nvim", -- 格式化
