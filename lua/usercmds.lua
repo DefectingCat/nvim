@@ -57,7 +57,7 @@ end, { nargs = "+", desc = "删除插件 (:PackDel plugin1 plugin2)" })
 -- 原理：
 --   检查 opts.args 是否包含非空白字符（%S 匹配任意非空白）。
 --   如果有参数，按空白分割为数组后逐个更新；
---   如果无参数，调用无参版本更新所有插件。
+--   如果无参数，则更新所有插件。force = true 会跳过确认并直接应用。
 --
 -- nargs = "*" 表示接受 0 个或多个参数。
 vim.api.nvim_create_user_command("PackUpdate", function(opts)
@@ -66,10 +66,10 @@ vim.api.nvim_create_user_command("PackUpdate", function(opts)
 		-- 按空白字符分割参数，trimempty 去除空字符串
 		local plugins = vim.split(opts.args, "%s+", { trimempty = true })
 		-- 仅更新指定的插件
-		vim.pack.update(plugins)
+		vim.pack.update(plugins, { force = true })
 	else
 		-- 无参数，更新所有插件
-		vim.pack.update()
+		vim.pack.update(nil, { force = true })
 	end
 end, { nargs = "*", desc = "更新所有插件或指定插件" })
 
