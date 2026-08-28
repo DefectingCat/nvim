@@ -88,6 +88,7 @@ local lsp = require("plugins.lsp")
 local ok_notify, notify = pcall(require, "mini.notify")
 if ok_notify then
 	notify.setup({
+		lsp_progress = { enable = false },
 		content = {
 			-- 简化格式：只显示消息内容
 			format = function(notif)
