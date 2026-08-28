@@ -18,13 +18,18 @@
 -- 示例：:PackAdd stevearc/conform.nvim lewis6991/gitsigns.nvim
 --
 -- 原理：
---   将命令行参数（opts.fargs，已按空格分割的字符串数组）
---   直接传递给 vim.pack.add()。
---   vim.pack 会从 GitHub 下载插件到 stdpath("data")/site/pack/core/opt/。
+--   将 user/repo 简写补全为 GitHub URL，完整 URI 和本地路径保持不变，
+--   再传递给 vim.pack.add()。
 --
 -- nargs = "+" 表示至少需要 1 个参数。
 vim.api.nvim_create_user_command("PackAdd", function(opts)
-	vim.pack.add(opts.fargs)
+	local sources = vim.tbl_map(function(source)
+		if source:match("^[%w][%w_.-]*/[%w][%w_.-]*$") then
+			return "https://github.com/" .. source
+		end
+		return source
+	end, opts.fargs)
+	vim.pack.add(sources)
 end, { nargs = "+", desc = "添加插件 (:PackAdd user/repo1 user/repo2)" })
 
 -- ---------------------------------------------------------------------------
