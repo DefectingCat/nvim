@@ -65,6 +65,7 @@ end
 --   event   - Neovim autocmd 事件名（如 "InsertEnter", "BufReadPost", "VimEnter"）
 --   pattern - autocmd 匹配模式，默认为 "*"
 --   fn      - 初始化函数
+--   opts    - 可选配置；defer_initial=true 时把启动阶段的首次加载调度到下一轮
 --
 -- 原理：
 --   当指定事件触发时，调用 M.load(name, fn) 完成初始化。
@@ -75,10 +76,28 @@ end
 --   lazy.on_event("completion", "InsertEnter", "*", function()
 --       require("mini.completion").setup({ ... })
 --   end)
-M.on_event = function(name, event, pattern, fn)
-	vim.api.nvim_create_autocmd(event, {
+M.on_event = function(name, event, pattern, fn, opts)
+	opts = opts or {}
+	local scheduled = false
+	local autocmd_id
+
+	autocmd_id = vim.api.nvim_create_autocmd(event, {
 		pattern = pattern or "*",
 		callback = function()
+			if scheduled then
+				return
+			end
+			if opts.defer_initial and vim.v.vim_did_enter == 0 then
+				scheduled = true
+				vim.schedule(function()
+					local ok = M.load(name, fn)
+					scheduled = false
+					if ok then
+						pcall(vim.api.nvim_del_autocmd, autocmd_id)
+					end
+				end)
+				return
+			end
 			return M.load(name, fn)
 		end,
 	})

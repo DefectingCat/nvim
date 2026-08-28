@@ -266,6 +266,7 @@ local lsp_filetypes = {
 }
 
 local lsp_loading = false
+local lsp_scheduled = false
 local lsp_filetype_loader
 local lsp_command_loader
 local function load_lsp()
@@ -291,6 +292,17 @@ local function load_lsp()
 	end
 end
 
+local function schedule_lsp()
+	if lsp_scheduled then
+		return
+	end
+	lsp_scheduled = true
+	vim.schedule(function()
+		lsp_scheduled = false
+		load_lsp()
+	end)
+end
+
 lsp_filetype_loader = vim.api.nvim_create_autocmd("FileType", {
 	pattern = lsp_filetypes,
 	callback = function(args)
@@ -298,7 +310,11 @@ lsp_filetype_loader = vim.api.nvim_create_autocmd("FileType", {
 		if vim.bo[args.buf].buftype ~= "" then
 			return
 		end
-		load_lsp()
+		if vim.v.vim_did_enter == 0 then
+			schedule_lsp()
+		else
+			load_lsp()
+		end
 	end,
 })
 

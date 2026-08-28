@@ -99,7 +99,7 @@ local function load_gitsigns()
 	})
 end
 
-lazy.on_event("gitsigns", { "BufReadPost", "BufWritePost" }, "*", load_gitsigns)
+lazy.on_event("gitsigns", { "BufReadPost", "BufWritePost" }, "*", load_gitsigns, { defer_initial = true })
 
 -- ---------------------------------------------------------------------------
 -- neogit — 仓库级 Git 客户端（按键触发懒加载）
