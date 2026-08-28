@@ -160,18 +160,18 @@ lazy.on_event("pairs", "InsertEnter", "*", function()
 	require("mini.pairs").setup()
 end)
 
--- mini.ai — 扩展 a/i textobject（BufReadPost 懒加载）
-lazy.on_event("ai", "BufReadPost", "*", function()
+-- mini.ai — 扩展 a/i textobject（读取文件或新建 Buffer 时懒加载）
+lazy.on_event("ai", { "BufReadPost", "BufNewFile", "BufNew" }, "*", function()
 	require("mini.ai").setup()
 end)
 
--- mini.cursorword — 自动高亮光标下单词（BufReadPost 懒加载）
-lazy.on_event("cursorword", "BufReadPost", "*", function()
+-- mini.cursorword — 自动高亮光标下单词（读取文件或新建 Buffer 时懒加载）
+lazy.on_event("cursorword", { "BufReadPost", "BufNewFile", "BufNew" }, "*", function()
 	require("mini.cursorword").setup()
 end)
 
--- mini.surround — 环绕文本操作（BufReadPost 懒加载）
-lazy.on_event("surround", "BufReadPost", "*", function()
+-- mini.surround — 环绕文本操作（读取文件或新建 Buffer 时懒加载）
+lazy.on_event("surround", { "BufReadPost", "BufNewFile", "BufNew" }, "*", function()
 	require("mini.surround").setup({
 		mappings = {
 			add = "ys",
@@ -198,6 +198,8 @@ lazy.on_event("completion", "InsertEnter", "*", function()
 			auto_setup = true,
 		},
 	})
+	-- setup 只会通过后续 BufEnter 设置 completefunc，需回填当前 Buffer。
+	vim.bo.completefunc = "v:lua.MiniCompletion.completefunc_lsp"
 
 	-- 回车确认补全：
 	--   有选中项 → 接受选中项（<C-y>）
