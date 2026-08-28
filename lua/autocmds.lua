@@ -80,6 +80,23 @@ vim.api.nvim_create_autocmd("FileType", {
 -- 使用命名 namespace，重新加载配置时替换旧监听器，不会重复注册。
 local fold_ns = vim.api.nvim_create_namespace("UserTreesitterFoldOnDemand")
 local treesitter_foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+-- 新窗口继承来源窗口的折叠方式，也同步继承“已经初始化”状态。
+-- 记录最后进入的窗口，兼容普通分屏、tab split 和未进入的浮窗。
+local active_window = vim.api.nvim_get_current_win()
+vim.api.nvim_create_autocmd({ "WinNew", "WinEnter" }, {
+	group = group,
+	callback = function(args)
+		if args.event == "WinEnter" then
+			active_window = vim.api.nvim_get_current_win()
+			return
+		end
+		if vim.api.nvim_win_is_valid(active_window) and vim.w[active_window].treesitter_fold_initialized then
+			vim.w.treesitter_fold_initialized = true
+		end
+	end,
+})
+
 vim.on_key(function(_, typed)
 	if typed ~= "z" then
 		return
@@ -87,6 +104,10 @@ vim.on_key(function(_, typed)
 
 	local mode = vim.api.nvim_get_mode().mode
 	if mode ~= "n" and mode ~= "v" and mode ~= "V" and mode ~= "\22" then
+		return
+	end
+
+	if vim.w.treesitter_fold_initialized then
 		return
 	end
 
@@ -102,4 +123,5 @@ vim.on_key(function(_, typed)
 
 	vim.wo.foldexpr = treesitter_foldexpr
 	vim.wo.foldmethod = "expr"
+	vim.w.treesitter_fold_initialized = true
 end, fold_ns)
