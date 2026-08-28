@@ -98,7 +98,11 @@ lazy.on_keys("pick", "<leader><leader>", "n", M.load_pick, function()
 		-- 删除后该槽位由原"下一项"占据；删末项则退到新末项
 		local cur_abs_ind = matches.current_ind
 		local bufnr = item.bufnr
-		pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+		local ok, err = pcall(vim.api.nvim_buf_delete, bufnr, {})
+		if not ok then
+			vim.notify("无法删除 Buffer: " .. tostring(err), vim.log.levels.WARN)
+			return
+		end
 		if not MiniPick.is_picker_active() then
 			return
 		end

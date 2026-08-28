@@ -182,14 +182,19 @@ map("n", "<leader>bo", function()
 	local current = vim.api.nvim_get_current_buf()
 	local skipped_ft = { "NvimTree", "oil", "aerial" } -- 跳过的文件类型列表
 	local closed = 0
+	local skipped = 0
 	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 		if buf ~= current and vim.api.nvim_buf_is_loaded(buf) then
 			local ft = vim.bo[buf].filetype
 			if not vim.tbl_contains(skipped_ft, ft) then
-				vim.api.nvim_buf_delete(buf, { force = true })
-				closed = closed + 1
+				local ok = pcall(vim.api.nvim_buf_delete, buf, {})
+				if ok then
+					closed = closed + 1
+				else
+					skipped = skipped + 1
+				end
 			end
 		end
 	end
-	vim.notify(("已关闭 %d 个 Buffer"):format(closed), vim.log.levels.INFO)
+	vim.notify(("已关闭 %d 个 Buffer，跳过 %d 个"):format(closed, skipped), vim.log.levels.INFO)
 end, { desc = "关闭其他 Buffer" })
