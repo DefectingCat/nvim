@@ -57,6 +57,19 @@ M.setup = function()
 	-- 加载 nvim-treesitter（通过 packadd 激活 opt 插件）
 	vim.cmd.packadd("nvim-treesitter")
 	local treesitter = require("nvim-treesitter")
+	local function start(buf)
+		if not vim.api.nvim_buf_is_valid(buf) or not vim.api.nvim_buf_is_loaded(buf) then
+			return
+		end
+
+		local ft = vim.bo[buf].filetype
+		local lang = vim.treesitter.language.get_lang(ft)
+		if not lang or not pcall(vim.treesitter.language.add, lang) then
+			return
+		end
+
+		pcall(vim.treesitter.start, buf, lang)
+	end
 
 	-- 先用 runtimepath 做一次轻量检查；全部已安装时不创建安装任务，
 	-- 避免每次启动都让 nvim-treesitter 重扫完整 parser 清单。
@@ -75,27 +88,16 @@ M.setup = function()
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = "*", -- 匹配所有文件类型
 		callback = function(args)
-			local buf = args.buf
-			local ft = vim.bo[buf].filetype
-
-			-- 将文件类型映射到 treesitter 语言名
-			-- 例如 "javascriptreact" → "javascript"
-			local lang = vim.treesitter.language.get_lang(ft)
-			if not lang then
-				return -- 无对应语言，跳过
-			end
-
-			-- 尝试注册语言（如果 parser 已安装）
-			-- pcall 用于安全调用：parser 未安装时不会报错
-			local ok_add = pcall(vim.treesitter.language.add, lang)
-			if not ok_add then
-				return -- parser 未安装，跳过
-			end
-
-			-- 启用 treesitter 高亮
-			pcall(vim.treesitter.start, buf, lang)
+			start(args.buf)
 		end,
 	})
+
+	-- setup 发生在 VimEnter，初始 Buffer 已错过 FileType；移出首屏后统一回填。
+	vim.schedule(function()
+		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+			start(buf)
+		end
+	end)
 end
 
 return M
