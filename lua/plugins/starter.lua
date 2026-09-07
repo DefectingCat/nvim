@@ -176,6 +176,26 @@ if ok_starter then
 		},
 	})
 
+	-- 重启恢复只保存了启动页名称；在原窗口内重建内容，不干扰文件窗口和焦点。
+	local group = vim.api.nvim_create_augroup("StarterRestart", { clear = true })
+	if vim.v.startreason == "restart" then
+		vim.api.nvim_create_autocmd("SessionLoadPost", {
+			group = group,
+			once = true,
+			nested = true,
+			callback = function()
+				for _, win in ipairs(vim.api.nvim_list_wins()) do
+					local buf = vim.api.nvim_win_get_buf(win)
+					if vim.startswith(vim.api.nvim_buf_get_name(buf), "ministarter://") then
+						vim.api.nvim_win_call(win, function()
+							starter.open(buf)
+						end)
+					end
+				end
+			end,
+		})
+	end
+
 	lazy.track("starter")
 end
 

@@ -95,3 +95,12 @@ nvim --headless --startuptime /tmp/startup.log \
 
 `:PackClean` 前先执行 `:restart`，让 `vim.pack` 重新识别已从配置移除的插件。
 `:ExColors!` 需要先在 `lua/pack.lua` 中启用并安装 `ex-colors.nvim`。
+
+## 会话重启
+
+Neovim 0.12.5 的 `:restart` / `ZR` 会保存并恢复当前会话；`:restart!` 不恢复会话。
+配置在重启的 `SessionLoadPost` 中重建各窗口里的 `ministarter://` 启动页，
+保留普通文件窗口、标签页和当前焦点，不覆盖全局 `ZR`。
+
+验证时分别从启动页、普通文件执行 `ZR`；再保留一个非当前标签页中的启动页执行
+`:restart`，确认启动页仍有内容，普通文件的当前标签页与光标位置保持不变。
