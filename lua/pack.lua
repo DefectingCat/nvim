@@ -29,13 +29,14 @@
 --   grug-far.nvim      - 搜索与替换
 --
 -- 懒加载策略：
+--   启动阶段       → treesitter（parser 安装检查仍延后）
 --   InsertEnter    → completion, snippets, pairs
 --   BufReadPost    → gitsigns, surround, ai, cursorword
---   VimEnter       → treesitter, icons
+--   VimEnter       → icons, statusline, clue
 --   代码 FileType  → lsp, mason
 --   按键触发      → pick, neogit, codediff, files, grugfar
 --   BufWritePre    → conform
---   命令触发      → ex-colors
+--   命令触发      → render-markdown, mason
 -- =============================================================================
 
 local lazy = require("lazy")
@@ -44,7 +45,7 @@ local lazy = require("lazy")
 -- 插件安装声明
 -- ---------------------------------------------------------------------------
 -- mini.nvim 的 starter/notify 会在本文件中直接 require，因此先加入 runtimepath；
--- 其余插件仅登记安装，等各自触发器执行 :packadd 后才进入 runtimepath。
+-- 其余插件先登记安装；treesitter 随后立即加载，其他插件由各自触发器执行 :packadd。
 -- 所有插件的状态锁定在 nvim-pack-lock.json 中。
 vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" }, { load = false })
 
@@ -65,6 +66,11 @@ vim.pack.add({
 }, {
 	load = function() end,
 })
+
+-- nvim-treesitter main 不支持懒加载，查询文件必须在首次 FileType 前进入 runtimepath。
+lazy.load("treesitter", function()
+	require("plugins.treesitter").setup()
+end)
 
 -- ---------------------------------------------------------------------------
 -- 功能域插件配置（lua/plugins/*.lua）
@@ -243,11 +249,7 @@ end)
 -- =============================================================================
 -- 重型模块（按实际需要延迟加载）
 -- =============================================================================
--- treesitter 在 VimEnter 后初始化；LSP/Mason 仅在首次打开代码文件时初始化。
-lazy.on_event("treesitter", "VimEnter", "*", function()
-	require("plugins.treesitter").setup()
-end)
-
+-- LSP/Mason 仅在首次打开代码文件或执行 Mason 命令时初始化。
 local lsp_filetypes = {
 	"css",
 	"scss",

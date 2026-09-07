@@ -18,7 +18,8 @@
 
 | 触发条件          | 插件                                                                    |
 | ----------------- | ----------------------------------------------------------------------- |
-| `VimEnter`        | treesitter、icons                                                       |
+| 启动阶段          | treesitter（parser 安装检查延后 100ms）                                  |
+| `VimEnter`        | icons、statusline、clue                                                  |
 | 代码 `FileType`   | lsp、mason                                                               |
 | `InsertEnter`     | completion、snippets、pairs                                             |
 | `BufReadPost`     | gitsigns、surround、ai、cursorword                                      |

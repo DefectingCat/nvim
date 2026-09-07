@@ -1,15 +1,15 @@
 -- =============================================================================
 -- Treesitter 配置 (lua/plugins/treesitter.lua)
 -- =============================================================================
--- 本模块配置 Neovim 的 Treesitter 集成，提供语法树驱动的语法高亮、
--- 代码折叠和文本对象支持。
+-- 本模块配置 Treesitter parser 管理和按 buffer 启用的语法高亮。
 --
 -- 加载方式：
---   由 pack.lua 通过 lazy.on_event("treesitter", "VimEnter", "*", ...) 延迟加载。
+--   由 pack.lua 在注册插件后立即加载，确保首次 FileType 前查询文件可用。
 --
 -- 设计要点：
 --   1. 启动 100ms 后只检查 parser 文件，仅将缺失项交给安装器
 --   2. 高亮按 buffer 动态附加（FileType autocmd），仅在 parser 可用时启用
+--   3. 仅在 nvim-treesitter 更新后异步更新已安装的 parser 和查询
 -- =============================================================================
 
 local M = {}
@@ -57,6 +57,20 @@ M.setup = function()
 	-- 加载 nvim-treesitter（通过 packadd 激活 opt 插件）
 	vim.cmd.packadd("nvim-treesitter")
 	local treesitter = require("nvim-treesitter")
+	local group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true })
+
+	-- 上游 update() 会重新加载 parser 清单，无需手动清除模块缓存。
+	vim.api.nvim_create_autocmd("PackChanged", {
+		group = group,
+		callback = function(args)
+			if args.data.spec.name == "nvim-treesitter" and args.data.kind == "update" then
+				vim.schedule(function()
+					treesitter.update()
+				end)
+			end
+		end,
+	})
+
 	local function start(buf)
 		if not vim.api.nvim_buf_is_valid(buf) or not vim.api.nvim_buf_is_loaded(buf) then
 			return
@@ -86,13 +100,14 @@ M.setup = function()
 	-- 当文件的 filetype 被设置时（BufRead、:setfiletype 等），
 	-- 尝试查找并加载对应的 parser，成功后启用高亮。
 	vim.api.nvim_create_autocmd("FileType", {
+		group = group,
 		pattern = "*", -- 匹配所有文件类型
 		callback = function(args)
 			start(args.buf)
 		end,
 	})
 
-	-- setup 发生在 VimEnter，初始 Buffer 已错过 FileType；移出首屏后统一回填。
+	-- 手动重新执行 setup 时，为已加载的 buffer 补上高亮。
 	vim.schedule(function()
 		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 			start(buf)

@@ -15,7 +15,7 @@ lua/pack.lua               -- 插件声明、模块配置与懒加载绑定
 lua/lazy.lua               -- 自定义懒加载原语（load / on_event / on_keys）
 lua/plugins/
   lsp.lua                  -- LSP、Mason 与 conform 格式化
-  treesitter.lua            -- 延迟安装 parser、按 buffer 启用高亮
+  treesitter.lua            -- 启动加载、延迟安装 parser、更新后同步 parser、按 buffer 启用高亮
   pick.lua                 -- mini.pick 封装：文件、buffer、filetype picker
   files.lua                -- mini.files 文件浏览器与文件操作映射
   git.lua                  -- gitsigns、Neogit、CodeDiff Git 工具链
@@ -38,14 +38,15 @@ DEVELOPMENT.md             -- 开发、验证与常用命令
 2. `keymaps.lua`：设置 Leader 和全局映射。
 3. `autocmds.lua`：注册通用自动命令。
 4. `usercmds.lua`：注册 `vim.pack` 管理命令。
-5. `pack.lua`：登记插件并注册各功能域的懒加载入口。
+5. `pack.lua`：登记插件，立即初始化 Treesitter，再注册其他功能域的懒加载入口。
 6. 应用 `ex-catppuccin-mocha` colorscheme。
 
 重型模块不会全部在启动阶段初始化：
 
 | 触发条件 | 模块 / 插件 |
 | -------- | ----------- |
-| `VimEnter` | Treesitter、`mini.icons`、`mini.statusline`、`mini.clue` |
+| 启动阶段 | Treesitter 插件与查询文件；parser 安装检查延后 100ms |
+| `VimEnter` | `mini.icons`、`mini.statusline`、`mini.clue` |
 | 代码 `FileType` 或 Mason 命令 | LSP、Mason |
 | `InsertEnter` | `mini.completion`、`mini.snippets`、`friendly-snippets`、`mini.pairs` |
 | `BufReadPost` | gitsigns、`mini.surround`、`mini.ai`、`mini.cursorword` |
@@ -98,6 +99,12 @@ nvim --headless --startuptime /tmp/startup.log \
 
 `:PackClean` 前先执行 `:restart`，让 `vim.pack` 重新识别已从配置移除的插件。
 `:ExColors!` 需要先在 `lua/pack.lua` 中启用并安装 `ex-colors.nvim`。
+
+`nvim-treesitter/main` 不支持懒加载，因此在首次 `FileType` 前加载插件和查询文件，
+高亮仍按 buffer 启用。更新该插件后，原生 `PackChanged` 事件会异步更新已安装的
+parser；普通启动、其他插件更新及安装/删除事件不会触发这次全量 parser 更新。
+需要单独更新 parser 时可执行 `:TSUpdate`。等待更新完成后再 `:restart`，
+让已加载的 parser、查询与插件代码一并重新生效。
 
 ## 会话重启
 

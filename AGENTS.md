@@ -54,7 +54,8 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 
 | Trigger       | Plugins / Modules                        |
 | ------------- | ---------------------------------------- |
-| `VimEnter`    | treesitter, icons, clue, statusline      |
+| Startup       | treesitter; missing-parser checks deferred 100ms |
+| `VimEnter`    | icons, clue, statusline                 |
 | Code `FileType` | lsp, mason                             |
 | `InsertEnter` | completion, snippets, pairs              |
 | `BufReadPost` | gitsigns, surround, ai, cursorword       |
@@ -63,6 +64,8 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 | Command       | render-markdown, mason (`CmdUndefined`) |
 
 Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue` must register prefix keys itself as buffer-local triggers, which is incompatible with the wrapper-mapping approach. Its buffer triggers are re-asserted on `LspAttach` and inside gitsigns' `on_attach` via `MiniClue.ensure_buf_triggers()`.
+
+`nvim-treesitter/main` is an eager-loading exception: activate it before the first `FileType` so queries are available. Its `PackChanged` hook asynchronously updates installed parsers only after that plugin is updated. Wait for updates to finish before restarting to reload parser binaries and queries.
 
 ## LSP & Formatting
 
@@ -78,7 +81,7 @@ Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue
 
 ## Key Conventions
 
-- Startup performance is a priority. Heavy modules are deferred to `VimEnter` or the first relevant `FileType`. Clipboard is set via `vim.schedule()` to avoid blocking.
+- Startup performance is a priority. Heavy modules are deferred to `VimEnter` or the first relevant `FileType`, except nvim-treesitter's required early plugin/query loading. Parser installation checks and clipboard initialization remain deferred.
 - The active colorscheme is `ex-catppuccin-mocha`, defined in `colors/ex-catppuccin-mocha.lua`.
 - Comments and UI strings are in **Chinese**.
 - Line diagnostic float is on `<leader>df`. Do **not** map bare `df` — it shadows the `df{char}` operator-pending motion (delete-until-char), a footgun previously hit in this repo.

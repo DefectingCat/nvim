@@ -9,7 +9,7 @@
 | ---- | ---- | ---- | -------- |
 | **mini.nvim** | [nvim-mini/mini.nvim](https://github.com/nvim-mini/mini.nvim) | 单体插件集，提供 UI、查找、文件浏览、补全等模块 | 按子模块加载 |
 | **friendly-snippets** | [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | 社区代码片段集合 | `InsertEnter` |
-| **nvim-treesitter** | [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | 语法树解析、语法高亮与代码折叠 | `VimEnter` |
+| **nvim-treesitter** | [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | parser 安装与更新、语法查询；配合原生高亮和折叠 | 启动时加载；安装检查延后，更新插件后异步同步已安装 parser |
 | **nvim-lspconfig** | [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | LSP 服务器配置 | 代码文件类型首次出现时 |
 | **mason.nvim** | [mason-org/mason.nvim](https://github.com/mason-org/mason.nvim) | LSP、DAP 与格式化工具安装管理 | 代码文件类型或 Mason 命令 |
 | **conform.nvim** | [stevearc/conform.nvim](https://github.com/stevearc/conform.nvim) | 代码格式化与保存时格式化 | `BufWritePre` 或 `<leader>fm` |
