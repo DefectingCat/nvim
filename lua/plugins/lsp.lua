@@ -281,6 +281,11 @@ end, { desc = "重命名符号" })
 -- ---------------------------------------------------------------------------
 -- 诊断导航
 -- ---------------------------------------------------------------------------
+-- 保持诊断跳转后的浮窗展示，不把焦点移入浮窗。
+local function open_jump_float(_, bufnr)
+	vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+end
+
 -- 辅助函数：创建诊断跳转的闭包。
 -- 参数：
 --   next     - true 表示向后跳，false 表示向前跳
@@ -293,7 +298,7 @@ local diagnostic_goto = function(next, severity)
 		vim.diagnostic.jump({
 			count = (next and 1 or -1) * vim.v.count1,
 			severity = severity and vim.diagnostic.severity[severity] or nil,
-			float = true, -- 跳转时显示诊断浮动窗口
+			on_jump = open_jump_float,
 		})
 	end
 end
