@@ -12,7 +12,7 @@ lua/keymaps.lua            -- 全局键位映射（Leader = Space）
 lua/autocmds.lua           -- 光标恢复、注释延续、Treesitter 折叠
 lua/usercmds.lua           -- :PackAdd / :PackDel / :PackUpdate / :PackClean
 lua/pack.lua               -- 插件声明、模块配置与懒加载绑定
-lua/lazy.lua               -- 自定义懒加载原语（load / on_event / on_keys / on_cmd）
+lua/lazy.lua               -- 自定义懒加载原语（load / on_event / on_keys）
 lua/plugins/
   lsp.lua                  -- LSP、Mason 与 conform 格式化
   treesitter.lua            -- 延迟安装 parser、按 buffer 启用高亮
@@ -55,6 +55,9 @@ DEVELOPMENT.md             -- 开发、验证与常用命令
 | 首次按 `:` | `mini.cmdline` |
 
 完整插件说明见 [PLUGINS.md](./PLUGINS.md)，完整映射见 [MAPS.md](./MAPS.md)。
+
+命令懒加载使用原生 `CmdUndefined`，加载后由 Neovim 原样重试。不要手工拼接命令，
+以免破坏 `:silent` 等修饰符、参数及原命令的校验。
 
 ## 语法与启动检查
 

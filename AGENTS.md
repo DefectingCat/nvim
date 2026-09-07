@@ -5,7 +5,7 @@ This is a personal Neovim configuration targeting **Neovim 0.12+**. It lives at 
 ## Critical Architecture Notes
 
 - **Plugin manager**: Neovim 0.12+ built-in `vim.pack` (not lazy.nvim / packer). `mini.nvim` uses `load = false` so its shared modules are immediately require-able; trigger-loaded plugins use a no-op `load` callback and explicit `:packadd`. All plugins are tracked in `nvim-pack-lock.json`.
-- **Custom lazy-loading**: `lua/lazy.lua` is a ~35-line custom framework (unrelated to lazy.nvim). It provides `load()`, `on_event()`, `on_keys()`, `on_cmd()` and tracks loaded modules in `M._loaded`.
+- **Custom lazy-loading**: `lua/lazy.lua` is a small custom framework (unrelated to lazy.nvim). It provides `load()`, `on_event()`, `on_keys()` and tracks loaded modules in `M._loaded`. Command loading uses native `CmdUndefined` (via `on_event`), so Neovim retries the original command without manual reconstruction.
 - **Mini.nvim monorepo**: Most UI/functionality comes from the single `mini.nvim` package. Its submodules (starter, pick, extra, files, icons, notify, cmdline, completion, snippets, surround, clue, statusline, ai, cursorword, pairs) are configured individually in `lua/pack.lua` or on-demand.
 
 ## File Loading Order
@@ -60,7 +60,7 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 | `BufReadPost` | gitsigns, surround, ai, cursorword       |
 | `BufWritePre` | conform (format-on-save)                 |
 | Key press     | pick, files, neogit, codediff, grugfar   |
-| Command       | ex-colors (`:ExColors`)                  |
+| Command       | render-markdown, mason (`CmdUndefined`) |
 
 Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue` must register prefix keys itself as buffer-local triggers, which is incompatible with the wrapper-mapping approach. Its buffer triggers are re-asserted on `LspAttach` and inside gitsigns' `on_attach` via `MiniClue.ensure_buf_triggers()`.
 

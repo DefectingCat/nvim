@@ -28,10 +28,5 @@ lazy.on_keys("render-markdown", "<leader>tm", "n", load_render_markdown, functio
 	vim.cmd("RenderMarkdown toggle")
 end, { desc = "切换 Markdown 渲染" })
 
--- 3. 命令 :RenderMarkdown 触发懒加载
-lazy.on_cmd(
-	"render-markdown",
-	"RenderMarkdown",
-	load_render_markdown,
-	{ nargs = "*", bang = true, desc = "Markdown 渲染命令" }
-)
+-- 3. 命令首次触发时加载插件，由 Neovim 原样重试，保留修饰符和参数。
+lazy.on_event("render-markdown", "CmdUndefined", "RenderMarkdown", load_render_markdown)
