@@ -163,7 +163,10 @@ end)
 
 -- mini.ai — 扩展 a/i textobject（读取文件或新建 Buffer 时懒加载）
 lazy.on_event("ai", { "BufReadPost", "BufNewFile", "BufNew" }, "*", function()
-	require("mini.ai").setup()
+	require("mini.ai").setup({
+		-- 保留 Neovim 0.12 的 an / in 节点选择。
+		mappings = { around_next = "aN", inside_next = "iN" },
+	})
 end)
 
 -- mini.cursorword — 自动高亮光标下单词（读取文件或新建 Buffer 时懒加载）

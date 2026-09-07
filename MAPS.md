@@ -108,6 +108,16 @@ CodeDiff 视图内还提供：
 | `<leader>ss` | Visual | 只在当前选区内搜索替换 |
 | `<leader>sr` | Normal / Visual | 打开 grug-far 搜索与替换 |
 
+## 文本对象与节点选择
+
+| 键位 | 模式 | 动作 |
+| ---- | ---- | ---- |
+| `an` / `in` | Visual / Operator | 原生语法节点选择：向外扩大 / 向内缩小；无 Treesitter parser 时回退到 LSP |
+| `aN{对象}` / `iN{对象}` | Visual / Operator | mini.ai：选择下一个文本对象，包含 / 不包含边界 |
+
+例如，`van` 开始节点选择，再按 `an` 扩大、`in` 缩小；`vaN)` 选择下一对括号，
+`viN)` 只选择其内部。mini.ai 不再覆盖原生的 `an` / `in`。
+
 ## Surround、补全与 Markdown
 
 | 键位 | 模式 | 动作 |
