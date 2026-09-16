@@ -150,37 +150,16 @@ M.setup = function()
 	})
 
 	-- ---------------------------------------------------------------------------
-	-- 已安装的 Mason 工具清单（通过 :Mason 查看）
-	-- ---------------------------------------------------------------------------
-	-- 以下是通过 Mason 安装的 LSP 服务器和工具：
-	--   ◍ biome              - JS/TS/JSON 格式化和 lint
-	--   ◍ css-lsp            - CSS 语言服务器
-	--   ◍ gofumpt            - Go 格式化（stricter than gofmt）
-	--   ◍ goimports          - Go 导入整理
-	--   ◍ golangci-lint      - Go linter
-	--   ◍ gopls              - Go 语言服务器
-	--   ◍ html-lsp           - HTML 语言服务器
-	--   ◍ kotlin-lsp         - Kotlin 语言服务器
-	--   ◍ lua-language-server- Lua 语言服务器
-	--   ◍ prettierd          - 通用代码格式化器（高性能守护进程版）
-	--   ◍ rust-analyzer      - Rust 语言服务器
-	--   ◍ stylua             - Lua 格式化器
-	--   ◍ svelte-language-server - Svelte 语言服务器
-	--   ◍ taplo              - TOML 工具
-	--   ◍ vtsls              - TypeScript 语言服务器（VS Code 的 TS 服务端移植）
-
-	-- ---------------------------------------------------------------------------
 	-- 按命令可用性启用 LSP
 	-- 常规服务只检查可执行文件，不启动额外进程。
 	local lsp_servers = {
 		{ name = "html", command = "vscode-html-language-server" },
 		{ name = "cssls", command = "vscode-css-language-server" },
 		{ name = "gopls", command = "gopls" },
-		{ name = "vtsls", command = "vtsls" },
 		{ name = "lua_ls", command = "lua-language-server" },
 		{ name = "taplo", command = "taplo" },
 		{ name = "svelte", command = "svelteserver" },
-		{ name = "kotlin_lsp", command = "intellij-server" },
+		{ name = "tsc", command = "tsc" },
 	}
 
 	local enabled_servers = {}

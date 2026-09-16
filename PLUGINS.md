@@ -51,11 +51,10 @@
 | `html` | `vscode-html-language-server` | HTML |
 | `cssls` | `vscode-css-language-server` | CSS、SCSS、Less |
 | `gopls` | `gopls` | Go、Go Modules、Go Workspaces、Go Templates |
-| `vtsls` | `vtsls` | JavaScript、TypeScript、JSX、TSX |
+| `tsc` | `tsc`（TypeScript 7+ 原生编译器，支持 `--lsp`） | JavaScript、TypeScript、JSX、TSX |
 | `lua_ls` | `lua-language-server` | Lua |
 | `taplo` | `taplo` | TOML |
 | `svelte` | `svelteserver` | Svelte |
-| `kotlin_lsp` | `intellij-server` | Kotlin |
 | `rust_analyzer` | `rust-analyzer` | Rust；打开 Rust 文件后异步验证 |
 
 ### 格式化器

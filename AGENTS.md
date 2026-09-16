@@ -69,7 +69,7 @@ Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue
 
 ## LSP & Formatting
 
-- **LSP servers enabled**: html, cssls, gopls, vtsls, rust_analyzer, lua_ls, taplo, svelte, kotlin_lsp
+- **LSP servers enabled**: html, cssls, gopls, rust_analyzer, lua_ls, taplo, svelte, tsc
 - **Lua LSP**: `vim` is declared as a global in `lua_ls` settings to suppress "Undefined global" diagnostics
 - **Formatters by filetype** (`lua/plugins/lsp.lua`):
   - `lua` → stylua
