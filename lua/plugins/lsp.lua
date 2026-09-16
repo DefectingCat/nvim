@@ -172,53 +172,8 @@ M.setup = function()
 		end
 	end
 
-	-- 未纳入 Mason 管理、通过系统工具链安装的服务器（go install、npm 全局安装等），
-	-- 仍按可执行文件探测。
-	local external_servers = {
-		{ name = "html", command = "vscode-html-language-server" },
-		{ name = "gopls", command = "gopls" },
-		{ name = "svelte", command = "svelteserver" },
-	}
-	for _, server in ipairs(external_servers) do
-		if vim.fn.executable(server.command) == 1 then
-			enabled_servers[server.name] = true
-		end
-	end
-
 	if next(enabled_servers) then
 		vim.lsp.enable(vim.tbl_keys(enabled_servers))
-	end
-
-	-- rustup 即使没有安装 rust-analyzer 组件，也会提供同名代理。
-	-- 首次打开 Rust buffer 时异步验证，避免每次启动都同步等待失败的代理。
-	local function enable_rust_analyzer_if_available()
-		if vim.fn.executable("rust-analyzer") ~= 1 then
-			return
-		end
-
-		vim.system({ "rust-analyzer", "--version" }, { stdout = false, stderr = false }, function(result)
-			if result.code ~= 0 then
-				return
-			end
-			vim.schedule(function()
-				vim.lsp.enable("rust_analyzer")
-			end)
-		end)
-	end
-
-	local rust_check_autocmd = vim.api.nvim_create_autocmd("FileType", {
-		pattern = "rust",
-		once = true,
-		callback = enable_rust_analyzer_if_available,
-	})
-
-	-- 以 Rust 文件启动时，FileType 早于 VimEnter 触发；补查已存在的 Rust buffer。
-	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.bo[bufnr].filetype == "rust" then
-			vim.api.nvim_del_autocmd(rust_check_autocmd)
-			enable_rust_analyzer_if_available()
-			break
-		end
 	end
 
 	-- 诊断显示配置在 LSP 首次启用时再加载 vim.diagnostic。
