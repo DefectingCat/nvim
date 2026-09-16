@@ -150,27 +150,43 @@ M.setup = function()
 	})
 
 	-- ---------------------------------------------------------------------------
-	-- 按命令可用性启用 LSP
-	-- 常规服务只检查可执行文件，不启动额外进程。
-	local lsp_servers = {
-		{ name = "html", command = "vscode-html-language-server" },
-		{ name = "cssls", command = "vscode-css-language-server" },
-		{ name = "gopls", command = "gopls" },
-		{ name = "lua_ls", command = "lua-language-server" },
-		{ name = "taplo", command = "taplo" },
-		{ name = "svelte", command = "svelteserver" },
-		{ name = "tsc", command = "tsc" },
-	}
-
+	-- 自动检测已启用的 LSP
+	-- ---------------------------------------------------------------------------
+	-- 已通过 Mason 安装的包直接启用：mason-registry 里每个包的 spec 若带有
+	-- neovim.lspconfig 字段，即为该包对应的 nvim-lspconfig 服务器名
+	-- （如 css-lsp -> cssls，lua-language-server -> lua_ls，tsc -> tsc）。
+	-- 以此代替手动维护 {name, command} 列表：以后 `:MasonInstall xxx` 装好
+	-- 就能自动启用，无需再改本文件。
+	--
+	-- 用 nvim_get_runtime_file 校验 lsp/<name>.lua 确实存在：mason-registry
+	-- 与本机安装的 nvim-lspconfig 版本可能不同步，直接把未知名称交给
+	-- vim.lsp.enable() 会导致其校验阶段整体报错、一个都不启用。
 	local enabled_servers = {}
-	for _, server in ipairs(lsp_servers) do
-		if vim.fn.executable(server.command) == 1 then
-			table.insert(enabled_servers, server.name)
+	local ok_registry, mason_registry = pcall(require, "mason-registry")
+	if ok_registry then
+		for _, pkg in ipairs(mason_registry.get_installed_packages()) do
+			local lspconfig_name = pkg.spec.neovim and pkg.spec.neovim.lspconfig
+			if lspconfig_name and #vim.api.nvim_get_runtime_file("lsp/" .. lspconfig_name .. ".lua", false) > 0 then
+				enabled_servers[lspconfig_name] = true
+			end
 		end
 	end
 
-	if #enabled_servers > 0 then
-		vim.lsp.enable(enabled_servers)
+	-- 未纳入 Mason 管理、通过系统工具链安装的服务器（go install、npm 全局安装等），
+	-- 仍按可执行文件探测。
+	local external_servers = {
+		{ name = "html", command = "vscode-html-language-server" },
+		{ name = "gopls", command = "gopls" },
+		{ name = "svelte", command = "svelteserver" },
+	}
+	for _, server in ipairs(external_servers) do
+		if vim.fn.executable(server.command) == 1 then
+			enabled_servers[server.name] = true
+		end
+	end
+
+	if next(enabled_servers) then
+		vim.lsp.enable(vim.tbl_keys(enabled_servers))
 	end
 
 	-- rustup 即使没有安装 rust-analyzer 组件，也会提供同名代理。

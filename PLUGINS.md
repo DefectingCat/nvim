@@ -44,18 +44,16 @@
 
 ### LSP 服务器
 
-首次打开代码文件时，配置会检查对应可执行文件；仅启用本机实际可用的服务器：
+首次打开代码文件时，`lua/plugins/lsp.lua` 自动检测应启用哪些服务器，无需手动维护列表：
 
-| 服务器 | 可执行文件 | 支持类型 |
-| ------ | ----------- | -------- |
-| `html` | `vscode-html-language-server` | HTML |
-| `cssls` | `vscode-css-language-server` | CSS、SCSS、Less |
-| `gopls` | `gopls` | Go、Go Modules、Go Workspaces、Go Templates |
-| `tsc` | `tsc`（TypeScript 7+ 原生编译器，支持 `--lsp`） | JavaScript、TypeScript、JSX、TSX |
-| `lua_ls` | `lua-language-server` | Lua |
-| `taplo` | `taplo` | TOML |
-| `svelte` | `svelteserver` | Svelte |
-| `rust_analyzer` | `rust-analyzer` | Rust；打开 Rust 文件后异步验证 |
+- **Mason 已装包自动启用**：遍历 `mason-registry` 已安装包，若某包的 registry spec 带有
+  `neovim.lspconfig` 字段（如 `css-lsp` → `cssls`、`lua-language-server` → `lua_ls`、
+  `tsc` → `tsc`），且本机 `nvim-lspconfig` 确实提供对应 `lsp/<name>.lua`，即启用该服务器。
+  以后 `:MasonInstall <pkg>` 装好就自动生效，不用改本文件。
+- **系统工具链回退**：`html`（`vscode-html-language-server`）、`gopls`、`svelte`
+  （`svelteserver`）未纳入本机 Mason 管理，仍按 `vim.fn.executable()` 探测。
+- **`rust_analyzer`** 单独处理：rustup 即使未装 `rust-analyzer` 组件也会提供同名代理，
+  因此打开 Rust 文件后异步执行 `rust-analyzer --version` 验证真实可用才启用。
 
 ### 格式化器
 

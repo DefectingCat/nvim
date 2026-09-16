@@ -69,7 +69,7 @@ Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue
 
 ## LSP & Formatting
 
-- **LSP servers enabled**: html, cssls, gopls, rust_analyzer, lua_ls, taplo, svelte, tsc
+- **LSP servers**: auto-detected in `lua/plugins/lsp.lua` — any Mason-installed package whose registry spec declares `neovim.lspconfig` is enabled automatically (no manual list to maintain; `:MasonInstall <pkg>` is enough). A small `external_servers` fallback (`html`, `gopls`, `svelte`) still probes `vim.fn.executable()` for servers installed outside Mason (system toolchains).
 - **Lua LSP**: `vim` is declared as a global in `lua_ls` settings to suppress "Undefined global" diagnostics
 - **Formatters by filetype** (`lua/plugins/lsp.lua`):
   - `lua` → stylua
