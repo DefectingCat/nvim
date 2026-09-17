@@ -249,32 +249,8 @@ end)
 -- =============================================================================
 -- 重型模块（按实际需要延迟加载）
 -- =============================================================================
--- LSP/Mason 仅在首次打开代码文件或执行 Mason 命令时初始化。
-local lsp_filetypes = {
-	"astro",
-	"css",
-	"scss",
-	"less",
-	"go",
-	"gomod",
-	"gowork",
-	"gotmpl",
-	"graphql",
-	"html",
-	"json",
-	"jsonc",
-	"javascript",
-	"javascriptreact",
-	"typescript",
-	"typescriptreact",
-	"kotlin",
-	"lua",
-	"rust",
-	"svelte",
-	"toml",
-	"vue",
-}
-
+-- LSP/Mason 在普通文件首次确定类型或执行 Mason 命令时初始化。
+-- 具体服务器由 vim.lsp.enable() 按各自的 filetypes 匹配，无需重复维护名单。
 local lsp_loading = false
 local lsp_scheduled = false
 local lsp_filetype_loader
@@ -314,7 +290,7 @@ local function schedule_lsp()
 end
 
 lsp_filetype_loader = vim.api.nvim_create_autocmd("FileType", {
-	pattern = lsp_filetypes,
+	pattern = "*",
 	callback = function(args)
 		-- quickfix、帮助页等特殊 buffer 即使伪装成代码 filetype 也不启动 LSP。
 		if vim.bo[args.buf].buftype ~= "" then

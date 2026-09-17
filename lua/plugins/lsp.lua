@@ -4,7 +4,7 @@
 -- 本文件配置 Neovim 的 LSP 客户端、代码格式化（conform.nvim）和诊断导航。
 --
 -- 加载方式：
---   本文件启动时只注册格式化与键位；Mason/LSP 由 pack.lua 在代码文件的
+--   本文件启动时只注册格式化与键位；Mason/LSP 由 pack.lua 在普通文件的
 --   FileType 首次触发时调用 setup()，空启动不会加载相关插件。
 --
 -- 依赖加载顺序：

@@ -56,7 +56,7 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 | ------------- | ---------------------------------------- |
 | Startup       | treesitter; missing-parser checks deferred 100ms |
 | `VimEnter`    | icons, clue, statusline                 |
-| Code `FileType` | lsp, mason                             |
+| Normal-buffer `FileType` | lsp, mason（服务器按自身 filetypes 自动匹配） |
 | `InsertEnter` | completion, snippets, pairs              |
 | `BufReadPost` | gitsigns, surround, ai, cursorword       |
 | `BufWritePre` | conform (format-on-save)                 |
