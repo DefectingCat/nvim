@@ -59,7 +59,7 @@ local function setup_conform()
 			if vim.b[bufnr].autoformat == false or vim.g.autoformat == false then
 				return nil -- 返回 nil 表示不格式化
 			end
-			return { timeout_ms = 500, lsp_fallback = true }
+			return { timeout_ms = 500, lsp_format = "fallback" }
 		end,
 	})
 end
@@ -72,7 +72,7 @@ lazy.on_event("conform", "BufWritePre", "*", function()
 	setup_conform()
 	local bufnr = vim.api.nvim_get_current_buf()
 	if vim.b[bufnr].autoformat ~= false and vim.g.autoformat ~= false then
-		require("conform").format({ bufnr = bufnr, timeout_ms = 500, lsp_fallback = true })
+		require("conform").format({ bufnr = bufnr, timeout_ms = 500, lsp_format = "fallback" })
 	end
 end)
 
@@ -209,7 +209,7 @@ end, { desc = "悬停查看文档" })
 -- <leader>fm - 手动格式化当前 buffer
 vim.keymap.set("n", "<leader>fm", function()
 	lazy.load("conform", setup_conform)
-	require("conform").format({ lsp_fallback = true })
+	require("conform").format({ lsp_format = "fallback" })
 end, { desc = "格式化当前 Buffer" })
 
 -- <leader>df - 显示当前行的诊断浮动窗口
