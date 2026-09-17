@@ -251,6 +251,7 @@ end)
 -- =============================================================================
 -- LSP/Mason 仅在首次打开代码文件或执行 Mason 命令时初始化。
 local lsp_filetypes = {
+	"astro",
 	"css",
 	"scss",
 	"less",
@@ -258,7 +259,10 @@ local lsp_filetypes = {
 	"gomod",
 	"gowork",
 	"gotmpl",
+	"graphql",
 	"html",
+	"json",
+	"jsonc",
 	"javascript",
 	"javascriptreact",
 	"typescript",
@@ -268,6 +272,7 @@ local lsp_filetypes = {
 	"rust",
 	"svelte",
 	"toml",
+	"vue",
 }
 
 local lsp_loading = false
