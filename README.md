@@ -12,22 +12,22 @@
 - **LSP + 代码格式化** — nvim-lspconfig + mason + conform.nvim，保存时自动格式化，支持全局/Buffer 级别开关
 - **快速启动** — 禁用约 20 个内置插件，启用 Neovim 0.12+ 内置 UI 增强 (`vim._core.ui2`)
 - **启动仪表盘** — ASCII Logo + 实时模块加载统计 + 启动耗时
-- **Colorscheme 优化** — `ex-colors.nvim` 提取并生成精简版 colorscheme（默认 `ex-catppuccin-mocha`）
+- **精简 Colorscheme** — 直接加载 `colors/ex-catppuccin-mocha.lua`（默认主题）
 
 ## 懒加载策略
 
-| 触发条件          | 插件                                                                    |
-| ----------------- | ----------------------------------------------------------------------- |
-| 启动阶段          | treesitter（parser 安装检查延后 100ms）                                  |
-| `VimEnter`        | icons、statusline、clue                                                  |
-| 代码 `FileType`   | lsp、mason                                                               |
-| `InsertEnter`     | completion、snippets、pairs                                             |
-| `BufReadPost`     | gitsigns、surround、ai、cursorword                                      |
-| `BufWritePre`     | conform                                                                 |
-| 按键触发          | pick、files、neogit、codediff、grugfar                                  |
-| `FileType` / 按键 | render-markdown (`FileType: markdown`, `<leader>tm`, `:RenderMarkdown`) |
-| 首次按 `:`        | cmdline                                                                 |
-| 命令触发          | render-markdown、Mason（原生 `CmdUndefined`）                            |
+| 触发条件                       | 插件                                                                    |
+| ------------------------------ | ----------------------------------------------------------------------- |
+| 启动阶段                       | treesitter（parser 安装检查延后 100ms）                                 |
+| `VimEnter`                     | icons、statusline、clue                                                 |
+| 代码 `FileType`                | lsp、mason                                                              |
+| `InsertEnter`                  | completion、snippets、pairs                                             |
+| `BufReadPost` / `BufWritePost` | gitsigns、surround、ai、cursorword                                      |
+| `BufWritePre`                  | conform                                                                 |
+| 按键触发                       | pick、files、neogit、codediff、grugfar                                  |
+| `FileType` / 按键              | render-markdown (`FileType: markdown`, `<leader>tm`, `:RenderMarkdown`) |
+| 首次按 `:`                     | cmdline                                                                 |
+| 命令触发                       | render-markdown、Mason（原生 `CmdUndefined`）                           |
 
 ## 键位映射
 

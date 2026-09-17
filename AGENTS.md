@@ -26,7 +26,6 @@ pack.lua      → plugin declarations + lazy-loading bindings
 :PackDel plugin-name     " delete plugin
 :PackUpdate [name]       " update all or specific plugin
 :PackClean               " remove plugins no longer declared in pack.lua
-:ExColors!               " extract current colorscheme to optimized ex-colors
 ```
 
 ## Validation & Debugging
@@ -52,16 +51,16 @@ There is no traditional lint, typecheck, or test command. The validation command
 
 When adding new plugins that should load lazily, use the custom framework in `lua/lazy.lua` — do **not** use lazy.nvim patterns.
 
-| Trigger       | Plugins / Modules                        |
-| ------------- | ---------------------------------------- |
-| Startup       | treesitter; missing-parser checks deferred 100ms |
-| `VimEnter`    | icons, clue, statusline                 |
-| Normal-buffer `FileType` | lsp, mason（服务器按自身 filetypes 自动匹配） |
-| `InsertEnter` | completion, snippets, pairs              |
-| `BufReadPost` | gitsigns, surround, ai, cursorword       |
-| `BufWritePre` | conform (format-on-save)                 |
-| Key press     | pick, files, neogit, codediff, grugfar   |
-| Command       | render-markdown, mason (`CmdUndefined`) |
+| Trigger                        | Plugins / Modules                                |
+| ------------------------------ | ------------------------------------------------ |
+| Startup                        | treesitter; missing-parser checks deferred 100ms |
+| `VimEnter`                     | icons, clue, statusline                          |
+| Normal-buffer `FileType`       | lsp, mason（服务器按自身 filetypes 自动匹配）    |
+| `InsertEnter`                  | completion, snippets, pairs                      |
+| `BufReadPost` / `BufWritePost` | gitsigns, surround, ai, cursorword               |
+| `BufWritePre`                  | conform (format-on-save)                         |
+| Key press                      | pick, files, neogit, codediff, grugfar           |
+| Command                        | render-markdown, mason (`CmdUndefined`)          |
 
 Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue` must register prefix keys itself as buffer-local triggers, which is incompatible with the wrapper-mapping approach. Its buffer triggers are re-asserted on `LspAttach` and inside gitsigns' `on_attach` via `MiniClue.ensure_buf_triggers()`.
 
@@ -69,7 +68,7 @@ Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue
 
 ## LSP & Formatting
 
-- **LSP servers**: auto-detected in `lua/plugins/lsp.lua` — any Mason-installed package whose registry spec declares `neovim.lspconfig` is enabled automatically (no manual list to maintain; `:MasonInstall <pkg>` is enough). A small `external_servers` fallback (`html`, `gopls`, `svelte`) still probes `vim.fn.executable()` for servers installed outside Mason (system toolchains).
+- **LSP servers**: auto-detected in `lua/plugins/lsp.lua` — any Mason-installed package whose registry spec declares `neovim.lspconfig` is enabled automatically (no manual list to maintain). The scan runs when LSP/Mason is first initialized; after installing a new server with `:MasonInstall`, restart Neovim before opening a matching buffer.
 - **Lua LSP**: `vim` is declared as a global in `lua_ls` settings to suppress "Undefined global" diagnostics
 - **Formatters by filetype** (`lua/plugins/lsp.lua`):
   - `lua` → stylua

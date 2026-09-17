@@ -43,17 +43,17 @@ DEVELOPMENT.md             -- 开发、验证与常用命令
 
 重型模块不会全部在启动阶段初始化：
 
-| 触发条件 | 模块 / 插件 |
-| -------- | ----------- |
-| 启动阶段 | Treesitter 插件与查询文件；parser 安装检查延后 100ms |
-| `VimEnter` | `mini.icons`、`mini.statusline`、`mini.clue` |
-| 代码 `FileType` 或 Mason 命令 | LSP、Mason |
-| `InsertEnter` | `mini.completion`、`mini.snippets`、`friendly-snippets`、`mini.pairs` |
-| `BufReadPost` | gitsigns、`mini.surround`、`mini.ai`、`mini.cursorword` |
-| `BufWritePre` 或 `<leader>fm` | conform.nvim |
-| 按键触发 | `mini.pick`、`mini.files`、Neogit、CodeDiff、grug-far |
-| Markdown 类 `FileType`、`<leader>tm` 或 `:RenderMarkdown` | render-markdown.nvim |
-| 首次按 `:` | `mini.cmdline` |
+| 触发条件                                                  | 模块 / 插件                                                           |
+| --------------------------------------------------------- | --------------------------------------------------------------------- |
+| 启动阶段                                                  | Treesitter 插件与查询文件；parser 安装检查延后 100ms                  |
+| `VimEnter`                                                | `mini.icons`、`mini.statusline`、`mini.clue`                          |
+| 代码 `FileType` 或 Mason 命令                             | LSP、Mason                                                            |
+| `InsertEnter`                                             | `mini.completion`、`mini.snippets`、`friendly-snippets`、`mini.pairs` |
+| `BufReadPost` / `BufWritePost`                            | gitsigns、`mini.surround`、`mini.ai`、`mini.cursorword`               |
+| `BufWritePre` 或 `<leader>fm`                             | conform.nvim                                                          |
+| 按键触发                                                  | `mini.pick`、`mini.files`、Neogit、CodeDiff、grug-far                 |
+| Markdown 类 `FileType`、`<leader>tm` 或 `:RenderMarkdown` | render-markdown.nvim                                                  |
+| 首次按 `:`                                                | `mini.cmdline`                                                        |
 
 完整插件说明见 [PLUGINS.md](./PLUGINS.md)，完整映射见 [MAPS.md](./MAPS.md)。
 
@@ -94,11 +94,14 @@ nvim --headless --startuptime /tmp/startup.log \
 :PackUpdate                    " 更新全部插件
 :PackUpdate name1 name2        " 更新指定插件
 :PackClean                     " 清理已从 pack.lua 移除的插件
-:ExColors!                     " （可选）提取当前 colorscheme 为优化版
 ```
 
 `:PackClean` 前先执行 `:restart`，让 `vim.pack` 重新识别已从配置移除的插件。
-`:ExColors!` 需要先在 `lua/pack.lua` 中启用并安装 `ex-colors.nvim`。
+当前 colorscheme 由 `colors/ex-catppuccin-mocha.lua` 直接提供；`ex-colors.nvim`
+未在 `lua/pack.lua` 中启用，因此当前没有 `:ExColors!` 命令。
+
+LSP 初始化时只扫描当时已经安装的 Mason 包。执行 `:MasonInstall <pkg>` 后，重启
+Neovim，新的服务器才会进入自动启用列表。
 
 `nvim-treesitter/main` 不支持懒加载，因此在首次 `FileType` 前加载插件和查询文件，
 高亮仍按 buffer 启用。更新该插件后，原生 `PackChanged` 事件会异步更新已安装的
