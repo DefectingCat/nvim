@@ -94,7 +94,7 @@ local lsp = require("plugins.lsp")
 local ok_notify, notify = pcall(require, "mini.notify")
 if ok_notify then
 	notify.setup({
-		lsp_progress = { enable = false },
+		lsp_progress = { enable = true },
 		content = {
 			-- 简化格式：只显示消息内容
 			format = function(notif)
@@ -131,17 +131,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		-- Git/diff 段回退到 gitsigns.nvim（已启用），无需 mini.git/mini.diff。
 		require("mini.statusline").setup({ use_icons = true })
 
-		-- 覆盖 section_git / section_diff / section_lsp 返回空串隐藏它们：
+		-- 覆盖 section_git / section_diff 返回空串隐藏它们：
 		-- - section_git/diff：默认读 gitsigns buffer 变量显示分支和增删改数
-		-- - section_lsp：默认显示 '󰰎 +'，加号数量 = attach 的 LSP client 数
 		-- combine_groups 会自动跳过空段，不留多余空格。
 		require("mini.statusline").section_git = function()
 			return ""
 		end
 		require("mini.statusline").section_diff = function()
-			return ""
-		end
-		require("mini.statusline").section_lsp = function()
 			return ""
 		end
 
