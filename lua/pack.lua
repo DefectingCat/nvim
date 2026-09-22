@@ -36,7 +36,7 @@
 --   代码 FileType  → lsp, mason
 --   按键触发      → pick, neogit, codediff, files, grugfar
 --   BufWritePre    → conform
---   命令触发      → render-markdown, mason
+--   命令触发      → mason
 -- =============================================================================
 
 local lazy = require("lazy")
@@ -61,7 +61,6 @@ vim.pack.add({
 	-- "https://github.com/DefectingCat/neogit", -- Git status 客户端
 	"https://github.com/esmuellert/codediff.nvim", -- side-by-side diff 可视化
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
-	"https://github.com/MeanderingProgrammer/render-markdown.nvim", -- Markdown 渲染增强
 	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
 }, {
 	load = function() end,
@@ -81,7 +80,6 @@ require("plugins.git")
 require("plugins.pick")
 require("plugins.files")
 require("plugins.starter")
-require("plugins.markdown")
 require("plugins.neovide")
 local lsp = require("plugins.lsp")
 
