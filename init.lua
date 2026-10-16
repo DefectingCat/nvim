@@ -86,9 +86,8 @@ require("pack") -- 插件管理与懒加载配置
 -- =============================================================================
 -- Colorscheme 设置
 -- =============================================================================
--- 应用 colorscheme。catppuccin-mocha 的定义在 colors/catppuccin-mocha.lua 中。
--- 该文件是一个精简版，只包含 Mocha 变体的调色板和高亮组定义。
-vim.cmd("colorscheme ex-catppuccin-mocha")
+-- 使用 clay 默认配色（透明背景），插件由 pack.lua 提前加入 runtimepath。
+vim.cmd.colorscheme("clay")
 
 -- 记录 init.lua 同步配置完成时间（含 colorscheme）。
 -- starter 固定使用该时间点，刻意排除后续 plugin/ 扫描与 VimEnter。

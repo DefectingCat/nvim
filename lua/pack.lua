@@ -15,6 +15,7 @@
 --   - 配置复杂（含多键位、自定义函数、交互逻辑）→ 移至 plugins/
 --
 -- 插件列表：
+--   clay.nvim          - 默认配色主题
 --   mini.nvim          - 单体插件集（starter、pick、extra、files、icons、
 --                        notify、cmdline、completion、snippets、surround、
 --                        clue、statusline）
@@ -44,10 +45,13 @@ local lazy = require("lazy")
 -- ---------------------------------------------------------------------------
 -- 插件安装声明
 -- ---------------------------------------------------------------------------
--- mini.nvim 的 starter/notify 会在本文件中直接 require，因此先加入 runtimepath；
+-- clay 主题和 mini.nvim 的 starter/notify 需要直接访问，因此先加入 runtimepath；
 -- 其余插件先登记安装；treesitter 随后立即加载，其他插件由各自触发器执行 :packadd。
 -- 所有插件的状态锁定在 nvim-pack-lock.json 中。
-vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" }, { load = false })
+vim.pack.add({
+	"https://github.com/DefectingCat/clay.nvim", -- 默认主题
+	"https://github.com/nvim-mini/mini.nvim",
+}, { load = false })
 
 vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets", -- 代码片段库

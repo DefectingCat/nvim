@@ -81,7 +81,7 @@ Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue
 ## Key Conventions
 
 - Startup performance is a priority. Heavy modules are deferred to `VimEnter` or the first relevant `FileType`, except nvim-treesitter's required early plugin/query loading. Parser installation checks and clipboard initialization remain deferred.
-- The active colorscheme is `ex-catppuccin-mocha`, defined in `colors/ex-catppuccin-mocha.lua`.
+- The active colorscheme is `clay`, provided by `DefectingCat/clay.nvim` and declared in `lua/pack.lua`.
 - Comments and UI strings are in **Chinese**.
 - Line diagnostic float is on `<leader>df`. Do **not** map bare `df` — it shadows the `df{char}` operator-pending motion (delete-until-char), a footgun previously hit in this repo.
 
