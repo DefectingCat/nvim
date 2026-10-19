@@ -59,8 +59,8 @@ When adding new plugins that should load lazily, use the custom framework in `lu
 | `InsertEnter`                  | completion, snippets, pairs                      |
 | `BufReadPost` / `BufWritePost` | gitsigns, surround, ai, cursorword               |
 | `BufWritePre`                  | conform (format-on-save)                         |
-| Key press                      | pick, files, neogit, codediff, grugfar           |
-| Command                        | render-markdown, mason (`CmdUndefined`)          |
+| Key press                      | pick, files, neogit, codediff, grugfar, md-render |
+| Command                        | md-render, mason (`CmdUndefined`)                |
 
 Note: `clue` is set up on `VimEnter` (not via `lazy.on_keys`) because `mini.clue` must register prefix keys itself as buffer-local triggers, which is incompatible with the wrapper-mapping approach. Its buffer triggers are re-asserted on `LspAttach` and inside gitsigns' `on_attach` via `MiniClue.ensure_buf_triggers()`.
 

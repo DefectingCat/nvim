@@ -126,7 +126,7 @@ CodeDiff 视图内还提供：
 | `ds`         | Normal            | 删除环绕文本                                          |
 | `cs`         | Normal            | 替换环绕文本                                          |
 | `<CR>`       | Insert            | 有补全选择时确认；无补全弹窗时执行普通换行 / 括号配对 |
-| `<leader>tm` | Normal            | 切换 Markdown 渲染                                    |
+| `<leader>tm` | Normal            | 打开/关闭 Markdown 渲染预览                           |
 
 ## LSP 与诊断
 

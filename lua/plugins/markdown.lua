@@ -1,0 +1,29 @@
+-- =============================================================================
+-- Markdown 渲染预览 (lua/plugins/markdown.lua)
+-- =============================================================================
+-- 本模块配置 delphinus/md-render.nvim：把 Markdown 渲染成带高亮、表格、
+-- callout、图片与 Mermaid 的富文本视图，渲染结果放在浮动窗口（或标签页/
+-- 分屏）中，源 buffer 保持原样。
+--
+-- 与 render-markdown.nvim 的取舍：md-render 不修改编辑缓冲区，定位是"预览"；
+-- 图片/视频/Mermaid 需要终端支持 Kitty graphics protocol（Ghostty、kitty、
+-- WezTerm 可用），Neovide 等不支持的终端只渲染文字部分。
+--
+-- 懒加载策略：
+--   1. 按键触发：<leader>tm 打开/关闭浮动预览
+--   2. 命令触发：:MdRender 首次执行时加载，由 Neovim 自动重试原命令
+-- =============================================================================
+
+local lazy = require("lazy")
+
+local function load_md_render()
+	vim.cmd.packadd("md-render.nvim")
+end
+
+-- 1. 按键 <leader>tm 打开/关闭 Markdown 浮动预览
+lazy.on_keys("md-render", "<leader>tm", "n", load_md_render, function()
+	require("md-render").preview.show()
+end, { desc = "切换 Markdown 渲染预览" })
+
+-- 2. 命令首次触发时加载插件，由 Neovim 原样重试，保留修饰符和参数。
+lazy.on_event("md-render", "CmdUndefined", "MdRender", load_md_render)

@@ -133,6 +133,7 @@ local all_modules = {
 	"neogit",
 	"codediff",
 	"grugfar",
+	"md-render",
 	"pairs",
 	"ai",
 	"cursorword",

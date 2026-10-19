@@ -28,6 +28,7 @@
 --   neogit             - Git status 客户端（仓库级，依赖 plenary）
 --   codediff.nvim      - side-by-side diff 可视化（文件级）
 --   grug-far.nvim      - 搜索与替换
+--   md-render.nvim     - Markdown 渲染预览（浮动窗口，不改动源 buffer）
 --
 -- 懒加载策略：
 --   启动阶段       → treesitter（parser 安装检查仍延后）
@@ -35,9 +36,9 @@
 --   BufReadPost    → gitsigns, surround, ai, cursorword
 --   VimEnter       → icons, statusline, clue
 --   代码 FileType  → lsp, mason
---   按键触发      → pick, neogit, codediff, files, grugfar
+--   按键触发      → pick, neogit, codediff, files, grugfar, md-render
 --   BufWritePre    → conform
---   命令触发      → mason
+--   命令触发      → mason, md-render
 -- =============================================================================
 
 local lazy = require("lazy")
@@ -65,6 +66,7 @@ vim.pack.add({
 	-- "https://github.com/DefectingCat/neogit", -- Git status 客户端
 	"https://github.com/esmuellert/codediff.nvim", -- side-by-side diff 可视化
 	"https://github.com/MagicDuck/grug-far.nvim", -- 搜索替换
+	"https://github.com/delphinus/md-render.nvim", -- Markdown 渲染预览
 	-- "https://github.com/aileot/ex-colors.nvim", -- colorscheme 提取与优化
 }, {
 	load = function() end,
@@ -84,6 +86,7 @@ require("plugins.git")
 require("plugins.pick")
 require("plugins.files")
 require("plugins.starter")
+require("plugins.markdown")
 require("plugins.neovide")
 local lsp = require("plugins.lsp")
 

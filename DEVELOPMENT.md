@@ -20,7 +20,7 @@ lua/plugins/
   files.lua                -- mini.files 文件浏览器与文件操作映射
   git.lua                  -- gitsigns、Neogit、CodeDiff Git 工具链
   starter.lua              -- mini.starter 启动页与模块加载统计
-  markdown.lua             -- render-markdown.nvim Markdown 渲染
+  markdown.lua             -- md-render.nvim Markdown 渲染预览
   neovide.lua              -- Neovide GUI 专属选项与映射
 colors/
   ex-catppuccin-mocha.lua  -- 当前启用的精简版 colorscheme
@@ -52,7 +52,7 @@ DEVELOPMENT.md             -- 开发、验证与常用命令
 | `BufReadPost` / `BufWritePost`                            | gitsigns、`mini.surround`、`mini.ai`、`mini.cursorword`               |
 | `BufWritePre` 或 `<leader>fm`                             | conform.nvim                                                          |
 | 按键触发                                                  | `mini.pick`、`mini.files`、Neogit、CodeDiff、grug-far                 |
-| Markdown 类 `FileType`、`<leader>tm` 或 `:RenderMarkdown` | render-markdown.nvim                                                  |
+| `<leader>tm` 或 `:MdRender`                               | md-render.nvim                                                        |
 | 首次按 `:`                                                | `mini.cmdline`                                                        |
 
 完整插件说明见 [PLUGINS.md](./PLUGINS.md)，完整映射见 [MAPS.md](./MAPS.md)。

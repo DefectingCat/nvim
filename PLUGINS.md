@@ -18,7 +18,7 @@
 | **neogit**               | [NeogitOrg/neogit](https://github.com/NeogitOrg/neogit)                                                   | 仓库级 Git status、提交、推送与拉取             | `<leader>gg`                                              |
 | **codediff.nvim**        | [esmuellert/codediff.nvim](https://github.com/esmuellert/codediff.nvim)                                   | side-by-side 工作区 diff 与提交历史             | `<leader>gd` / `<leader>gl` / `<leader>gD`                |
 | **grug-far.nvim**        | [MagicDuck/grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim)                                     | 项目级搜索与替换                                | `<leader>sr`                                              |
-| **render-markdown.nvim** | [MeanderingProgrammer/render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) | 在 buffer 内实时渲染 Markdown 元素              | Markdown 类 `FileType`、`<leader>tm` 或 `:RenderMarkdown` |
+| **md-render.nvim**       | [delphinus/md-render.nvim](https://github.com/delphinus/md-render.nvim)                                   | 浮动窗口内渲染 Markdown（表格、图片、Mermaid）  | `<leader>tm` 或 `:MdRender`                               |
 
 ## mini.nvim 子模块
 

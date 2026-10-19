@@ -24,10 +24,9 @@
 | `InsertEnter`                  | completion、snippets、pairs                                             |
 | `BufReadPost` / `BufWritePost` | gitsigns、surround、ai、cursorword                                      |
 | `BufWritePre`                  | conform                                                                 |
-| 按键触发                       | pick、files、neogit、codediff、grugfar                                  |
-| `FileType` / 按键              | render-markdown (`FileType: markdown`, `<leader>tm`, `:RenderMarkdown`) |
+| 按键触发                       | pick、files、neogit、codediff、grugfar、md-render                        |
 | 首次按 `:`                     | cmdline                                                                 |
-| 命令触发                       | render-markdown、Mason（原生 `CmdUndefined`）                           |
+| 命令触发                       | md-render、Mason（原生 `CmdUndefined`）                                 |
 
 ## 键位映射
 
