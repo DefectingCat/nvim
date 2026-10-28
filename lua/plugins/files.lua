@@ -117,8 +117,20 @@ end
 -- - ：在当前文件所在目录打开文件浏览器
 lazy.on_keys("files", "-", "n", setup_mini_files, function()
 	local MiniFiles = require("mini.files")
-	-- 打开当前文件所在目录，并定位到当前文件
-	MiniFiles.open(vim.api.nvim_buf_get_name(0), false)
+	local path = vim.api.nvim_buf_get_name(0)
+	if path == "" then
+		path = vim.fn.getcwd()
+	end
+	-- 文件或目录已删除时，回退到最近仍存在的父目录。
+	while not vim.uv.fs_stat(path) do
+		local parent = vim.fs.dirname(path)
+		if not parent or parent == path then
+			path = vim.fn.getcwd()
+			break
+		end
+		path = parent
+	end
+	MiniFiles.open(path, false)
 	MiniFiles.reveal_cwd()
 end, { desc = "打开文件浏览器（当前文件目录）" })
 
