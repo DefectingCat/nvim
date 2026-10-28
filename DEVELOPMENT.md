@@ -23,7 +23,7 @@ lua/plugins/
   markdown.lua             -- md-render.nvim Markdown 渲染预览
   neovide.lua              -- Neovide GUI 专属选项与映射
 colors/
-  ex-catppuccin-mocha.lua  -- 当前启用的精简版 colorscheme
+  ex-catppuccin-mocha.lua   -- 保留的本地配色，当前未启用；默认 clay 由插件提供
 nvim-pack-lock.json        -- vim.pack 插件版本锁定文件
 PLUGINS.md                 -- 插件列表与加载说明
 MAPS.md                    -- 键位映射速查表
@@ -39,7 +39,7 @@ DEVELOPMENT.md             -- 开发、验证与常用命令
 3. `autocmds.lua`：注册通用自动命令。
 4. `usercmds.lua`：注册 `vim.pack` 管理命令。
 5. `pack.lua`：登记插件，立即初始化 Treesitter，再注册其他功能域的懒加载入口。
-6. 应用 `ex-catppuccin-mocha` colorscheme。
+6. 应用 `clay` colorscheme（由 `DefectingCat/clay.nvim` 提供）。
 
 重型模块不会全部在启动阶段初始化：
 
@@ -47,9 +47,10 @@ DEVELOPMENT.md             -- 开发、验证与常用命令
 | --------------------------------------------------------- | --------------------------------------------------------------------- |
 | 启动阶段                                                  | Treesitter 插件与查询文件；parser 安装检查延后 100ms                  |
 | `VimEnter`                                                | `mini.icons`、`mini.statusline`、`mini.clue`                          |
-| 代码 `FileType` 或 Mason 命令                             | LSP、Mason                                                            |
+| 普通 buffer 的 `FileType` 或 Mason 命令                    | LSP、Mason（服务器按自身 filetypes 匹配）                             |
 | `InsertEnter`                                             | `mini.completion`、`mini.snippets`、`friendly-snippets`、`mini.pairs` |
-| `BufReadPost` / `BufWritePost`                            | gitsigns、`mini.surround`、`mini.ai`、`mini.cursorword`               |
+| `BufReadPost` / `BufWritePost`                            | gitsigns                                                              |
+| `BufReadPost` / `BufNewFile` / `BufNew`                    | `mini.surround`、`mini.ai`、`mini.cursorword`                           |
 | `BufWritePre` 或 `<leader>fm`                             | conform.nvim                                                          |
 | 按键触发                                                  | `mini.pick`、`mini.files`、Neogit、CodeDiff、grug-far                 |
 | `<leader>tm` 或 `:MdRender`                               | md-render.nvim                                                        |
@@ -69,11 +70,19 @@ nvim --headless -c 'lua dofile("init.lua")' -c 'qa!'
 # 只加载插件声明与懒加载配置
 nvim --headless -c 'lua require("pack")' -c 'qa!'
 
-# 运行 Neovim 健康检查
-nvim --headless -c 'checkhealth' -c 'qa!'
+# 直接初始化懒加载的 Mason/LSP，避免 Mason 界面异步打开时切走健康检查 buffer
+nvim --headless -c 'lua require("lazy").load("lsp", require("plugins.lsp").setup)' \
+  -c 'checkhealth mason vim.lsp nvim-treesitter' \
+  -c 'lua print(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"))' \
+  -c 'qa!'
 ```
 
 本配置没有独立的构建、lint、类型检查或测试套件；改动后至少运行完整配置检查。
+
+空启动时 Mason 尚未进入 runtimepath，直接执行 `:checkhealth mason` 可能提示找不到
+健康检查。交互使用时，先执行 `:Mason`，待界面加载完成并关闭后再检查；也可先打开普通文件
+使其初始化。上述 headless 命令直接初始化模块、不打开 Mason 界面，验证工具环境与 LSP 配置；
+服务器是否实际附着仍需打开对应项目文件并查看 `:checkhealth vim.lsp`。
 
 ## 性能测量
 
@@ -97,8 +106,9 @@ nvim --headless --startuptime /tmp/startup.log \
 ```
 
 `:PackClean` 前先执行 `:restart`，让 `vim.pack` 重新识别已从配置移除的插件。
-当前 colorscheme 由 `colors/ex-catppuccin-mocha.lua` 直接提供；`ex-colors.nvim`
-未在 `lua/pack.lua` 中启用，因此当前没有 `:ExColors!` 命令。
+当前默认 colorscheme 为 `clay`，由 `lua/pack.lua` 声明的 `DefectingCat/clay.nvim`
+提供；`colors/ex-catppuccin-mocha.lua` 仅保留为未启用的本地配色。`ex-colors.nvim`
+未启用，因此当前没有 `:ExColors!` 命令。
 
 LSP 初始化时只扫描当时已经安装的 Mason 包。执行 `:MasonInstall <pkg>` 后，重启
 Neovim，新的服务器才会进入自动启用列表。
