@@ -89,10 +89,13 @@ vim.opt.shortmess:append("c")
 -- 通过 vim.schedule() 将剪贴板设置推迟到启动事件循环之后，
 -- 避免阻塞 startup 的关键路径。
 vim.schedule(function()
-	-- SSH 环境下没有系统剪贴板 provider（无 xclip/wl-copy/X forwarding），
-	-- 使用内置 OSC52 通过终端转义序列穿透到宿主机剪贴板。
+	-- SSH 环境下没有系统剪贴板 provider（无 xclip/wl-copy/X forwarding）。
+	-- tmux 内：用 tmux provider（tmux load-buffer -w），由 tmux 自己向外层终端发 OSC52，
+	--   与 tmux 自带复制同一路径。不能直接用 osc52：tmux 默认 set-clipboard=external，
+	--   会忽略 pane 内应用发出的 OSC52，导致宿主机收不到。
+	-- tmux 外：使用内置 OSC52 通过终端转义序列穿透到宿主机剪贴板。
 	if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
-		vim.g.clipboard = "osc52"
+		vim.g.clipboard = vim.env.TMUX and "tmux" or "osc52"
 	end
 	vim.opt.clipboard:append("unnamedplus")
 end)
