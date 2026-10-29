@@ -16,6 +16,9 @@
 
 local lazy = require("lazy")
 
+-- 放宽正文宽度；浮窗仍由插件按内容与屏幕尺寸自适应。
+vim.g.md_render_max_width = 120
+
 local function load_md_render()
 	vim.cmd.packadd("md-render.nvim")
 end
