@@ -16,8 +16,37 @@
 
 local lazy = require("lazy")
 
--- 放宽正文宽度；浮窗仍由插件按内容与屏幕尺寸自适应。
-vim.g.md_render_max_width = 120
+-- 正文宽度随编辑器变化，不再受固定列数限制。
+local function resize_preview()
+	local width = math.max(1, math.floor(vim.o.columns * 0.8))
+	vim.g.md_render_max_width = width
+
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local config = vim.api.nvim_win_get_config(win)
+		local buf = vim.api.nvim_win_get_buf(win)
+		if config.relative == "editor" and vim.b[buf].md_render then
+			vim.api.nvim_win_set_config(win, {
+				relative = "editor",
+				row = config.row,
+				width = width,
+				col = math.floor((vim.o.columns - width) / 2),
+			})
+		end
+	end
+
+	-- 浮动预览不会自行重排；使用插件接口同步正文、图片与页脚。
+	local preview = package.loaded["md-render.preview"]
+	if preview then
+		preview.rebuild_visible()
+	end
+end
+
+resize_preview()
+vim.api.nvim_create_autocmd("VimResized", {
+	group = vim.api.nvim_create_augroup("UserMarkdownPreview", { clear = true }),
+	desc = "随编辑器宽度调整 Markdown 预览",
+	callback = resize_preview,
+})
 
 local function load_md_render()
 	vim.cmd.packadd("md-render.nvim")

@@ -21,8 +21,10 @@
 | **grug-far.nvim**        | [MagicDuck/grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim)                                     | 项目级搜索与替换                                | `<leader>sr`                                              |
 | **md-render.nvim**       | [delphinus/md-render.nvim](https://github.com/delphinus/md-render.nvim)                                   | 浮动窗口内渲染 Markdown（表格、图片、Mermaid）  | `<leader>tm` 或 `:MdRender`                               |
 
-Markdown 预览正文宽度上限为 120 列（`lua/plugins/markdown.lua` 中的
-`vim.g.md_render_max_width`）；浮窗按内容自适应，宽高最多占屏幕的 80%。
+Markdown 预览正文宽度上限随编辑器宽度变化，取总列数的 80%
+（配置位于 `lua/plugins/markdown.lua`），不再限制为固定列数。
+浮窗首次打开时按内容自适应；编辑器缩放时，已打开的预览同步调整为 80%
+宽度、水平居中并重新排版。高度仍由插件按内容决定，最多占屏幕的 80%。
 需要全屏阅读时可用 `:MdRender tab`。
 
 ## mini.nvim 子模块
