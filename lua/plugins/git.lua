@@ -131,6 +131,12 @@ end, { desc = "Neogit status" })
 local function load_codediff()
 	vim.cmd.packadd("codediff.nvim")
 	require("codediff").setup({
+		-- 字符级差异与 gitsigns/neogit 一致用 DiffText；codediff 每次 ColorScheme 都会
+		-- 强制重设这两个组，只能在这里配置，主题无法覆盖。
+		highlights = {
+			char_insert = "DiffText",
+			char_delete = "DiffText",
+		},
 		diff = {
 			layout = "side-by-side",
 			disable_inlay_hints = true,
