@@ -155,6 +155,29 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			end
 			return "%f%m%r"
 		end
+
+		-- 状态栏背景跟随编辑区：Normal 无背景（透明）时，状态栏非模式段也去掉背景。
+		-- 不透明时不处理，:colorscheme 重新应用已恢复实色。模式块保持原色。
+		-- 以 Normal 的实际 bg 为准，因此 clay 的 transparent 选项或换主题都会同步。
+		local function sync_statusline_bg()
+			if vim.api.nvim_get_hl(0, { name = "Normal", link = false }).bg then
+				return
+			end
+			for _, name in ipairs({
+				"StatusLine",
+				"StatusLineNC",
+				"MiniStatuslineDevinfo",
+				"MiniStatuslineFilename",
+				"MiniStatuslineFileinfo",
+				"MiniStatuslineInactive",
+			}) do
+				local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+				hl.bg = "NONE"
+				vim.api.nvim_set_hl(0, name, hl)
+			end
+		end
+		sync_statusline_bg()
+		vim.api.nvim_create_autocmd("ColorScheme", { callback = sync_statusline_bg })
 		lazy.track("statusline")
 	end,
 })
